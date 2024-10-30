@@ -2,6 +2,7 @@
 Bu repo, çeşitli yazılım mimarilerini öğrenmek ve incelemek isteyenler için örnek projeler sunar. Her bir mimari için ayrı dizinlerde örnek projeler bulacaksınız.
 
 ## İçerik
+- [DDD](ddd)
 - [Microservices](microservices)
 - [Monolithic](monolithic)
 - [Event-Driven](event-driven)
