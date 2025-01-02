@@ -1,5 +1,5 @@
 ﻿using GoalManager.Infrastructure.Data.Config;
-using FastEndpoints;
+
 using FluentValidation;
 
 namespace GoalManager.Web.Contributors;

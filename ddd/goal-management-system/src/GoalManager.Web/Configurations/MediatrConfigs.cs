@@ -1,7 +1,7 @@
 ﻿using Ardalis.SharedKernel;
 using GoalManager.Core.ContributorAggregate;
 using GoalManager.UseCases.Contributors.Create;
-using MediatR;
+
 using System.Reflection;
 
 namespace GoalManager.Web.Configurations;

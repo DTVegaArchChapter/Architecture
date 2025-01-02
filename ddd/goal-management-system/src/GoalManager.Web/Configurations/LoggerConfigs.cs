@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace GoalManager.Web.Configurations;
+﻿namespace GoalManager.Web.Configurations;
 
 public static class LoggerConfigs
 {
