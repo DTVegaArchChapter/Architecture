@@ -1,8 +1,24 @@
 ﻿namespace GoalManager.Core.OrganisationAggregate;
 
-public class TeamMember(string name, int userId) : EntityBase
+public class TeamMember : EntityBase
 {
-  public int UserId { get; private set; } = userId;
+  private TeamMember(string name, int userId)
+  {
+    UserId = Guard.Against.NegativeOrZero(userId);
+    Name = Guard.Against.NullOrWhiteSpace(name);
+  }
 
-  public string Name { get; } = Guard.Against.NullOrWhiteSpace(name);
+  public int UserId { get; private set; }
+
+  public string Name { get; }
+
+  public static Result<TeamMember> Create(string name, int userId)
+  {
+    if (string.IsNullOrWhiteSpace(name))
+    {
+      return Result<TeamMember>.Error("Team member name is required");
+    }
+
+    return new TeamMember(name, userId);
+  }
 }
