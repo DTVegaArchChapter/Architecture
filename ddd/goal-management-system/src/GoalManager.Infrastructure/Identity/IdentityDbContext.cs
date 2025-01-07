@@ -2,10 +2,5 @@
 
 namespace GoalManager.Infrastructure.Identity;
 
-public class IdentityDbContext : IdentityDbContext<ApplicationUser>
-{
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
-        : base(options)
-    {
-    }
-}
+public class IdentityDbContext(DbContextOptions<IdentityDbContext> options)
+  : IdentityDbContext<ApplicationUser>(options);

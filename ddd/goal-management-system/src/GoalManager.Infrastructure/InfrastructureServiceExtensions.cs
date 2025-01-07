@@ -2,10 +2,11 @@
 using GoalManager.Core.Services;
 using GoalManager.Infrastructure.Data;
 using GoalManager.Infrastructure.Data.Queries;
+using GoalManager.Infrastructure.Identity;
 using GoalManager.UseCases.Contributors.List;
 
-
 namespace GoalManager.Infrastructure;
+
 public static class InfrastructureServiceExtensions
 {
   public static IServiceCollection AddInfrastructureServices(
@@ -15,8 +16,11 @@ public static class InfrastructureServiceExtensions
   {
     string? connectionString = config.GetConnectionString("SqliteConnection");
     Guard.Against.Null(connectionString);
-    services.AddDbContext<AppDbContext>(options =>
-     options.UseSqlite(connectionString));
+    services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
+
+    var identityConnectionString = config.GetConnectionString("IdentityDbContextConnection");
+    Guard.Against.Null(connectionString);
+    services.AddDbContext<IdentityDbContext>(options => options.UseSqlite(identityConnectionString));
 
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
            .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
