@@ -1,0 +1,36 @@
+﻿@page
+@model GoalManager.Web.Pages.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (Model.Errors?.Any() == true)
+{
+    @foreach (var error in Model.Errors)
+    {
+        <div class="alert alert-danger" role="alert">@error</div>
+    }
+}
+
+@if (Model.ContributorList?.Contributors?.Count > 0)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Phone Number</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var contributor in Model.ContributorList.Contributors)
+            {
+                <tr>
+                    <th scope="row">@contributor.Id</th>
+                    <td>@contributor.Name</td>
+                    <td>@contributor.PhoneNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

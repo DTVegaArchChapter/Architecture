@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GoalManager.Core\GoalManager.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Organisation\" />
+  </ItemGroup>
+
+</Project>
