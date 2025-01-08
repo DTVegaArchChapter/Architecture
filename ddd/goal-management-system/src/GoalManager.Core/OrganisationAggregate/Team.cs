@@ -2,8 +2,9 @@
 
 public class Team : EntityBase
 {
-  private Team(string name)
+  private Team(string name, int organisationId)
   {
+    OrganisationId = organisationId;
     Name = Guard.Against.NullOrWhiteSpace(name);
   }
 
@@ -11,16 +12,20 @@ public class Team : EntityBase
 
   public string Name { get; }
 
+  public int OrganisationId { get; private set; }
+
   public ICollection<TeamMember> TeamMembers { get; } = new List<TeamMember>();
 
-  public static Result<Team> Create(string name)
+  public Organisation Organisation { get; private set; } = null!;
+
+  public static Result<Team> Create(string name, int organisationId)
   {
     if (string.IsNullOrWhiteSpace(name))
     {
       return Result<Team>.Error("Team name is required");
     }
 
-    return new Team(name);
+    return new Team(name, organisationId);
   }
 
   public Result AddTeamMember(string name, int userId)
@@ -37,7 +42,7 @@ public class Team : EntityBase
       return Result.Error($"Team member '{name}' already exists");
     }
 
-    var teamMemberResult = TeamMember.Create(name, userId);
+    var teamMemberResult = TeamMember.Create(name, userId, Id);
     if (!teamMemberResult.IsSuccess)
     {
       return teamMemberResult.ToResult();

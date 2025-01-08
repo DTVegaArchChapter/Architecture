@@ -35,7 +35,7 @@ public class Organisation : EntityBase, IAggregateRoot
       return Result.Error($"Team with name '{name}' already exists");
     }
    
-    var teamResult = Team.Create(name);
+    var teamResult = Team.Create(name, Id);
     if (!teamResult.IsSuccess)
     {
       return teamResult.ToResult();
