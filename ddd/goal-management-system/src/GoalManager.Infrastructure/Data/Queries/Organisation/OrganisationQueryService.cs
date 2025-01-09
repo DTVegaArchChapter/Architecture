@@ -6,7 +6,7 @@ public class OrganisationQueryService(AppDbContext dbContext) : IOrganisationQue
 {
   public Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take)
   {
-    return dbContext.Organisations.Select(x => new OrganisationListItemDto(x.Id, x.Name, x.Teams.Count))
+    return dbContext.Organisation.Select(x => new OrganisationListItemDto(x.Id, x.Name, x.Teams.Count))
       .Skip(skip ?? 0).Take(take ?? 10)
       .ToListAsync();
   }

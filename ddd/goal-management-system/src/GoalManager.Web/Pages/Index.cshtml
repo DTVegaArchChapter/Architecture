@@ -12,23 +12,23 @@
     }
 }
 
-@if (Model.ContributorList?.Contributors?.Count > 0)
+@if (Model.Organisations.Count > 0)
 {
     <table class="table">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Phone Number</th>
+            <th scope="col">Teams Count</th>
         </tr>
         </thead>
         <tbody>
-            @foreach (var contributor in Model.ContributorList.Contributors)
+            @foreach (var contributor in Model.Organisations)
             {
                 <tr>
                     <th scope="row">@contributor.Id</th>
                     <td>@contributor.Name</td>
-                    <td>@contributor.PhoneNumber</td>
+                    <td>@contributor.TeamsCount</td>
                 </tr>
             }
         </tbody>

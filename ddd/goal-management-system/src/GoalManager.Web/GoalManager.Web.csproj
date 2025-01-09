@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Index.cshtml.OrganisationListItemViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ViewModels\Organisation\OrganisationListItemViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.ListStartupServices" />
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="Ardalis.Result.AspNetCore" />

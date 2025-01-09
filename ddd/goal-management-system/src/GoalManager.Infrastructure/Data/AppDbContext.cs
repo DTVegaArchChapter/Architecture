@@ -10,7 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public DbSet<Contributor> Contributors => Set<Contributor>();
 
-  public DbSet<Organisation> Organisations => Set<Organisation>();
+  public DbSet<Organisation> Organisation => Set<Organisation>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
