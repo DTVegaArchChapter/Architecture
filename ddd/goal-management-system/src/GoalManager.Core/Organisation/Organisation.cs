@@ -1,10 +1,14 @@
-﻿namespace GoalManager.Core.Organisation;
+﻿using GoalManager.Core.Organisation.Events;
+
+namespace GoalManager.Core.Organisation;
 
 public class Organisation : EntityBase, IAggregateRoot
 {
   private Organisation(string name)
   {
     Name = Guard.Against.NullOrWhiteSpace(name);
+
+    RegisterDomainEvent(new OrganisationCreatedEvent(Name));
   }
 
   private const int MaxTeamCount = 5;
@@ -44,5 +48,10 @@ public class Organisation : EntityBase, IAggregateRoot
     Teams.Add(teamResult);
 
     return Result.Success();
+  }
+
+  public void Delete()
+  {
+    RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name));
   }
 }

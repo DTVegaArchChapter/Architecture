@@ -15,6 +15,7 @@
         <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Teams Count</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -26,12 +27,24 @@
             </td>
         </tr>
     }
-    @foreach (var contributor in Model.Organisations)
+    @foreach (var organisation in Model.Organisations)
     {
         <tr>
-            <th scope="row">@contributor.Id</th>
-            <td>@contributor.Name</td>
-            <td>@contributor.TeamsCount</td>
+            <th scope="row">@organisation.Id</th>
+            <td>@organisation.Name</td>
+            <td>@organisation.TeamsCount</td>
+            <td>
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-sm btn-primary me-1" asp-page="Update" asp-route-id="@organisation.Id">
+                        Update
+                    </a>
+                    <form asp-page-handler="Delete" asp-route-id="@organisation.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </td>
         </tr>
     }
     </tbody>

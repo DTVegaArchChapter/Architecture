@@ -5,13 +5,15 @@ namespace GoalManager.Core.Organisation;
 public interface IOrganisationService
 {
   Task<Result<int>> CreateOrganisation(string name, CancellationToken cancellationToken = default);
+
+  Task<Result> DeleteOrganisation(int id, CancellationToken cancellationToken = default);
 }
 
 public sealed class OrganisationService(IRepository<Organisation> repository) : IOrganisationService
 {
   public async Task<Result<int>> CreateOrganisation(string name, CancellationToken cancellationToken = default)
   {
-    var createResult = Core.Organisation.Organisation.Create(name);
+    var createResult = Organisation.Create(name);
     if (!createResult.IsSuccess)
     {
       return createResult.ToResult();
@@ -28,5 +30,26 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
     await repository.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
     return Result.Success(organisation.Id);
+  }
+
+  public async Task<Result> DeleteOrganisation(int id, CancellationToken cancellationToken = default)
+  {
+    var organisation = await repository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+    if (organisation == null)
+    {
+      return Result.Error("Organisation is not found");
+    }
+
+    if (organisation.Teams.Any())
+    {
+      return Result.Error("You cannot delete the organisation because there are teams created under the organisation");
+    }
+
+    organisation.Delete();
+
+    await repository.DeleteAsync(organisation, cancellationToken).ConfigureAwait(false);
+    await repository.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+    return Result.SuccessWithMessage("Organisation is deleted");
   }
 }
