@@ -1,8 +1,9 @@
 ﻿using Ardalis.SharedKernel;
-using GoalManager.Core.ContributorAggregate;
-using GoalManager.UseCases.Contributors.Create;
 
 using System.Reflection;
+
+using GoalManager.Core.Organisation;
+using GoalManager.UseCases.Organisation.Create;
 
 namespace GoalManager.Web.Configurations;
 
@@ -12,8 +13,8 @@ public static class MediatrConfigs
   {
     var mediatRAssemblies = new[]
       {
-        Assembly.GetAssembly(typeof(Contributor)), // Core
-        Assembly.GetAssembly(typeof(CreateContributorCommand)) // UseCases
+        Assembly.GetAssembly(typeof(Organisation)), // Core
+        Assembly.GetAssembly(typeof(CreateOrganisationCommand)) // UseCases
       };
 
     services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(mediatRAssemblies!))

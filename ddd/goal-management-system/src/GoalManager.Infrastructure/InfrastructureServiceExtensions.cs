@@ -1,11 +1,7 @@
-﻿using GoalManager.Core.Interfaces;
-using GoalManager.Core.Organisation;
-using GoalManager.Core.Services;
+﻿using GoalManager.Core.Organisation;
 using GoalManager.Infrastructure.Data;
-using GoalManager.Infrastructure.Data.Queries;
 using GoalManager.Infrastructure.Data.Queries.Organisation;
 using GoalManager.Infrastructure.Identity;
-using GoalManager.UseCases.Contributors.List;
 using GoalManager.UseCases.Organisation.List;
 
 namespace GoalManager.Infrastructure;
@@ -27,8 +23,6 @@ public static class InfrastructureServiceExtensions
 
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
       .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
-      .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
-      .AddScoped<IDeleteContributorService, DeleteContributorService>()
       .AddScoped<IOrganisationQueryService, OrganisationQueryService>()
       .AddScoped<IOrganisationService, OrganisationService>();
 
