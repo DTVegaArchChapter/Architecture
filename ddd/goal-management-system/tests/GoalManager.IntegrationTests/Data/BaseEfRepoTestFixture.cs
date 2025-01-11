@@ -1,5 +1,4 @@
-﻿using GoalManager.Core.ContributorAggregate;
-using GoalManager.Infrastructure.Data;
+﻿using GoalManager.Infrastructure.Data;
 
 namespace GoalManager.IntegrationTests.Data;
 
@@ -30,10 +29,5 @@ public abstract class BaseEfRepoTestFixture
            .UseInternalServiceProvider(serviceProvider);
 
     return builder.Options;
-  }
-
-  protected EfRepository<Contributor> GetRepository()
-  {
-    return new EfRepository<Contributor>(_dbContext);
   }
 }
