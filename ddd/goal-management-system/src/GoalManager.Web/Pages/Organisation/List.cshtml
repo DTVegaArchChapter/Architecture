@@ -1,0 +1,38 @@
+﻿@page
+@model GoalManager.Web.Pages.Organisation.ListModel
+@{
+    ViewData["Title"] = "List Organisations";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">List Organisations</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div class="d-flex justify-content-end">
+    <a asp-page="Create" class="btn btn-secondary mb-2">Create an Organisation</a>
+</div>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Teams Count</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.Organisations.Count == 0)
+    {
+        <tr>
+             <td class="bg-light" colspan="100%">
+                <div class="p-2">There is no organisations created!</div>
+            </td>
+        </tr>
+    }
+    @foreach (var contributor in Model.Organisations)
+    {
+        <tr>
+            <th scope="row">@contributor.Id</th>
+            <td>@contributor.Name</td>
+            <td>@contributor.TeamsCount</td>
+        </tr>
+    }
+    </tbody>
+</table>

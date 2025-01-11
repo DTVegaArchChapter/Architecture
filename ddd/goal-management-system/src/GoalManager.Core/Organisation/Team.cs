@@ -1,4 +1,4 @@
-﻿namespace GoalManager.Core.OrganisationAggregate;
+﻿namespace GoalManager.Core.Organisation;
 
 public class Team : EntityBase
 {

@@ -1,5 +1,5 @@
 ﻿using GoalManager.Core.ContributorAggregate;
-using GoalManager.Core.OrganisationAggregate;
+using GoalManager.Core.Organisation;
 
 namespace GoalManager.Infrastructure.Data;
 

@@ -1,4 +1,5 @@
 ﻿using GoalManager.Core.Interfaces;
+using GoalManager.Core.Organisation;
 using GoalManager.Core.Services;
 using GoalManager.Infrastructure.Data;
 using GoalManager.Infrastructure.Data.Queries;
@@ -28,7 +29,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
       .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
       .AddScoped<IDeleteContributorService, DeleteContributorService>()
-      .AddScoped<IOrganisationQueryService, OrganisationQueryService>();
+      .AddScoped<IOrganisationQueryService, OrganisationQueryService>()
+      .AddScoped<IOrganisationService, OrganisationService>();
 
 
     logger.LogInformation("{Project} services registered", "Infrastructure");

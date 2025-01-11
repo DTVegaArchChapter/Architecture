@@ -1,4 +1,4 @@
-﻿using GoalManager.Core.OrganisationAggregate;
+﻿using GoalManager.Core.Organisation;
 
 namespace GoalManager.Infrastructure.Data.Config;
 
@@ -14,5 +14,7 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
       .HasMany(c => c.Teams)
       .WithOne(p => p.Organisation)
       .HasForeignKey(p => p.OrganisationId);
+
+    builder.HasIndex(p => p.Name).IsUnique();
   }
 }
