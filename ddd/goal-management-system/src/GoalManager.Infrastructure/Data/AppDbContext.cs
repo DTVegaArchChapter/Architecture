@@ -1,12 +1,13 @@
-﻿using GoalManager.Core.ContributorAggregate;
+﻿using GoalManager.Core.Organisation;
 
 namespace GoalManager.Infrastructure.Data;
+
 public class AppDbContext(DbContextOptions<AppDbContext> options,
   IDomainEventDispatcher? dispatcher) : DbContext(options)
 {
   private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
 
-  public DbSet<Contributor> Contributors => Set<Contributor>();
+  public DbSet<Organisation> Organisation => Set<Organisation>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

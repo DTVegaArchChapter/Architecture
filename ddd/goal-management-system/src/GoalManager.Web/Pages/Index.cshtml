@@ -1,36 +1,11 @@
 ﻿@page
 @model GoalManager.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Home page";
 }
 
-@if (Model.Errors?.Any() == true)
-{
-    @foreach (var error in Model.Errors)
-    {
-        <div class="alert alert-danger" role="alert">@error</div>
-    }
-}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <h2>List organisations - <a class="btn btn-sm btn-primary" asp-page="/Organisation/List">Click here</a></h2>
+</div>
 
-@if (Model.ContributorList?.Contributors?.Count > 0)
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Phone Number</th>
-        </tr>
-        </thead>
-        <tbody>
-            @foreach (var contributor in Model.ContributorList.Contributors)
-            {
-                <tr>
-                    <th scope="row">@contributor.Id</th>
-                    <td>@contributor.Name</td>
-                    <td>@contributor.PhoneNumber</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}

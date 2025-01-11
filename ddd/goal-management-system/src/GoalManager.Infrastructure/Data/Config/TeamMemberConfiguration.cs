@@ -1,4 +1,4 @@
-﻿using GoalManager.Core.OrganisationAggregate;
+﻿using GoalManager.Core.Organisation;
 
 namespace GoalManager.Infrastructure.Data.Config;
 

@@ -1,0 +1,51 @@
+﻿@page
+@model GoalManager.Web.Pages.Organisation.ListModel
+@{
+    ViewData["Title"] = "List Organisations";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">List Organisations</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div class="d-flex justify-content-end">
+    <a asp-page="Create" class="btn btn-secondary mb-2">Create an Organisation</a>
+</div>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Teams Count</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.Organisations.Count == 0)
+    {
+        <tr>
+             <td class="bg-light" colspan="100%">
+                <div class="p-2">There is no organisations created!</div>
+            </td>
+        </tr>
+    }
+    @foreach (var organisation in Model.Organisations)
+    {
+        <tr>
+            <th scope="row">@organisation.Id</th>
+            <td>@organisation.Name</td>
+            <td>@organisation.TeamsCount</td>
+            <td>
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-sm btn-primary me-1" asp-page="Update" asp-route-id="@organisation.Id">
+                        Update
+                    </a>
+                    <form asp-page-handler="Delete" asp-route-id="@organisation.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

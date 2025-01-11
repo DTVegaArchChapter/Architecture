@@ -47,11 +47,6 @@ var appLogger = new SerilogLoggerFactory(logger)
 builder.Services.AddOptionConfigs(builder.Configuration, appLogger, builder);
 builder.Services.AddServiceConfigs(appLogger, builder);
 
-builder.Services.AddFastEndpoints()
-                .SwaggerDocument(o =>
-                {
-                  o.ShortSchemaNames = true;
-                });
 builder.Services.AddRazorPages(
   o =>
   {

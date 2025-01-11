@@ -1,0 +1,18 @@
+﻿@page
+@model GoalManager.Web.Pages.Organisation.CreateModel
+@{
+    ViewData["Title"] = "Create an Organisation";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">Create an organisation</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="@Model.Organisation.Name" class="form-label"></label>
+        <input type="text" asp-for="@Model.Organisation.Name" class="form-control"/>
+        <span asp-validation-for="@Model.Organisation.Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="List" class="btn btn-secondary">Cancel</a>
+</form>

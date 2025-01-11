@@ -9,11 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Index.cshtml.OrganisationListItemViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ViewModels\Organisation\OrganisationListItemViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.ListStartupServices" />
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="Ardalis.Result.AspNetCore" />
-    <PackageReference Include="FastEndpoints" />
-    <PackageReference Include="FastEndpoints.Swagger" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
