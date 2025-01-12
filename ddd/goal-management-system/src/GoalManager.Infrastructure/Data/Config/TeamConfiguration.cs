@@ -6,6 +6,8 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
 {
   public void Configure(EntityTypeBuilder<Team> builder)
   {
+    builder.HasKey(p => p.Id);
+
     builder.Property(p => p.Name)
       .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
       .IsRequired();

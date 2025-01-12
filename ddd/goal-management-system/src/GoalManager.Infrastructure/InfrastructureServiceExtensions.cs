@@ -13,19 +13,15 @@ public static class InfrastructureServiceExtensions
     ConfigurationManager config,
     ILogger logger)
   {
-    string? connectionString = config.GetConnectionString("SqliteConnection");
+    string? connectionString = config.GetConnectionString("DefaultConnection");
     Guard.Against.Null(connectionString);
-    services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
-
-    var identityConnectionString = config.GetConnectionString("IdentityDbContextConnection");
-    Guard.Against.Null(connectionString);
-    services.AddDbContext<IdentityDbContext>(options => options.UseSqlite(identityConnectionString));
+    services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+    services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(connectionString));
 
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
       .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
       .AddScoped<IOrganisationQueryService, OrganisationQueryService>()
       .AddScoped<IOrganisationService, OrganisationService>();
-
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

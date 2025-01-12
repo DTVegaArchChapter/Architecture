@@ -7,24 +7,29 @@ public class Organisation : EntityBase, IAggregateRoot
   private Organisation(string name)
   {
     Name = Guard.Against.NullOrWhiteSpace(name);
-
-    RegisterDomainEvent(new OrganisationCreatedEvent(Name));
   }
 
   private const int MaxTeamCount = 5;
 
-  public string Name { get; }
+  public string Name { get; private set; }
 
   public ICollection<Team> Teams { get; } = new List<Team>();
 
-  public static Result<Organisation> Create(string name)
+  internal void RegisterOrganisationCreatedEvent()
+  {
+    RegisterDomainEvent(new OrganisationCreatedEvent(Name));
+  }
+
+  internal static Result<Organisation> Create(string name)
   {
     if (string.IsNullOrWhiteSpace(name))
     {
       return Result<Organisation>.Error("Organisation name is required");
     }
 
-    return new Organisation(name);
+    var organisation = new Organisation(name);
+    organisation.RegisterOrganisationCreatedEvent();
+    return organisation;
   }
 
   public Result AddTeam(string name)
@@ -50,8 +55,32 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
-  public void Delete()
+  internal void Delete()
   {
     RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name));
+  }
+
+  internal Result Update(string name)
+  {
+    var result = UpdateName(name);
+    if (!result.IsSuccess)
+    {
+      return result;
+    }
+
+    RegisterDomainEvent(new OrganisationUpdatedEvent(Id, Name));
+
+    return result;
+  }
+
+  private Result UpdateName(string name)
+  {
+    if (string.IsNullOrWhiteSpace(name))
+    { 
+      return Result.Error("Organisation name is required");
+    }
+
+    Name = name;
+    return Result.Success();
   }
 }

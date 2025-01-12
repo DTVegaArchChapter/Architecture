@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ardalis.GuardClauses;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -34,6 +36,13 @@ public class PageModelBase : PageModel
   protected void AddResultMessages<T>(Result<T> result)
   {
     AddMessages(result.Errors, result.SuccessMessage);
+  }
+
+  protected void AddSuccessMessage(string message)
+  {
+    Guard.Against.NullOrWhiteSpace(message);
+
+    SuccessMessages.Add(message);
   }
 
   protected RedirectToPageResult RedirectToPageWithSuccessMessage(string? pageName, string message)
