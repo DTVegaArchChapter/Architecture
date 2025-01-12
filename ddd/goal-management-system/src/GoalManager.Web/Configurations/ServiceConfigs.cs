@@ -11,7 +11,6 @@ public static class ServiceConfigs
     services.AddInfrastructureServices(builder.Configuration, logger)
             .AddMediatrConfigs();
 
-
     if (builder.Environment.IsDevelopment())
     {
       // Use a local test email server
@@ -20,7 +19,6 @@ public static class ServiceConfigs
 
       // Otherwise use this:
       //builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
-
     }
     else
     {
@@ -31,6 +29,4 @@ public static class ServiceConfigs
 
     return services;
   }
-
-
 }

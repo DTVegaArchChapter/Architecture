@@ -6,6 +6,8 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
 {
   public void Configure(EntityTypeBuilder<Organisation> builder)
   {
+    builder.HasKey(p => p.Id);
+
     builder.Property(p => p.Name)
       .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
       .IsRequired();
