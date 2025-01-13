@@ -51,6 +51,12 @@ public class PageModelBase : PageModel
     return RedirectToPage(pageName);
   }
 
+  protected RedirectToPageResult RedirectToPageWithSuccessMessage(string? pageName, object? routeValues, string message)
+  {
+    TempData[TempDataSuccessMessageKey] = message;
+    return RedirectToPage(pageName, routeValues);
+  }
+
   private void AddMessages(IEnumerable<string> errors, string successMessage)
   {
     ErrorMessages.AddRange(errors);

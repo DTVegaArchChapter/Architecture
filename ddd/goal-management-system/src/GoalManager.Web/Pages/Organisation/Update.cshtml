@@ -20,7 +20,7 @@
     </form>
 
     <div class="d-flex justify-content-end">
-        <a asp-page="CreateTeam" class="btn btn-secondary mb-2">Create new Team</a>
+        <a asp-page="CreateTeam" asp-route-organisationId="@Model.Organisation.Id" class="btn btn-secondary mb-2">Create new Team</a>
     </div>
     <table class="table">
         <thead>

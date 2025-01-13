@@ -4,21 +4,21 @@ namespace GoalManager.Core.Organisation;
 
 public class Organisation : EntityBase, IAggregateRoot
 {
-  private Organisation(string name)
+  #pragma warning disable CS8618 // Required by Entity Framework
+  private Organisation() { }
+  #pragma warning restore CS8618
+
+  private Organisation(string name, ICollection<Team> teams)
   {
     Name = Guard.Against.NullOrWhiteSpace(name);
+    Teams = teams;
   }
 
   private const int MaxTeamCount = 5;
 
   public string Name { get; private set; }
 
-  public ICollection<Team> Teams { get; } = new List<Team>();
-
-  internal void RegisterOrganisationCreatedEvent()
-  {
-    RegisterDomainEvent(new OrganisationCreatedEvent(Name));
-  }
+  public ICollection<Team> Teams { get; }
 
   internal static Result<Organisation> Create(string name)
   {
@@ -27,12 +27,23 @@ public class Organisation : EntityBase, IAggregateRoot
       return Result<Organisation>.Error("Organisation name is required");
     }
 
-    var organisation = new Organisation(name);
+    var organisation = new Organisation(name, new List<Team>());
     organisation.RegisterOrganisationCreatedEvent();
     return organisation;
   }
 
-  public Result AddTeam(string name)
+  internal Result<Team> FindTeam(int teamId)
+  {
+    var team = Teams.SingleOrDefault(x => x.Id == teamId);
+    if (team == null)
+    {
+      return Result<Team>.Error("Team not found");
+    }
+
+    return team;
+  }
+
+  internal Result AddTeam(string name)
   {
     if (Teams.Count >= MaxTeamCount)
     {
@@ -82,5 +93,10 @@ public class Organisation : EntityBase, IAggregateRoot
 
     Name = name;
     return Result.Success();
+  }
+
+  private void RegisterOrganisationCreatedEvent()
+  {
+    RegisterDomainEvent(new OrganisationCreatedEvent(Name));
   }
 }

@@ -4,6 +4,8 @@ namespace GoalManager.UseCases.Organisation.GetForUpdate;
 
 public sealed class OrganisationForUpdateDto
 {
+  public int Id { get; set; }
+
   [Required]
   public string OrganisationName { get; set; } = null!;
 

@@ -1,0 +1,18 @@
+﻿@page "{organisationId:int}"
+@model GoalManager.Web.Pages.Organisation.CreateTeamModel
+@{
+    ViewData["Title"] = "Create Team";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">Create Team</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="@Model.TeamName" class="form-label"></label>
+        <input type="text" asp-for="@Model.TeamName" class="form-control" />
+        <span asp-validation-for="@Model.TeamName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Update" class="btn btn-secondary">Cancel</a>
+</form>

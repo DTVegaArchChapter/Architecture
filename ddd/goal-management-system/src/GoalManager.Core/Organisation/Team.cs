@@ -1,11 +1,18 @@
-﻿namespace GoalManager.Core.Organisation;
+﻿using GoalManager.Core.Organisation.Events;
+
+namespace GoalManager.Core.Organisation;
 
 public class Team : EntityBase
 {
-  private Team(string name, int organisationId)
+#pragma warning disable CS8618 // Required by Entity Framework
+  private Team() { }
+#pragma warning restore CS8618
+ 
+  private Team(string name, int organisationId, ICollection<TeamMember> teamMembers)
   {
     OrganisationId = organisationId;
     Name = Guard.Against.NullOrWhiteSpace(name);
+    TeamMembers = teamMembers;
   }
 
   private const int MaxTeamMemberCount = 10;
@@ -14,21 +21,23 @@ public class Team : EntityBase
 
   public int OrganisationId { get; private set; }
 
-  public ICollection<TeamMember> TeamMembers { get; } = new List<TeamMember>();
+  public ICollection<TeamMember> TeamMembers { get; }
 
   public Organisation Organisation { get; private set; } = null!;
 
-  public static Result<Team> Create(string name, int organisationId)
+  internal static Result<Team> Create(string name, int organisationId)
   {
     if (string.IsNullOrWhiteSpace(name))
     {
       return Result<Team>.Error("Team name is required");
     }
 
-    return new Team(name, organisationId);
+    var team = new Team(name, organisationId, new List<TeamMember>());
+    team.RegisterTeamCreatedEvent();
+    return team;
   }
 
-  public Result AddTeamMember(string name, int userId)
+  internal Result AddTeamMember(string name, int userId)
   {
     Guard.Against.NegativeOrZero(userId);
 
@@ -51,5 +60,10 @@ public class Team : EntityBase
     TeamMembers.Add(teamMemberResult.Value);
 
     return Result.Success();
+  }
+
+  private void RegisterTeamCreatedEvent()
+  {
+    RegisterDomainEvent(new TeamCreatedEvent(Name));
   }
 }
