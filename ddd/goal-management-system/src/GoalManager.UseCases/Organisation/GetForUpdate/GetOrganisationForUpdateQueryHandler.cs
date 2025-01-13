@@ -1,10 +1,12 @@
-﻿namespace GoalManager.UseCases.Organisation.GetForUpdate;
+﻿using GoalManager.Core.Organisation.Specifications;
+
+namespace GoalManager.UseCases.Organisation.GetForUpdate;
 
 internal sealed class GetOrganisationForUpdateQueryHandler(IRepository<Core.Organisation.Organisation> repository) : IQueryHandler<GetOrganisationForUpdateQuery, Result<OrganisationForUpdateDto>>
 {
   public async Task<Result<OrganisationForUpdateDto>> Handle(GetOrganisationForUpdateQuery request, CancellationToken cancellationToken)
   {
-    var organisation = await repository.GetByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
+    var organisation = await repository.SingleOrDefaultAsync(new OrganisationWithTeamsByIdSpec(request.Id), cancellationToken).ConfigureAwait(false);
     if (organisation == null)
     {
       return Result<OrganisationForUpdateDto>.Error("Organisation not found");
@@ -12,6 +14,7 @@ internal sealed class GetOrganisationForUpdateQueryHandler(IRepository<Core.Orga
 
     return new OrganisationForUpdateDto
            {
+             Id = organisation.Id,
              OrganisationName = organisation.Name,
              Teams = organisation.Teams.Select(x => new OrganisationTeamDto
                                                     {

@@ -10,6 +10,8 @@ public interface IOrganisationService
   Task<Result> DeleteOrganisation(int id, CancellationToken cancellationToken = default);
 
   Task<Result> UpdateOrganisation(int id, string name, CancellationToken cancellationToken = default);
+
+  Task<Result> AddNewTeam(int organisationId, string teamName, CancellationToken cancellationToken = default);
 }
 
 public sealed class OrganisationService(IRepository<Organisation> repository) : IOrganisationService
@@ -72,5 +74,24 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
     await repository.DeleteAsync(organisation, cancellationToken).ConfigureAwait(false);
 
     return Result.SuccessWithMessage("Organisation is deleted");
+  }
+
+  public async Task<Result> AddNewTeam(int organisationId, string teamName, CancellationToken cancellationToken = default)
+  {
+    var organisation = await repository.GetByIdAsync(organisationId, cancellationToken).ConfigureAwait(false);
+    if (organisation == null)
+    {
+      return Result.Error("Organisation is not found");
+    }
+
+    var teamResult = organisation.AddTeam(teamName);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult;
+    }
+
+    await repository.UpdateAsync(organisation, cancellationToken).ConfigureAwait(false);
+
+    return Result.SuccessWithMessage("Team is created");
   }
 }
