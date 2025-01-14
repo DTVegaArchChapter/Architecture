@@ -85,6 +85,27 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.SuccessWithMessage("Team is updated");
   }
 
+  internal Result DeleteTeam(int teamId)
+  {
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    if (team.TeamMembers.Any())
+    {
+      return Result.Error("You cannot delete the team because there are team members added to the team");
+    }
+
+    Teams.Remove(team);
+
+    RegisterDomainEvent(new TeamDeletedEvent(team.Id, team.Name));
+
+    return Result.Success();
+  }
+
   internal void Delete()
   {
     RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name));

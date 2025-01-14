@@ -49,7 +49,7 @@
                 <td>
                     <div class="d-flex justify-content-end">
                         <a class="btn btn-sm btn-primary me-1" asp-page="UpdateTeam" asp-route-organisationId="@Model.Organisation.Id" asp-route-teamId="@team.Id">Update</a>
-                        <form asp-page-handler="DeleteTeam" asp-route-id="@team.Id" method="post"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form>
+                        <form asp-page-handler="DeleteTeam" asp-route-teamId="@team.Id" asp-route-organisationId="@Model.Organisation.Id" method="post"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form>
                     </div>
                 </td>
             </tr>
