@@ -2,7 +2,7 @@
 using GoalManager.Infrastructure.Data;
 using GoalManager.Infrastructure.Data.Queries.Organisation;
 using GoalManager.Infrastructure.Identity;
-using GoalManager.UseCases.Organisation.List;
+using GoalManager.UseCases.Organisation;
 
 namespace GoalManager.Infrastructure;
 

@@ -1,8 +1,61 @@
-﻿@page "{id:int}"
+﻿@page "UpdateTeam/{organisationId:int}/{teamId:int}"
 @model GoalManager.Web.Pages.Organisation.UpdateTeamModel
 @{
     ViewData["Title"] = "Update Team";
 }
 
-<h1 class="bg-info text-white mb-2 p-1">Update organisation</h1>
+<h1 class="bg-info text-white mb-2 p-1">Update Team</h1>
 <alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+@if (Model.Team != null)
+{
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="@Model.TeamName" class="form-label"></label>
+            <input type="text" asp-for="@Model.TeamName" class="form-control" />
+            <span asp-validation-for="@Model.TeamName" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-page="Update" asp-route-id="@RouteData.Values["organisationId"]" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    <div class="d-flex justify-content-end">
+        <a asp-page="CreateMember" asp-route-organisationId="@Model.Team.Id" class="btn btn-secondary mb-2">Add new Member</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Team.TeamMembers.Any())
+            {
+                <tr>
+                    <td class="bg-light" colspan="100%">
+                        <div class="p-2">There is no team members created!</div>
+                    </td>
+                </tr>
+            }
+            @foreach (var member in Model.Team.TeamMembers)
+            {
+                <tr>
+                    <th scope="row">@member.Id</th>
+                    <td>@member.Name</td>
+                    <td>
+                        <div class="d-flex justify-content-end">
+                            <form asp-page-handler="RemoveMember" asp-route-id="@member.Id" method="post">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

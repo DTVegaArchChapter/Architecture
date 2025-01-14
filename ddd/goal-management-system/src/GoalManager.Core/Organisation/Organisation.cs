@@ -66,6 +66,25 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
+  internal Result UpdateTeam(int teamId, string name)
+  {
+    if (Teams.Any(x => string.Equals(x.Name, name, StringComparison.CurrentCultureIgnoreCase)))
+    {
+      return Result.Error($"Team with name '{name}' already exists");
+    }
+
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    team.Update(name);
+
+    return Result.SuccessWithMessage("Team is updated");
+  }
+
   internal void Delete()
   {
     RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name));

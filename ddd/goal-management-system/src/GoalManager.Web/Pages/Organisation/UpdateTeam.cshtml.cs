@@ -1,10 +1,51 @@
-﻿using GoalManager.Web.Common;
+﻿using GoalManager.UseCases.Organisation.GetTeamForUpdate;
+using GoalManager.UseCases.Organisation.UpdateTeam;
+using GoalManager.Web.Common;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace GoalManager.Web.Pages.Organisation;
 
-public class UpdateTeamModel : PageModelBase
+public class UpdateTeamModel(IMediator mediator) : PageModelBase
 {
-  public void OnGet()
+  [BindProperty]
+  public string TeamName { get; set; } = null!;
+
+  public TeamForUpdateDto? Team { get; set; }
+
+  public async Task<IActionResult> OnGetAsync(int teamId)
   {
+    var result = await mediator.Send(new GetTeamForUpdateQuery(teamId)).ConfigureAwait(false);
+
+    AddResultMessages(result);
+
+    if (result.IsSuccess)
+    {
+      Team = result.Value;
+      TeamName = result.Value.Name;
+    }
+
+    return Page();
+  }
+
+  public async Task<IActionResult> OnPostAsync(int organisationId, int teamId)
+  {
+    if (!ModelState.IsValid || string.IsNullOrWhiteSpace(TeamName))
+    {
+      return await OnGetAsync(teamId).ConfigureAwait(false);
+    }
+
+    var result = await mediator.Send(new UpdateTeamCommand(organisationId, teamId, TeamName)).ConfigureAwait(false);
+
+    AddResultMessages(result);
+
+    if (!result.IsSuccess)
+    {
+      return await OnGetAsync(teamId).ConfigureAwait(false);
+    }
+
+    AddSuccessMessage("Team is updated");
+
+    return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 }

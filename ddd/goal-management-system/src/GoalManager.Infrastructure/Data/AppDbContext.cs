@@ -9,6 +9,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public DbSet<Organisation> Organisation => Set<Organisation>();
 
+  public DbSet<Team> Team => Set<Team>();
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
