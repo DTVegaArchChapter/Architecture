@@ -1,5 +1,4 @@
 ﻿using GoalManager.Core.Organisation.Specifications;
-using MediatR;
 
 namespace GoalManager.Core.Organisation;
 
@@ -38,7 +37,7 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
 
   public async Task<Result> UpdateOrganisation(int id, string name, CancellationToken cancellationToken = default)
   {
-    var organisation = await repository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+    var organisation = await GetOrganisation(id, cancellationToken).ConfigureAwait(false);
     if (organisation == null)
     {
       return Result.Error("Organisation not found");
@@ -58,7 +57,7 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
 
   public async Task<Result> DeleteOrganisation(int id, CancellationToken cancellationToken = default)
   {
-    var organisation = await repository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+    var organisation = await GetOrganisation(id, cancellationToken).ConfigureAwait(false);
     if (organisation == null)
     {
       return Result.Error("Organisation is not found");
@@ -78,7 +77,7 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
 
   public async Task<Result> AddNewTeam(int organisationId, string teamName, CancellationToken cancellationToken = default)
   {
-    var organisation = await repository.GetByIdAsync(organisationId, cancellationToken).ConfigureAwait(false);
+    var organisation = await GetOrganisation(organisationId, cancellationToken).ConfigureAwait(false);
     if (organisation == null)
     {
       return Result.Error("Organisation is not found");
@@ -93,5 +92,10 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
     await repository.UpdateAsync(organisation, cancellationToken).ConfigureAwait(false);
 
     return Result.SuccessWithMessage("Team is created");
+  }
+
+  private Task<Organisation?> GetOrganisation(int id, CancellationToken cancellationToken)
+  {
+    return repository.SingleOrDefaultAsync(new OrganisationWithTeamsByIdSpec(id), cancellationToken);
   }
 }
