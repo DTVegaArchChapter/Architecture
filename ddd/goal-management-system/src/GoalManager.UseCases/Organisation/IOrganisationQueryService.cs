@@ -8,4 +8,6 @@ public interface IOrganisationQueryService
   Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take);
 
   Task<TeamForUpdateDto?> GetTeamForUpdate(int id);
+
+  Task<string?> GetTeamNameAsync(int id);
 }

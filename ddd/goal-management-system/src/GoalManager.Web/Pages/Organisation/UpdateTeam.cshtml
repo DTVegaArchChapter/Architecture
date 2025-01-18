@@ -1,4 +1,4 @@
-﻿@page "UpdateTeam/{organisationId:int}/{teamId:int}"
+﻿@page "{organisationId:int}/{teamId:int}"
 @model GoalManager.Web.Pages.Organisation.UpdateTeamModel
 @{
     ViewData["Title"] = "Update Team";
@@ -21,7 +21,7 @@
     </form>
 
     <div class="d-flex justify-content-end">
-        <a asp-page="CreateMember" asp-route-organisationId="@Model.Team.Id" class="btn btn-secondary mb-2">Add new Member</a>
+        <a asp-page="AddMember" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@Model.Team.Id" class="btn btn-secondary mb-2">Add new Member</a>
     </div>
     <table class="table">
         <thead>

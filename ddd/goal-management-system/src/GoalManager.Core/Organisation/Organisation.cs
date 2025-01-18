@@ -135,6 +135,24 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
+  internal Result AddTeamMember(int teamId, string name, int userId)
+  {
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    var addTeamMemberResult = team.AddTeamMember(name, userId);
+    if (!addTeamMemberResult.IsSuccess)
+    {
+      return addTeamMemberResult.ToResult();
+    }
+
+    return Result.SuccessWithMessage("Team member is added");
+  }
+
   private void RegisterOrganisationCreatedEvent()
   {
     RegisterDomainEvent(new OrganisationCreatedEvent(Name));
