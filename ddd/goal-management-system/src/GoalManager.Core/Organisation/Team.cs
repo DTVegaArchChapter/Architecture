@@ -11,13 +11,13 @@ public class Team : EntityBase
   private Team(string name, int organisationId, ICollection<TeamMember> teamMembers)
   {
     OrganisationId = organisationId;
-    Name = Guard.Against.NullOrWhiteSpace(name);
+    SetName(name);
     TeamMembers = teamMembers;
   }
 
   private const int MaxTeamMemberCount = 10;
 
-  public string Name { get; }
+  public string Name { get; private set; } = null!;
 
   public int OrganisationId { get; private set; }
 
@@ -65,5 +65,17 @@ public class Team : EntityBase
   private void RegisterTeamCreatedEvent()
   {
     RegisterDomainEvent(new TeamCreatedEvent(Name));
+  }
+
+  public void Update(string name)
+  {
+    SetName(name);
+
+    RegisterDomainEvent(new TeamUpdatedEvent(Id, Name));
+  }
+
+  private void SetName(string name)
+  {
+    Name = Guard.Against.NullOrWhiteSpace(name);
   }
 }

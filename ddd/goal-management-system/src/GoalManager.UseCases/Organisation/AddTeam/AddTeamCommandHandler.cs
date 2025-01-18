@@ -6,6 +6,6 @@ internal sealed class AddTeamCommandHandler(IOrganisationService organisationSer
 {
   public Task<Result> Handle(AddTeamCommand request, CancellationToken cancellationToken)
   {
-    return organisationService.AddNewTeam(request.organisationId, request.teamName, cancellationToken);
+    return organisationService.AddNewTeam(request.OrganisationId, request.TeamName, cancellationToken);
   }
 }

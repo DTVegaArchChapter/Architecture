@@ -1,0 +1,23 @@
+﻿@page "AddMember/{organisationId:int}/{teamId:int}"
+@model GoalManager.Web.Pages.Organisation.AddMemberModel
+@{
+    ViewData["Title"] = "Add Member to Team";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">Add Team Member to Team</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="@Model.TeamName" class="form-label"></label>
+        <input type="text" readonly class="form-control-plaintext" asp-for="@Model.TeamName" />
+        <span asp-validation-for="@Model.TeamName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="@Model.UserId" class="form-label"></label>
+        <select asp-for="@Model.UserId" asp-items="Model.Users"></select>
+        <span asp-validation-for="@Model.UserId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-page="UpdateTeam" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@RouteData.Values["teamId"]" class="btn btn-secondary">Cancel</a>
+</form>

@@ -66,6 +66,46 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
+  internal Result UpdateTeam(int teamId, string name)
+  {
+    if (Teams.Any(x => string.Equals(x.Name, name, StringComparison.CurrentCultureIgnoreCase)))
+    {
+      return Result.Error($"Team with name '{name}' already exists");
+    }
+
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    team.Update(name);
+
+    return Result.SuccessWithMessage("Team is updated");
+  }
+
+  internal Result DeleteTeam(int teamId)
+  {
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    if (team.TeamMembers.Any())
+    {
+      return Result.Error("You cannot delete the team because there are team members added to the team");
+    }
+
+    Teams.Remove(team);
+
+    RegisterDomainEvent(new TeamDeletedEvent(team.Id, team.Name));
+
+    return Result.Success();
+  }
+
   internal void Delete()
   {
     RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name));
@@ -93,6 +133,24 @@ public class Organisation : EntityBase, IAggregateRoot
 
     Name = name;
     return Result.Success();
+  }
+
+  internal Result AddTeamMember(int teamId, string name, int userId)
+  {
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    var addTeamMemberResult = team.AddTeamMember(name, userId);
+    if (!addTeamMemberResult.IsSuccess)
+    {
+      return addTeamMemberResult.ToResult();
+    }
+
+    return Result.SuccessWithMessage("Team member is added");
   }
 
   private void RegisterOrganisationCreatedEvent()

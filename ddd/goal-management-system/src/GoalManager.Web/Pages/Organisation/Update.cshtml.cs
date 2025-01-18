@@ -1,4 +1,4 @@
-﻿using GoalManager.UseCases.Organisation.Create;
+﻿using GoalManager.UseCases.Organisation.DeleteTeam;
 using GoalManager.UseCases.Organisation.GetForUpdate;
 using GoalManager.UseCases.Organisation.Update;
 using GoalManager.Web.Common;
@@ -44,5 +44,18 @@ public class UpdateModel(IMediator mediator) : PageModelBase
     AddSuccessMessage("Organisation is updated");
 
     return await OnGetAsync(id).ConfigureAwait(false);
+  }
+
+  public async Task<IActionResult> OnPostDeleteTeamAsync(int organisationId, int teamId)
+  {
+    ModelState.Clear();
+
+    var result = await mediator.Send(new DeleteTeamCommand(organisationId, teamId)).ConfigureAwait(false);
+
+    AddResultMessages(result);
+
+    await OnGetAsync(organisationId).ConfigureAwait(false);
+
+    return Page();
   }
 }
