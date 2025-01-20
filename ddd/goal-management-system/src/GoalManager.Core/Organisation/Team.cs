@@ -4,15 +4,17 @@ namespace GoalManager.Core.Organisation;
 
 public class Team : EntityBase
 {
+  private readonly IList<TeamMember> _teamMembers = new List<TeamMember>();
+
 #pragma warning disable CS8618 // Required by Entity Framework
   private Team() { }
 #pragma warning restore CS8618
  
-  private Team(string name, int organisationId, ICollection<TeamMember> teamMembers)
+  private Team(string name, int organisationId, IList<TeamMember> teamMembers)
   {
     OrganisationId = organisationId;
     SetName(name);
-    TeamMembers = teamMembers;
+    _teamMembers = teamMembers;
   }
 
   private const int MaxTeamMemberCount = 10;
@@ -21,7 +23,7 @@ public class Team : EntityBase
 
   public int OrganisationId { get; private set; }
 
-  public ICollection<TeamMember> TeamMembers { get; }
+  public IReadOnlyCollection<TeamMember> TeamMembers => _teamMembers.AsReadOnly();
 
   public Organisation Organisation { get; private set; } = null!;
 
@@ -57,7 +59,7 @@ public class Team : EntityBase
       return teamMemberResult.ToResult();
     }
 
-    TeamMembers.Add(teamMemberResult.Value);
+    _teamMembers.Add(teamMemberResult.Value);
 
     return Result.Success();
   }

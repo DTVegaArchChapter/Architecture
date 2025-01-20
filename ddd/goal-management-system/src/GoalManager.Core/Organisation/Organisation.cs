@@ -4,21 +4,23 @@ namespace GoalManager.Core.Organisation;
 
 public class Organisation : EntityBase, IAggregateRoot
 {
-  #pragma warning disable CS8618 // Required by Entity Framework
+  private readonly IList<Team> _teams = new List<Team>();
+
+#pragma warning disable CS8618 // Required by Entity Framework
   private Organisation() { }
   #pragma warning restore CS8618
 
-  private Organisation(string name, ICollection<Team> teams)
+  private Organisation(string name, IList<Team> teams)
   {
     Name = Guard.Against.NullOrWhiteSpace(name);
-    Teams = teams;
+    _teams = teams;
   }
 
   private const int MaxTeamCount = 5;
 
   public string Name { get; private set; }
 
-  public ICollection<Team> Teams { get; }
+  public IReadOnlyCollection<Team> Teams => _teams.AsReadOnly();
 
   internal static Result<Organisation> Create(string name)
   {
@@ -61,7 +63,7 @@ public class Organisation : EntityBase, IAggregateRoot
       return teamResult.ToResult();
     }
 
-    Teams.Add(teamResult);
+    _teams.Add(teamResult);
 
     return Result.Success();
   }
@@ -99,7 +101,7 @@ public class Organisation : EntityBase, IAggregateRoot
       return Result.Error("You cannot delete the team because there are team members added to the team");
     }
 
-    Teams.Remove(team);
+    _teams.Remove(team);
 
     RegisterDomainEvent(new TeamDeletedEvent(team.Id, team.Name));
 
