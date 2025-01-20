@@ -3,3 +3,6 @@ Domain driven design kullanarak Goal Management System implementasyonunu içeren
 
 ## Eventstorming Diagram
 ![Eventstorming Diagram](./eventstorming.png)
+
+## Strategic Design Diagram
+![Strategic Design Diagram](/.strategicdesign.png)
