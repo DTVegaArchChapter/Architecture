@@ -22,6 +22,6 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
       .WithMany(p => p.Teams)
       .HasForeignKey(p => p.OrganisationId);
 
-    builder.HasIndex(p => p.Name).IsUnique();
+    builder.HasIndex(p => new {p.OrganisationId, p.Name}).IsUnique();
   }
 }
