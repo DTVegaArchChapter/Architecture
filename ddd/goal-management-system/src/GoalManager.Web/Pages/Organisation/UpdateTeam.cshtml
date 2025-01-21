@@ -28,6 +28,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
+                <th scope="col">Member Type</th>
                 <th></th>
             </tr>
         </thead>
@@ -36,7 +37,7 @@
             {
                 <tr>
                     <td class="bg-light" colspan="100%">
-                        <div class="p-2">There is no team members created!</div>
+                        <div class="p-2">There is no team members added!</div>
                     </td>
                 </tr>
             }
@@ -45,9 +46,10 @@
                 <tr>
                     <th scope="row">@member.Id</th>
                     <td>@member.Name</td>
+                    <td>@member.MemberType</td>
                     <td>
                         <div class="d-flex justify-content-end">
-                            <form asp-page-handler="RemoveMember" asp-route-id="@member.Id" method="post">
+                            <form asp-page-handler="RemoveMember" asp-route-userid="@member.UserId" method="post">
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     Remove
                                 </button>

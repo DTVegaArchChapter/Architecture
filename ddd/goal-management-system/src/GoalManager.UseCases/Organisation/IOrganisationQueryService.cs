@@ -1,5 +1,5 @@
 ﻿using GoalManager.UseCases.Organisation.GetTeamForUpdate;
-using GoalManager.UseCases.Organisation.List;
+using GoalManager.UseCases.Organisation.ListOrganisations;
 
 namespace GoalManager.UseCases.Organisation;
 

@@ -9,7 +9,7 @@ internal sealed class AddTeamMemberCommandHandler(IOrganisationService organisat
   {
     var memberName = await identityRepository.GetUserName(request.UserId).ConfigureAwait(false) ?? "unknown";
     return await organisationService
-             .AddTeamMember(request.OrganisationId, request.TeamId, request.UserId, memberName, cancellationToken)
+             .AddTeamMember(request.OrganisationId, request.TeamId, request.UserId, memberName, TeamMemberType.FromValue(request.MemberTypeId), cancellationToken)
              .ConfigureAwait(false);
   }
 }

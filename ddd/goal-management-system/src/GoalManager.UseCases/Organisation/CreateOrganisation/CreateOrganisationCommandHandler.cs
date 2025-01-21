@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.Organisation;
 
-namespace GoalManager.UseCases.Organisation.Create;
+namespace GoalManager.UseCases.Organisation.CreateOrganisation;
 
 internal sealed class CreateOrganisationCommandHandler(IOrganisationService organisationService) : ICommandHandler<CreateOrganisationCommand, Result<int>>
 {

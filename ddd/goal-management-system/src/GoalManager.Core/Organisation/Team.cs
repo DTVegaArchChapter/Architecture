@@ -39,9 +39,10 @@ public class Team : EntityBase
     return team;
   }
 
-  internal Result AddTeamMember(string name, int userId)
+  internal Result AddTeamMember(string name, int userId, TeamMemberType memberType)
   {
     Guard.Against.NegativeOrZero(userId);
+    Guard.Against.Null(memberType);
 
     if (TeamMembers.Count >= MaxTeamMemberCount)
     {
@@ -53,13 +54,33 @@ public class Team : EntityBase
       return Result.Error($"Team member '{name}' already exists");
     }
 
-    var teamMemberResult = TeamMember.Create(name, userId, Id);
+    if (memberType == TeamMemberType.TeamLeader && TeamMembers.Count(x => x.MemberType == TeamMemberType.TeamLeader) == 1)
+    {
+      return Result.Error("Only one team leader per team is allowed");
+    }
+
+    var teamMemberResult = TeamMember.Create(name, userId, Id, memberType);
     if (!teamMemberResult.IsSuccess)
     {
       return teamMemberResult.ToResult();
     }
 
     _teamMembers.Add(teamMemberResult.Value);
+
+    return Result.Success();
+  }
+
+  internal Result RemoveTeamMember(int userId)
+  {
+    Guard.Against.NegativeOrZero(userId);
+
+    var teamMember = _teamMembers.SingleOrDefault(x => x.UserId == userId);
+    if (teamMember == null)
+    {
+      return Result.Error("Team member not found");
+    }
+
+    _teamMembers.Remove(teamMember);
 
     return Result.Success();
   }

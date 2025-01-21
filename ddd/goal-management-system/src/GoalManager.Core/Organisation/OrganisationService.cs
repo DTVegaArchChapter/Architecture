@@ -16,7 +16,9 @@ public interface IOrganisationService
 
   Task<Result> DeleteTeam(int organisationId, int teamId, CancellationToken cancellationToken = default);
 
-  Task<Result> AddTeamMember(int organisationId, int teamId, int userId, string memberName, CancellationToken cancellationToken = default);
+  Task<Result> AddTeamMember(int organisationId, int teamId, int userId, string memberName, TeamMemberType memberType, CancellationToken cancellationToken = default);
+
+  Task<Result> RemoveTeamMember(int organisationId, int teamId, int userId, CancellationToken cancellationToken);
 }
 
 public sealed class OrganisationService(IRepository<Organisation> repository) : IOrganisationService
@@ -138,7 +140,7 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
     return Result.Success();
   }
 
-  public async Task<Result> AddTeamMember(int organisationId, int teamId, int userId, string memberName, CancellationToken cancellationToken = default)
+  public async Task<Result> AddTeamMember(int organisationId, int teamId, int userId, string memberName, TeamMemberType memberType, CancellationToken cancellationToken = default)
   {
     var organisation = await GetOrganisation(organisationId, cancellationToken).ConfigureAwait(false);
     if (organisation == null)
@@ -146,7 +148,30 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
       return Result.Error("Organisation is not found");
     }
 
-    var teamResult = organisation.AddTeamMember(teamId, memberName, userId);
+    var teamResult = organisation.AddTeamMember(teamId, memberName, userId, memberType);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult;
+    }
+
+    await repository.UpdateAsync(organisation, cancellationToken).ConfigureAwait(false);
+
+    return Result.Success();
+  }
+
+  public async Task<Result> RemoveTeamMember(
+    int organisationId,
+    int teamId,
+    int userId,
+    CancellationToken cancellationToken)
+  {
+    var organisation = await GetOrganisation(organisationId, cancellationToken).ConfigureAwait(false);
+    if (organisation == null)
+    {
+      return Result.Error("Organisation is not found");
+    }
+
+    var teamResult = organisation.RemoveTeamMember(teamId, userId);
     if (!teamResult.IsSuccess)
     {
       return teamResult;

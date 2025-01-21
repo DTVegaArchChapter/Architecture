@@ -1,4 +1,4 @@
-﻿using GoalManager.UseCases.Organisation.Create;
+﻿using GoalManager.UseCases.Organisation.CreateOrganisation;
 using GoalManager.Web.Common;
 using GoalManager.Web.ViewModels.Organisation;
 

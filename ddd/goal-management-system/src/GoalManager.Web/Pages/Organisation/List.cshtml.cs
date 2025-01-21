@@ -1,5 +1,5 @@
-﻿using GoalManager.UseCases.Organisation.Delete;
-using GoalManager.UseCases.Organisation.List;
+﻿using GoalManager.UseCases.Organisation.DeleteOrganisation;
+using GoalManager.UseCases.Organisation.ListOrganisations;
 using GoalManager.Web.Common;
 using GoalManager.Web.ViewModels.Organisation;
 using Microsoft.AspNetCore.Authorization;

@@ -3,7 +3,7 @@
 using System.Reflection;
 
 using GoalManager.Core.Organisation;
-using GoalManager.UseCases.Organisation.Create;
+using GoalManager.UseCases.Organisation.CreateOrganisation;
 
 namespace GoalManager.Web.Configurations;
 

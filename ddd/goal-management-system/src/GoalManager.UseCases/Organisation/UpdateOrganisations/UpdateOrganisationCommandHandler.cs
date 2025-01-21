@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.Organisation;
 
-namespace GoalManager.UseCases.Organisation.Update;
+namespace GoalManager.UseCases.Organisation.UpdateOrganisations;
 
 public sealed class UpdateOrganisationCommandHandler(IOrganisationService organisationService) : ICommandHandler<UpdateOrganisationCommand, Result>
 {
