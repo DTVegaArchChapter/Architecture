@@ -1,4 +1,6 @@
-﻿using GoalManager.UseCases.Organisation.GetTeamForUpdate;
+﻿using GoalManager.UseCases.Organisation.DeleteTeam;
+using GoalManager.UseCases.Organisation.GetTeamForUpdate;
+using GoalManager.UseCases.Organisation.RemoveTeamMember;
 using GoalManager.UseCases.Organisation.UpdateTeam;
 using GoalManager.Web.Common;
 
@@ -47,5 +49,18 @@ public class UpdateTeamModel(IMediator mediator) : PageModelBase
     AddSuccessMessage("Team is updated");
 
     return await OnGetAsync(teamId).ConfigureAwait(false);
+  }
+
+  public async Task<IActionResult> OnPostRemoveMemberAsync(int organisationId, int teamId, int userId)
+  {
+    ModelState.Clear();
+
+    var result = await mediator.Send(new RemoveTeamMemberCommand(organisationId, teamId, userId)).ConfigureAwait(false);
+
+    AddResultMessages(result);
+
+    await OnGetAsync(organisationId).ConfigureAwait(false);
+
+    return Page();
   }
 }

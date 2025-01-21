@@ -64,6 +64,21 @@ public class Team : EntityBase
     return Result.Success();
   }
 
+  internal Result RemoveTeamMember(int userId)
+  {
+    Guard.Against.NegativeOrZero(userId);
+
+    var teamMember = _teamMembers.SingleOrDefault(x => x.UserId == userId);
+    if (teamMember == null)
+    {
+      return Result.Error("Team member not found");
+    }
+
+    _teamMembers.Remove(teamMember);
+
+    return Result.Success();
+  }
+
   private void RegisterTeamCreatedEvent()
   {
     RegisterDomainEvent(new TeamCreatedEvent(Name));

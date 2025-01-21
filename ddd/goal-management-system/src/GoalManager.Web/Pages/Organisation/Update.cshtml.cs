@@ -1,6 +1,6 @@
 ﻿using GoalManager.UseCases.Organisation.DeleteTeam;
 using GoalManager.UseCases.Organisation.GetForUpdate;
-using GoalManager.UseCases.Organisation.Update;
+using GoalManager.UseCases.Organisation.UpdateOrganisations;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Mvc;
 

@@ -155,6 +155,24 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.SuccessWithMessage("Team member is added");
   }
 
+  internal Result RemoveTeamMember(int teamId, int userId)
+  {
+    var teamResult = FindTeam(teamId);
+    if (!teamResult.IsSuccess)
+    {
+      return teamResult.ToResult();
+    }
+
+    var team = teamResult.Value;
+    var removeTeamMember = team.RemoveTeamMember(userId);
+    if (!removeTeamMember.IsSuccess)
+    {
+      return removeTeamMember.ToResult();
+    }
+
+    return Result.SuccessWithMessage("Team member is removed");
+  }
+
   private void RegisterOrganisationCreatedEvent()
   {
     RegisterDomainEvent(new OrganisationCreatedEvent(Name));

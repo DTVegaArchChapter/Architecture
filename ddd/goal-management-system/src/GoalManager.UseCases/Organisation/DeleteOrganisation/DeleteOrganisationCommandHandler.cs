@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.Organisation;
 
-namespace GoalManager.UseCases.Organisation.Delete;
+namespace GoalManager.UseCases.Organisation.DeleteOrganisation;
 
 internal class DeleteOrganisationCommandHandler(IOrganisationService organisationService) : ICommandHandler<DeleteOrganisationCommand, Result>
 {

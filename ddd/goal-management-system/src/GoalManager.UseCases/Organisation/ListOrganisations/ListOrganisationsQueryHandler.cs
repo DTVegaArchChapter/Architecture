@@ -1,4 +1,4 @@
-﻿namespace GoalManager.UseCases.Organisation.List;
+﻿namespace GoalManager.UseCases.Organisation.ListOrganisations;
 
 public class ListOrganisationsQueryHandler(IOrganisationQueryService organisationQueryService)
   : IQueryHandler<ListOrganisationsQuery, Result<List<OrganisationListItemDto>>>
