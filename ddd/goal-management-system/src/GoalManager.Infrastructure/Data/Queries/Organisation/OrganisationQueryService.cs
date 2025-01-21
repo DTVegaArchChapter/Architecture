@@ -16,7 +16,7 @@ public class OrganisationQueryService(AppDbContext dbContext) : IOrganisationQue
   public Task<TeamForUpdateDto?> GetTeamForUpdate(int id)
   {
     return dbContext.Team.Where(x => x.Id == id).Select(
-        x => new TeamForUpdateDto(x.Id, x.Name, x.TeamMembers.Select(y => new TeamMemberDto(y.Id, y.UserId, y.Name))))
+        x => new TeamForUpdateDto(x.Id, x.Name, x.TeamMembers.Select(y => new TeamMemberDto(y.Id, y.UserId, y.Name, y.MemberType.Name))))
       .SingleOrDefaultAsync();
   }
 

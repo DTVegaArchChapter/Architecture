@@ -18,6 +18,11 @@
         <select asp-for="@Model.UserId" asp-items="Model.Users"></select>
         <span asp-validation-for="@Model.UserId" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label asp-for="@Model.MemberTypeId" class="form-label"></label>
+        <select asp-for="@Model.MemberTypeId" asp-items="Model.MemberTypes"></select>
+        <span asp-validation-for="@Model.MemberTypeId" class="text-danger"></span>
+    </div>
     <button type="submit" class="btn btn-primary">Add</button>
     <a asp-page="UpdateTeam" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@RouteData.Values["teamId"]" class="btn btn-secondary">Cancel</a>
 </form>

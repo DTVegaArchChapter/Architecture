@@ -16,5 +16,10 @@ public class TeamMemberConfiguration : IEntityTypeConfiguration<TeamMember>
       .HasOne(c => c.Team)
       .WithMany(p => p.TeamMembers)
       .HasForeignKey(p => p.TeamId);
+
+    builder.Property(x => x.MemberType)
+      .HasConversion(
+        x => x.Value,
+        x => TeamMemberType.FromValue(x));
   }
 }

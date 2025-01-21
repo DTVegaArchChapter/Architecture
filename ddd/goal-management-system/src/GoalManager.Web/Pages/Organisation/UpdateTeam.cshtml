@@ -28,6 +28,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
+                <th scope="col">Member Type</th>
                 <th></th>
             </tr>
         </thead>
@@ -45,6 +46,7 @@
                 <tr>
                     <th scope="row">@member.Id</th>
                     <td>@member.Name</td>
+                    <td>@member.MemberType</td>
                     <td>
                         <div class="d-flex justify-content-end">
                             <form asp-page-handler="RemoveMember" asp-route-userid="@member.UserId" method="post">

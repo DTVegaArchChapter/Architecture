@@ -1,5 +1,4 @@
-﻿using GoalManager.UseCases.Organisation.DeleteTeam;
-using GoalManager.UseCases.Organisation.GetTeamForUpdate;
+﻿using GoalManager.UseCases.Organisation.GetTeamForUpdate;
 using GoalManager.UseCases.Organisation.RemoveTeamMember;
 using GoalManager.UseCases.Organisation.UpdateTeam;
 using GoalManager.Web.Common;

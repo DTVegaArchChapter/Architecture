@@ -137,7 +137,7 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
-  internal Result AddTeamMember(int teamId, string name, int userId)
+  internal Result AddTeamMember(int teamId, string name, int userId, TeamMemberType memberType)
   {
     var teamResult = FindTeam(teamId);
     if (!teamResult.IsSuccess)
@@ -146,7 +146,7 @@ public class Organisation : EntityBase, IAggregateRoot
     }
 
     var team = teamResult.Value;
-    var addTeamMemberResult = team.AddTeamMember(name, userId);
+    var addTeamMemberResult = team.AddTeamMember(name, userId, memberType);
     if (!addTeamMemberResult.IsSuccess)
     {
       return addTeamMemberResult.ToResult();
