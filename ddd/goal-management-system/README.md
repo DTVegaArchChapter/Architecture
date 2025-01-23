@@ -39,3 +39,38 @@ Feedback, kullanıcı deneyimini arttırıp hedef ve performans yönetimini dest
 ### Notification
 
 Goal Management uygulamasının, hatırlatıcılar ve güncelleme gibi bildirimleri gönderen parçasıdır. Goal Management sistemine özgü bir yapı değildir. Bir çok uygulamada yer alan ve yardımcı programlar ya da harici kütüphaneler ile işlevini gerçekleştirebilen bir yapı olduğu için generic sub-domain olarak değerlendirildi.
+
+## Tactical Design
+
+### Organisation
+
+Organisation bounded context'i içerisinde Organisation aggregate root nesnesi bulunmaktadır. `Organisation` içerisinde `Team` listesi. Team listesinin altında da `TeamMember` listesi bulunmaktadır.
+
+![Organisation Class Diagram](./organisation-class-diagram.png)
+
+Organisation aggregate root için geçerli olan önemli iş kuralları aşağıdaki gibidir;
+
+- Organizasyon adı zorunludur.
+- Organizasyon adı unique'dir.
+- Takım adı zorunludur.
+- Bir organizasyonun altındaki takımların adları unique olmalıdır.
+- Bir organisayonun altında en fazla 5 takım olabilir.
+- Bir takımda en fazla 10 takım üyesi olabilir.
+- Bir takımda en fazla 1 tane takım lideri olabilir.
+
+## Kaynaklar
+
+### Kitaplar
+
+- Domain-Driven Design: Tackling Complexity in the Heart of Software (Eric Evans)
+- Implementing Domain-Driven Design (Vaughn Vernon)
+- Learning Domain-Driven Design: Aligning Software Architecture and Business Strategy (Vlad Khononov)
+
+### Örnek Projeler
+
+- <https://github.com/dotnet-architecture/eShopOnWeb>
+- <https://github.com/ardalis/ddd-vet-sample>
+- <https://github.com/ardalis/ddd-guestbook>
+- <https://github.com/m-jovanovic/event-reminder>
+- <https://github.com/m-jovanovic/rally-simulator>
+- <https://github.com/EnLabSoftware/HRManagement>
