@@ -8,7 +8,7 @@ public class Organisation : EntityBase, IAggregateRoot
 
 #pragma warning disable CS8618 // Required by Entity Framework
   private Organisation() { }
-  #pragma warning restore CS8618
+#pragma warning restore CS8618
 
   private Organisation(string name, IList<Team> teams)
   {

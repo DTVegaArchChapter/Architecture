@@ -1,4 +1,5 @@
-﻿using GoalManager.Core.Organisation;
+﻿using GoalManager.Core.Notification;
+using GoalManager.Core.Organisation;
 
 namespace GoalManager.Infrastructure.Data;
 
@@ -10,6 +11,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
   public DbSet<Organisation> Organisation => Set<Organisation>();
 
   public DbSet<Team> Team => Set<Team>();
+
+  public DbSet<NotificationItem> NotificationItem => Set<NotificationItem>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

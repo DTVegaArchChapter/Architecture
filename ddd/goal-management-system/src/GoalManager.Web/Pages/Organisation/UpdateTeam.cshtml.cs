@@ -3,10 +3,12 @@ using GoalManager.UseCases.Organisation.RemoveTeamMember;
 using GoalManager.UseCases.Organisation.UpdateTeam;
 using GoalManager.Web.Common;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoalManager.Web.Pages.Organisation;
 
+[Authorize]
 public class UpdateTeamModel(IMediator mediator) : PageModelBase
 {
   [BindProperty]

@@ -1,6 +1,6 @@
 ﻿namespace GoalManager.Core.Organisation.Events;
 
-internal sealed class TeamUpdatedEvent(int id, string name) : DomainEventBase
+public sealed class TeamUpdatedEvent(int id, string name) : DomainEventBase
 {
   private int Id { get; } = id;
 
