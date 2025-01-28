@@ -35,3 +35,7 @@
     }
     </tbody>
 </table>
+@if (Model.NotificationsPagedResult.IsSuccess)
+{
+    <pager total-items="@Model.NotificationsPagedResult.PagedInfo.TotalRecords" items-per-page="@Model.NotificationsPagedResult.PagedInfo.PageSize" current-page="@Model.NotificationsPagedResult.PagedInfo.PageNumber" page-url="?page={0}"></pager>
+}
