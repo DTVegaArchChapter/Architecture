@@ -4,7 +4,7 @@ using GoalManager.UseCases.Organisation.ListOrganisations;
 
 namespace GoalManager.Infrastructure.Data.Queries.Organisation;
 
-public class OrganisationQueryService(AppDbContext dbContext) : IOrganisationQueryService
+public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisationQueryService
 {
   public Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take)
   {

@@ -1,11 +1,13 @@
 ﻿using GoalManager.UseCases.Organisation.AddTeam;
 using GoalManager.Web.Common;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Framework;
 
 namespace GoalManager.Web.Pages.Organisation;
 
+[Authorize]
 public class CreateTeamModel(IMediator mediator) : PageModelBase
 {
   [Required]

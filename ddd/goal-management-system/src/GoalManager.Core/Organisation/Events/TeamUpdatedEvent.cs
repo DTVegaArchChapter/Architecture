@@ -1,8 +1,15 @@
-﻿namespace GoalManager.Core.Organisation.Events;
+﻿using GoalManager.Core.Interfaces;
 
-internal sealed class TeamUpdatedEvent(int id, string name) : DomainEventBase
+namespace GoalManager.Core.Organisation.Events;
+
+public sealed class TeamUpdatedEvent(int id, string name) : DomainEventBase, IHasNotificationText
 {
   private int Id { get; } = id;
 
   public string Name { get; private set; } = name;
+
+  public string GetNotificationText()
+  {
+    return $"Team name is updated to {Name}. Team Id: {Id}";
+  }
 }

@@ -1,4 +1,5 @@
-﻿using GoalManager.Core.Organisation;
+﻿using GoalManager.Core.Notification;
+using GoalManager.Core.Organisation;
 
 namespace GoalManager.Infrastructure.Data;
 
@@ -11,6 +12,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public DbSet<Team> Team => Set<Team>();
 
+  public DbSet<NotificationItem> NotificationItem => Set<NotificationItem>();
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
@@ -19,17 +22,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
   {
+    var entitiesWithEvents = ChangeTracker.Entries<HasDomainEventsBase>()
+      .Select(e => e.Entity)
+      .Where(e => e.DomainEvents.Any())
+      .ToArray();
+
     int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
     // ignore events if no dispatcher provided
     if (_dispatcher == null) return result;
 
     // dispatch events only if save was successful
-    var entitiesWithEvents = ChangeTracker.Entries<HasDomainEventsBase>()
-        .Select(e => e.Entity)
-        .Where(e => e.DomainEvents.Any())
-        .ToArray();
-
     await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
 
     return result;

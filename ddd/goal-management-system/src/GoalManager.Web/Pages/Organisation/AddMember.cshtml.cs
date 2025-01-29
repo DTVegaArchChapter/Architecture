@@ -7,11 +7,13 @@ using GoalManager.UseCases.Organisation.GetTeamMemberTypeLookup;
 using GoalManager.UseCases.Organisation.GetTeamName;
 using GoalManager.Web.Common;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GoalManager.Web.Pages.Organisation;
 
+[Authorize]
 public class AddMemberModel(IMediator mediator) : PageModelBase
 {
   public string? TeamName { get; set; }

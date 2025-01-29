@@ -2,10 +2,12 @@
 using GoalManager.UseCases.Organisation.GetForUpdate;
 using GoalManager.UseCases.Organisation.UpdateOrganisations;
 using GoalManager.Web.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoalManager.Web.Pages.Organisation;
 
+[Authorize]
 public class UpdateModel(IMediator mediator) : PageModelBase
 {
   [BindProperty]

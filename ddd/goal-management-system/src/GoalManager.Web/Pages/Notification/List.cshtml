@@ -1,0 +1,41 @@
+﻿@page
+@model GoalManager.Web.Pages.Notification.ListModel
+@{
+    ViewData["Title"] = "List Notifications";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">List Notifications</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Text</th>
+        <th scope="col">Create Date</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (!Model.NotificationsPagedResult.IsSuccess || Model.NotificationsPagedResult.Value.Count == 0)
+    {
+        <tr>
+            <td class="bg-light" colspan="100%">
+                <div class="p-2">There is no notification created!</div>
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var notification in Model.NotificationsPagedResult.Value)
+        {
+            <tr>
+                <td>@notification.Text</td>
+                <td>@notification.CreateDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+@if (Model.NotificationsPagedResult.IsSuccess)
+{
+    <pager total-items="@Model.NotificationsPagedResult.PagedInfo.TotalRecords" items-per-page="@Model.NotificationsPagedResult.PagedInfo.PageSize" current-page="@Model.NotificationsPagedResult.PagedInfo.PageNumber" page-url="?page={0}"></pager>
+}
