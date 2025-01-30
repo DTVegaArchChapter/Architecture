@@ -1,0 +1,154 @@
+version: '3.4'
+
+services:
+  envoygateway:
+    image: envoyproxy/envoy:v1.21.4
+    restart: always
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+    volumes:
+      - ./Envoy/envoy.yaml:/etc/envoy/envoy.yaml
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+
+  postgres:
+    image: postgres:14.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=taskdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - postgres:/var/lib/postgresql/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_PASSWORD=Password1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+
+  mongodb:
+    image: mongo:5.0.8
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=auditlog
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=Password1
+    volumes:
+      - mongodb:/data/db
+      - mongodbconfig:/data/configdb
+
+  mongoclient:
+      image: mongoclient/mongoclient:latest
+      environment:
+        - MONGO_URL=mongodb://admin:Password1@mongodb:27017
+        - INSTALL_MONGO=false
+        - MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://admin:Password1@mongodb:27017
+      depends_on:
+        - mongodb
+      ports:
+        - 3000:3000
+
+  taskmanagementapi:
+    image: ${DOCKER_REGISTRY-}taskmanagementapi
+    restart: always
+    ports:
+      - "8081:80"
+    depends_on:
+      - rabbitmq
+      - postgres
+    build:
+      context: .
+      dockerfile: TaskManagementApi/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+
+  searchapi:
+    image: ${DOCKER_REGISTRY-}searchapi
+    restart: always
+    ports:
+      - "8082:80"
+    depends_on:
+      - rabbitmq
+      - elasticsearch
+    build:
+      context: .
+      dockerfile: SearchApi/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+
+  auditlogworkerservice:
+    image: ${DOCKER_REGISTRY-}auditlogworkerservice
+    restart: always
+    depends_on:
+      - rabbitmq
+    build:
+      context: .
+      dockerfile: AuditLogWorkerService/Dockerfile
+
+  auditlogapi:
+    image: ${DOCKER_REGISTRY-}auditlogapi
+    restart: always
+    ports:
+      - "8083:80"
+    depends_on:
+      - mongodb
+    build:
+      context: .
+      dockerfile: AuditLogApi/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+
+  webapp:
+    image: ${DOCKER_REGISTRY-}webapp
+    restart: always
+    ports:
+      - "8084:80"
+    build:
+      context: .
+      dockerfile: TodoWebApp/Dockerfile
+
+  searchworkerservice:
+    image: ${DOCKER_REGISTRY-}searchworkerservice
+    restart: always
+    depends_on:
+      - rabbitmq
+    build:
+      context: .
+      dockerfile: SearchWorkerService/Dockerfile
+
+volumes:
+  postgres:
+    driver: local
+  rabbitmq:
+    driver: local
+  elasticsearch:
+    driver: local
+  mongodb:
+    driver: local
+  mongodbconfig:
+    driver: local
+
+
