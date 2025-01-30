@@ -1,0 +1,38 @@
+{
+  "name": "todo-web-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "generate-task-management-api": "openapi-generator-cli generate -i http://localhost:8081/swagger/v1/swagger.json -g typescript-axios -o src/metadata/task-management-api",
+    "generate-task-search-api": "openapi-generator-cli generate -i http://localhost:8082/swagger/v1/swagger.json -g typescript-axios -o src/metadata/task-search-api"
+  },
+  "dependencies": {
+    "@microsoft/signalr": "^6.0.7",
+    "bootstrap": "^5.2.0",
+    "core-js": "^3.8.3",
+    "vue": "^3.2.13",
+    "vue-class-component": "^8.0.0-0",
+    "vue-router": "^4.0.3",
+    "vue-toastification": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "error-stack-parser": "2.1.4",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "sass": "^1.32.7",
+    "sass-loader": "^12.0.0",
+    "typescript": "~4.5.5"
+  }
+}
