@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=mssql1Ipw
+    volumes:
+      - sqldata:/var/opt/sqlserver/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+
+  mailserver:
+    image: jijiechen/papercut:latest
+    container_name: papercut
+    ports: # exposes port 25 internally
+      - 37409:37408
+
+  transactionaloutboxpatternapp:
+    image: ${DOCKER_REGISTRY-}transactionaloutboxpatternapp
+    restart: always
+    ports:
+      - "8080:80"
+    build:
+      context: .
+      dockerfile: TransactionalOutboxPatternApp/Dockerfile
+
+  mailworkerservice:
+    image: ${DOCKER_REGISTRY-}mailworkerservice
+    build:
+      context: .
+      dockerfile: MailWorkerService/Dockerfile
+
+volumes:
+  sqldata:
+    driver: local
+  rabbitmq:
+    driver: local

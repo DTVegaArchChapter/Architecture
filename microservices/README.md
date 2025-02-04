@@ -8,6 +8,7 @@ Burada faydalı örnekler bulacaksınız.
 ## İçerik
 
 - [Todo Microservice](TodoMicroservice)
+- [Transactional Outbox Pattern](OutboxPattern)
 
 ## Kullanım
 

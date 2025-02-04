@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<div class="text-center">
+    <h1>Order Id: @Model.OrderId</h1>
+</div>
+
+<div class="text-center">
+    <form asp-page-handler="CreateOrder" method="post">
+        <button class="btn btn-primary">Create Order</button>
+    </form>
+</div>
