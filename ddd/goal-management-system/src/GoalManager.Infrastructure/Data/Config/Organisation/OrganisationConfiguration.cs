@@ -1,10 +1,8 @@
-﻿using GoalManager.Core.Organisation;
+﻿namespace GoalManager.Infrastructure.Data.Config.Organisation;
 
-namespace GoalManager.Infrastructure.Data.Config;
-
-public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
+public class OrganisationConfiguration : IEntityTypeConfiguration<Core.Organisation.Organisation>
 {
-  public void Configure(EntityTypeBuilder<Organisation> builder)
+  public void Configure(EntityTypeBuilder<Core.Organisation.Organisation> builder)
   {
     builder.HasKey(p => p.Id);
 

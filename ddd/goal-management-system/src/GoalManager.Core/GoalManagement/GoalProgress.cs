@@ -1,5 +1,5 @@
 ﻿namespace GoalManager.Core.GoalManagement;
-internal class GoalProgress : EntityBase
+public class GoalProgress : EntityBase
 {
   public int GoalId { get; private set; }
   public int ActualValue { get; private set; }

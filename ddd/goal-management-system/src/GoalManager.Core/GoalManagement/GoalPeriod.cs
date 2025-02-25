@@ -1,9 +1,31 @@
-﻿namespace GoalManager.Core.GoalManagement;
-internal class GoalPeriod : EntityBase, IAggregateRoot
+﻿using GoalManager.Core.GoalManagement.Events;
+
+namespace GoalManager.Core.GoalManagement;
+
+public class GoalPeriod : EntityBase, IAggregateRoot
 {
   public int TeamId { get; private set; }
   public int Year { get; private set; }
 
-  private readonly IList<Goal> _teamGoals = [];
-  public IReadOnlyCollection<Goal> TeamGoals => _teamGoals.AsReadOnly();
+#pragma warning disable CS8618 // Required by Entity Framework
+  private GoalPeriod() { }
+#pragma warning restore CS8618
+
+  private GoalPeriod(int teamId, int year, IList<Goal> teamGoals)
+  {
+    TeamId = teamId;
+    Year = year;
+  }
+
+  public static Result<GoalPeriod> Create(int teamId, int year)
+  {
+    var goalPeriod = new GoalPeriod(teamId, year, new List<Goal>());
+    goalPeriod.RegisterGoalPeriodCreatedEvent();
+    return goalPeriod;
+  }
+
+  private void RegisterGoalPeriodCreatedEvent()
+  {
+    RegisterDomainEvent(new GoalPeriodCreatedEvent(TeamId, Year));
+  }
 }

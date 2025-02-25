@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.Notification;
 
-namespace GoalManager.Infrastructure.Data.Config;
+namespace GoalManager.Infrastructure.Data.Config.Notification;
 
 internal class NotificationConfiguration : IEntityTypeConfiguration<NotificationItem>
 {

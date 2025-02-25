@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.Organisation;
 
-namespace GoalManager.Infrastructure.Data.Config;
+namespace GoalManager.Infrastructure.Data.Config.Organisation;
 
 public class TeamMemberConfiguration : IEntityTypeConfiguration<TeamMember>
 {

@@ -21,7 +21,8 @@
     </form>
 
     <div class="d-flex justify-content-end">
-        <a asp-page="AddMember" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@Model.Team.Id" class="btn btn-secondary mb-2">Add new Member</a>
+        <a asp-page="AddMember" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@Model.Team.Id" class="btn btn-secondary mb-2 me-1">Add new Member</a>
+        <a asp-page="/GoalManagement/AddGoalPeriod" asp-route-teamid="@Model.Team.Id" class="btn btn-secondary mb-2 me-1">Create Goal Period</a>
     </div>
     <table class="table">
         <thead>

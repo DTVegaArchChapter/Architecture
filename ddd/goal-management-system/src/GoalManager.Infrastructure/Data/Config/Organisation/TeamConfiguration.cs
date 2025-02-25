@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.Organisation;
 
-namespace GoalManager.Infrastructure.Data.Config;
+namespace GoalManager.Infrastructure.Data.Config.Organisation;
 
 public class TeamConfiguration : IEntityTypeConfiguration<Team>
 {
@@ -22,6 +22,6 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
       .WithMany(p => p.Teams)
       .HasForeignKey(p => p.OrganisationId);
 
-    builder.HasIndex(p => new {p.OrganisationId, p.Name}).IsUnique();
+    builder.HasIndex(p => new { p.OrganisationId, p.Name }).IsUnique();
   }
 }
