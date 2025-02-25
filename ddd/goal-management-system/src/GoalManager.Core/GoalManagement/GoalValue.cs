@@ -1,14 +1,13 @@
 ﻿namespace GoalManager.Core.GoalManagement;
 
-public readonly record struct GoalValue(int minValue, int midValue, int maxValue, GoalValueType goalValueType)
+public record GoalValue(int MinValue, int MidValue, int MaxValue, GoalValueType GoalValueType)
 {
-  public int MinValue { get; private init; } = minValue;
-
-  public int MidValue { get; private init; } = midValue;
-
-  public int MaxValue { get; private init; } = maxValue;
-
-  public GoalValueType GoalValueType { get; private init; } = goalValueType;
+#pragma warning disable CS8618 // Required by Entity Framework
+  private GoalValue()
+    : this(0, 0, 0, GoalValueType.Percentage)
+  {
+  }
+#pragma warning restore CS8618
 
   public static Result<GoalValue> Create(int minValue, int midValue, int maxValue, GoalValueType goalValueType)
   {

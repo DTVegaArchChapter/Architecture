@@ -8,8 +8,7 @@ public class Goal : EntityBase
   public GoalType GoalType { get; private set; }
   public GoalValue GoalValue { get; private set; }
   public int? ActualValue { get; private set; }
-  public int PeriodId { get; private set; }
-
+  public int GoalSetId { get; private set; }
 
   private readonly IList<GoalProgress> _goalProgressHistory = [];
   public IReadOnlyCollection<GoalProgress> GoalProgressHistory => _goalProgressHistory.AsReadOnly();
@@ -18,22 +17,22 @@ public class Goal : EntityBase
   private Goal() { }
 #pragma warning restore CS8618
 
-  private Goal(int periodId, string title, GoalType goalType, GoalValue goalValue)
+  private Goal(int goalSetId, string title, GoalType goalType, GoalValue goalValue)
   {
     Title = Guard.Against.NullOrWhiteSpace(title);
     GoalType = goalType;
     GoalValue = goalValue;
-    PeriodId = periodId;
+    GoalSetId = goalSetId;
   }
 
-  public static Result<Goal> CreateTeamGoal(int goalPeriodId, string title, GoalValue goalValue)
+  public static Result<Goal> CreateTeamGoal(int goalSetId, string title, GoalValue goalValue)
   {
-    return Create(goalPeriodId, title, GoalType.Team, goalValue);
+    return Create(goalSetId, title, GoalType.Team, goalValue);
   }
 
-  public static Result<Goal> CreateIndividualGoal(int goalPeriodId, string title, GoalValue goalValue)
+  public static Result<Goal> CreateIndividualGoal(int goalSetId, string title, GoalValue goalValue)
   {
-    return Create(goalPeriodId, title, GoalType.Individual, goalValue);
+    return Create(goalSetId, title, GoalType.Individual, goalValue);
   }
 
   public void SetActualValue(int value)
@@ -41,14 +40,14 @@ public class Goal : EntityBase
     ActualValue = value;
   }
 
-  private static Result<Goal> Create(int goalPeriodId, string title, GoalType goalType, GoalValue goalValue)
+  internal static Result<Goal> Create(int goalSetId, string title, GoalType goalType, GoalValue goalValue)
   {
     if (string.IsNullOrWhiteSpace(title))
     {
       return Result<Goal>.Error("Goal title is required");
     }
 
-    var goal = new Goal(goalPeriodId, title, goalType, goalValue);
+    var goal = new Goal(goalSetId, title, goalType, goalValue);
     goal.RegisterGoalCreatedEvent();
     return goal;
   }

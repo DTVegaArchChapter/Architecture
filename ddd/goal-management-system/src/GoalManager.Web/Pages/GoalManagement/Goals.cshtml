@@ -1,0 +1,16 @@
+﻿@page
+@model GoalManager.Web.Pages.GoalManagement.ListTeamsModel
+@{
+    ViewData["Title"] = "Goals";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">Please select a team for @Model.Year goals.</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div class="text-center">
+    <ul class="list-group list-group-flush fs-4">
+        @foreach (var team in Model.Teams)
+        {
+            <li class="list-group-item"><a asp-page="TeamGoals" asp-route-teamId="@team.TeamId">@team.TeamName</a></li>
+        }
+    </ul>
+</div>

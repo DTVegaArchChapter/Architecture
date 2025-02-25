@@ -1,0 +1,42 @@
+﻿@page "{goalSetId:int}"
+@model GoalManager.Web.Pages.GoalManagement.AddGoalModel
+@{
+    ViewData["Title"] = "Add New Goal";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">Add New Goal</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="GoalTypeId" class="form-label"></label>
+        <select asp-for="@Model.GoalTypeId" asp-items="Model.GoalTypeOptions"></select>
+        <span asp-validation-for="GoalTypeId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="GoalValueTypeId" class="form-label"></label>
+        <select asp-for="@Model.GoalValueTypeId" asp-items="Model.GoalValueTypeOptions"></select>
+        <span asp-validation-for="GoalValueTypeId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="MinValue" class="form-label"></label>
+        <input asp-for="MinValue" class="form-control" />
+        <span asp-validation-for="MinValue" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="MidValue" class="form-label"></label>
+        <input asp-for="MidValue" class="form-control" />
+        <span asp-validation-for="MidValue" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="MaxValue" class="form-label"></label>
+        <input asp-for="MaxValue" class="form-control" />
+        <span asp-validation-for="MaxValue" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
