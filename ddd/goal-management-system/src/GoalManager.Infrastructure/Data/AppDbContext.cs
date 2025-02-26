@@ -1,6 +1,8 @@
 ﻿using GoalManager.Core.Notification;
 using GoalManager.Core.Organisation;
 
+using SmartEnum.EFCore;
+
 namespace GoalManager.Infrastructure.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options,
@@ -12,12 +14,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public DbSet<Team> Team => Set<Team>();
 
+  public DbSet<TeamMember> TeamMember => Set<TeamMember>();
+
   public DbSet<NotificationItem> NotificationItem => Set<NotificationItem>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+  }
+
+  protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+  {
+    configurationBuilder.ConfigureSmartEnum();
   }
 
   public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

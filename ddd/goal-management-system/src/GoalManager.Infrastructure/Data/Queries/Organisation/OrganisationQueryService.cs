@@ -1,11 +1,23 @@
 ﻿using GoalManager.UseCases.Organisation;
 using GoalManager.UseCases.Organisation.GetTeamForUpdate;
 using GoalManager.UseCases.Organisation.ListOrganisations;
+using GoalManager.UseCases.Organisation.ListUserTeams;
 
 namespace GoalManager.Infrastructure.Data.Queries.Organisation;
 
 public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisationQueryService
 {
+  public Task<List<UserTeamListItemDto>> ListUserTeams(int userId)
+  {
+    return dbContext.TeamMember
+                  .Where(x => x.UserId == userId)
+                  .Select(x => new UserTeamListItemDto
+                               {
+                                 TeamId = x.TeamId,
+                                 TeamName = x.Team.Name
+                               }).ToListAsync();
+  }
+
   public Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take)
   {
     return dbContext.Organisation.Select(x => new OrganisationListItemDto(x.Id, x.Name, x.Teams.Count))

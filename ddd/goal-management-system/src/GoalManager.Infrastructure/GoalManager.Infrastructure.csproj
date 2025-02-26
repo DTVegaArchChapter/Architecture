@@ -3,6 +3,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.SharedKernel" />
+    <PackageReference Include="Ardalis.SmartEnum.EFCore" />
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="MailKit" />
