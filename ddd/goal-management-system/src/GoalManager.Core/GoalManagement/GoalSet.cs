@@ -33,6 +33,8 @@ public class GoalSet : EntityBase, IAggregateRoot
       return createGoalResult.ToResult();
     }
 
+    _goals.Add(createGoalResult.Value);
+
     return Result.Success();
   }
 }

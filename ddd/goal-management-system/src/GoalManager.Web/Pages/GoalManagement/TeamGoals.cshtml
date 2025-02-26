@@ -14,10 +14,13 @@
             <a href="#" class="list-group-item list-group-item-action">
                 <h5 class="mb-1">@goal.Title</h5>
                 <p class="mb-1">
-                    <strong>Min Value:</strong> @goal.GoalValue.MinValue<br />
-                    <strong>Mid Value:</strong> @goal.GoalValue.MidValue<br />
-                    <strong>Max Value:</strong> @goal.GoalValue.MaxValue<br />
-                    <strong>Type:</strong> @goal.GoalValue.GoalValueType.Name
+                    <span class="me-1"><strong>Goal Type:</strong> @goal.GoalType.Name</span>
+                </p>
+                <p class="mb-1">
+                    <span class="me-1"><strong>Value Type:</strong> @goal.GoalValue.GoalValueType.Name</span>
+                    <span class="me-1"><strong>Min Value:</strong> @goal.GoalValue.MinValue</span>
+                    <span class="me-1"><strong>Mid Value:</strong> @goal.GoalValue.MidValue</span>
+                    <span class="me-1"><strong>Max Value:</strong> @goal.GoalValue.MaxValue</span>
                 </p>
             </a>
         }

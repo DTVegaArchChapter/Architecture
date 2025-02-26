@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
 using System.ComponentModel.DataAnnotations;
 
+using GoalManager.UseCases.GoalManagement.AddGoal;
 using GoalManager.UseCases.GoalManagement.GetGoalTypeLookup;
 using GoalManager.Web.Common;
 
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using GoalManager.UseCases.GoalManagement.GetGoalValueTypeLookup;
+using GoalManager.Core.Organisation;
 
 namespace GoalManager.Web.Pages.GoalManagement;
 
@@ -70,5 +72,24 @@ public class AddGoalModel(IMediator mediator) : PageModelBase
     }
 
     return Page();
+  }
+
+  public async Task<IActionResult> OnPostAsync(int goalSetId, int teamId)
+  {
+    if (!ModelState.IsValid)
+    {
+      return await OnGetAsync().ConfigureAwait(false);
+    }
+
+    var result = await mediator.Send(new AddGoalCommand(goalSetId, Title, GoalType.FromValue(GoalTypeId.GetValueOrDefault()), MinValue, MidValue, MaxValue, GoalValueType.FromValue(GoalValueTypeId.GetValueOrDefault())));
+    
+    AddResultMessages(result);
+
+    if (!result.IsSuccess)
+    {
+      return await OnGetAsync().ConfigureAwait(false);
+    }
+
+    return RedirectToPageWithSuccessMessage("TeamGoals", new { result.Value.TeamId }, "Goal is Added");
   }
 }
