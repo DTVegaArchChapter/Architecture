@@ -9,6 +9,7 @@ public class Goal : EntityBase
   public GoalValue GoalValue { get; private set; }
   public int? ActualValue { get; private set; }
   public int GoalSetId { get; private set; }
+  public int Percentage { get; private set; }
 
   private readonly IList<GoalProgress> _goalProgressHistory = [];
   public IReadOnlyCollection<GoalProgress> GoalProgressHistory => _goalProgressHistory.AsReadOnly();
@@ -17,22 +18,13 @@ public class Goal : EntityBase
   private Goal() { }
 #pragma warning restore CS8618
 
-  private Goal(int goalSetId, string title, GoalType goalType, GoalValue goalValue)
+  private Goal(int goalSetId, string title, GoalType goalType, GoalValue goalValue, int percentage)
   {
     Title = Guard.Against.NullOrWhiteSpace(title);
     GoalType = goalType;
     GoalValue = goalValue;
     GoalSetId = goalSetId;
-  }
-
-  public static Result<Goal> CreateTeamGoal(int goalSetId, string title, GoalValue goalValue)
-  {
-    return Create(goalSetId, title, GoalType.Team, goalValue);
-  }
-
-  public static Result<Goal> CreateIndividualGoal(int goalSetId, string title, GoalValue goalValue)
-  {
-    return Create(goalSetId, title, GoalType.Individual, goalValue);
+    Percentage = percentage;
   }
 
   public void SetActualValue(int value)
@@ -40,14 +32,14 @@ public class Goal : EntityBase
     ActualValue = value;
   }
 
-  internal static Result<Goal> Create(int goalSetId, string title, GoalType goalType, GoalValue goalValue)
+  internal static Result<Goal> Create(int goalSetId, string title, GoalType goalType, GoalValue goalValue, int percentage)
   {
     if (string.IsNullOrWhiteSpace(title))
     {
       return Result<Goal>.Error("Goal title is required");
     }
 
-    var goal = new Goal(goalSetId, title, goalType, goalValue);
+    var goal = new Goal(goalSetId, title, goalType, goalValue, percentage);
     goal.RegisterGoalCreatedEvent();
     return goal;
   }

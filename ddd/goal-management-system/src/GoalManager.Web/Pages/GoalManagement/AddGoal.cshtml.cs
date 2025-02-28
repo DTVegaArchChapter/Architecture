@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using GoalManager.UseCases.GoalManagement.GetGoalValueTypeLookup;
-using GoalManager.Core.Organisation;
 
 namespace GoalManager.Web.Pages.GoalManagement;
 
@@ -44,6 +43,11 @@ public class AddGoalModel(IMediator mediator) : PageModelBase
   [Range(0, int.MaxValue, ErrorMessage = "Max Value must be a non-negative integer.")]
   public int MaxValue { get; set; }
 
+  [BindProperty]
+  [Required(ErrorMessage = "Percentage is required.")]
+  [Range(0, int.MaxValue, ErrorMessage = "Percentage must be a non-negative integer.")]
+  public int Percentage { get; set; }
+
   public List<SelectListItem> GoalTypeOptions { get; set; } = new();
   public List<SelectListItem> GoalValueTypeOptions { get; set; } = new();
 
@@ -74,14 +78,23 @@ public class AddGoalModel(IMediator mediator) : PageModelBase
     return Page();
   }
 
-  public async Task<IActionResult> OnPostAsync(int goalSetId, int teamId)
+  public async Task<IActionResult> OnPostAsync(int goalSetId)
   {
     if (!ModelState.IsValid)
     {
       return await OnGetAsync().ConfigureAwait(false);
     }
 
-    var result = await mediator.Send(new AddGoalCommand(goalSetId, Title, GoalType.FromValue(GoalTypeId.GetValueOrDefault()), MinValue, MidValue, MaxValue, GoalValueType.FromValue(GoalValueTypeId.GetValueOrDefault())));
+    var result = await mediator.Send(
+                   new AddGoalCommand(
+                     goalSetId,
+                     Title,
+                     GoalType.FromValue(GoalTypeId.GetValueOrDefault()),
+                     MinValue,
+                     MidValue,
+                     MaxValue,
+                     GoalValueType.FromValue(GoalValueTypeId.GetValueOrDefault()),
+                     Percentage));
     
     AddResultMessages(result);
 
