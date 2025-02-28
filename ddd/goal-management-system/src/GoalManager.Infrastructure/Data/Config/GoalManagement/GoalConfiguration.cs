@@ -18,6 +18,10 @@ internal sealed class GoalConfiguration : IEntityTypeConfiguration<Goal>
         p => GoalType.FromValue(p))
       .IsRequired();
 
+    builder.Property(g => g.Percentage)
+      .HasDefaultValue(0)
+      .IsRequired();
+
     builder.ComplexProperty(g => g.GoalValue, gv =>
     {
       gv.Property(x => x.MinValue).IsRequired();

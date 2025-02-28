@@ -1,7 +1,6 @@
 ﻿using GoalManager.Core;
 using GoalManager.Core.GoalManagement;
 using GoalManager.Core.GoalManagement.Specifications;
-using GoalManager.UseCases.Organisation.ListUserTeams;
 
 namespace GoalManager.UseCases.GoalManagement.AddGoal;
 
@@ -21,7 +20,7 @@ internal sealed class AddGoalCommandHandler(IRepository<GoalSet> goalSetReposito
       return goalValueResult.ToResult();
     }
 
-    var addGoalResult = goalSet.AddGoal(request.Title, request.GoalType, goalValueResult.Value);
+    var addGoalResult = goalSet.AddGoal(request.Title, request.GoalType, goalValueResult.Value, request.Percentage);
     if (!addGoalResult.IsSuccess)
     {
       return addGoalResult.ToResult();
