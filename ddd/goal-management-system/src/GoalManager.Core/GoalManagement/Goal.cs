@@ -44,6 +44,19 @@ public class Goal : EntityBase
     return goal;
   }
 
+  internal Result Update(string title, GoalType goalType)
+  {
+    if (string.IsNullOrWhiteSpace(title))
+    {
+      return Result.Error("Goal title is required");
+    }
+
+    Title = title;
+    GoalType = goalType;
+
+    return Result.Success();
+  }
+
   private void RegisterGoalCreatedEvent()
   {
     RegisterDomainEvent(new GoalCreatedEvent(Title));
