@@ -1,0 +1,15 @@
+{
+  "name": "microfrontend-sample",
+  "scripts": {
+    "bootstrap": "lerna exec pnpm install",
+    "clean": "lerna clean",
+    "preview": "lerna run --parallel preview",
+    "build": "lerna run build"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^6.5.1"
+  }
+}
