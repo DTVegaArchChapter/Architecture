@@ -6,14 +6,14 @@ Domain driven design kullanarak oluşturulmuş olan *Goal Management System* imp
 
 Projede Clean Architecture mimarisi kullanılmıştır. Clean Architecture `Business Domain`'i uygulamanın merkezine yerleştirir. `Infrastructure`, `UI` gibi katmanlar `Business Domain` ve `Application` katmanlarına bağımlıdır.
 
-Aşağıdaki diagramda Clean Architecture'ın tanımlamış olduğu katmanlar gösterilmiştir. 
+Aşağıdaki diagramda Clean Architecture'ın tanımlamış olduğu katmanlar gösterilmiştir.
 
 - En merkezde Business Domain'i içeren `Entities` katmanı bulunmaktadır.
 - Bir üst katmanda Application kurallarını içeren `Use Cases` katmanı vardır.
 - Onun bir üstünde dış sistemler (UI, External API vs.) ile Core Business (Use Cases, Entities) veri akışını düzenleyen `Interface Adapters` katmanı bulunmaktadır.
 - En üst katmanda da veri tabanı, email provider, ui frameworkler, apiler gibi dış sistemler ve infrastructure elementlerini içeren `Framework & Drivers` katmanı bulunmaktadır.
 
-![Clean Architecture](./clean-architecture.png)
+![Clean Architecture](./docs/clean-architecture.png)
 
 İç katmanlardan dış katmanlardaki implementasyonlara doğrudan erişilemez. Bunun yerine iç katmanlar, iç katmanda yaratılmış Interface'lere erişir, Interface'leri de dış katmanlar implemente eder. Böylece iç katman, dış katmanın implementasyonuna değil, Interface'ine bağımlıdır (Dependency Inversion).
 
@@ -25,7 +25,7 @@ Goal Manager DDD projes [ardalis/cleanarchitecture](https://github.com/ardalis/c
 
 > Not: Ardalis clean architecture template'inde *Interface Adapters* şeklinde açıkça adlandırılan bir katman yoktur. Ancak bu katmanın işlevini gören, core application ile dış servisler (UI, DB, API vs) arasındaki veri dönüşümünü sağlayan yapılar Infrastructure, Web, Use Cases katmanlarının içerisinde mevcuttur.
 
-![Project Dependency Graph](./project-dependency-graph.png)
+![Project Dependency Graph](./docs/project-dependency-graph.png)
 
 Uygulamanın Domain Driven Design kısmı `GoalManager.Core` ve `GoalManager.UseCases` projelerini kapsamaktadır.
 
@@ -43,13 +43,13 @@ GoalManager.Core
 
 ## Eventstorming Diagram
 
-![Eventstorming Diagram](./eventstorming.png)
+![Eventstorming Diagram](./docs/eventstorming.png)
 
 ## Strategic Design
 
 ### Diagram
 
-![Strategic Design Diagram](./StrategicDesign.png)
+![Strategic Design Diagram](./docs/StrategicDesign.png)
 
 ### Identity Management
 
@@ -85,7 +85,7 @@ Goal Management uygulamasının, hatırlatıcılar ve güncelleme gibi bildiriml
 
 Organisation bounded context'i içerisinde Organisation aggregate root nesnesi bulunmaktadır. `Organisation` içerisinde `Team` listesi. Team listesinin altında da `TeamMember` listesi bulunmaktadır.
 
-![Organisation Class Diagram](./organisation-class-diagram.png)
+![Organisation Class Diagram](./docs/organisation-class-diagram.png)
 
 Organisation aggregate root için geçerli olan önemli iş kuralları aşağıdaki gibidir;
 
