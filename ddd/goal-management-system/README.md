@@ -1,6 +1,45 @@
 # DDD (Domain-Driven-Design) ile Goal Management System Uygulaması
 
-Domain driven design kullanarak Goal Management System implementasyonunu içeren örnek uygulamadır.
+Domain driven design kullanarak oluşturulmuş olan *Goal Management System* implementasyonunu içeren örnek uygulamadır.
+
+## Proje Mimarisi
+
+Projede Clean Architecture mimarisi kullanılmıştır. Clean Architecture `Business Domain`'i uygulamanın merkezine yerleştirir. `Infrastructure`, `UI` gibi katmanlar `Business Domain` ve `Application` katmanlarına bağımlıdır.
+
+Aşağıdaki diagramda Clean Architecture'ın tanımlamış olduğu katmanlar gösterilmiştir. 
+
+- En merkezde Business Domain'i içeren `Entities` katmanı bulunmaktadır.
+- Bir üst katmanda Application kurallarını içeren `Use Cases` katmanı vardır.
+- Onun bir üstünde dış sistemler (UI, External API vs.) ile Core Business (Use Cases, Entities) veri akışını düzenleyen `Interface Adapters` katmanı bulunmaktadır.
+- En üst katmanda da veri tabanı, email provider, ui frameworkler, apiler gibi dış sistemler ve infrastructure elementlerini içeren `Framework & Drivers` katmanı bulunmaktadır.
+
+![Clean Architecture](./clean-architecture.png)
+
+İç katmanlardan dış katmanlardaki implementasyonlara doğrudan erişilemez. Bunun yerine iç katmanlar, iç katmanda yaratılmış Interface'lere erişir, Interface'leri de dış katmanlar implemente eder. Böylece iç katman, dış katmanın implementasyonuna değil, Interface'ine bağımlıdır (Dependency Inversion).
+
+Goal Manager DDD projes [ardalis/cleanarchitecture](https://github.com/ardalis/cleanarchitecture) template'ini kullanmaktadır. Projenin bağımlılık diagramı aşağıdaki gibidir.
+
+- *Entities Katmanı*: GoalManager.Core
+- *Use Cases Katmanı*: GoalManager.UseCases
+- *Frameworks & Drivers Katmanı*: GoalManager.Web ve GoalManager.Infrastructure
+
+> Not: Ardalis clean architecture template'inde *Interface Adapters* şeklinde açıkça adlandırılan bir katman yoktur. Ancak bu katmanın işlevini gören, core application ile dış servisler (UI, DB, API vs) arasındaki veri dönüşümünü sağlayan yapılar Infrastructure, Web, Use Cases katmanlarının içerisinde mevcuttur.
+
+![Project Dependency Graph](./project-dependency-graph.png)
+
+Uygulamanın Domain Driven Design kısmı `GoalManager.Core` ve `GoalManager.UseCases` projelerini kapsamaktadır.
+
+GoalManager.UseCases
+
+- Application Services
+
+GoalManager.Core
+
+- Entities
+- Aggregates
+- Value Objects
+- Domain Events
+- Domain Services
 
 ## Eventstorming Diagram
 
@@ -16,7 +55,7 @@ Domain driven design kullanarak Goal Management System implementasyonunu içeren
 
 Authentication, authorization ve kullanıcı profili yönetimi işlemlerini yapar. Goal Management sistemine özel bir business domain'i olmadığı için generic sub-domain olarak değerlendirildi. Identity Management işlevini gerçekleştirebilecek piyasada birçok hazır çözüm mevcuttur ve Identity Management sub-domain'i, Goal Management sistemi içerisinde değerlendirdiğimizde rakip ürünlere karşı rekabetçi avantaj sağlama gibi bir özelliği bulunmamaktadır.
 
-Asp.Net Core Identity kütüphanesi kullanılmıştır. Identity Management sayfaları da Identity Scaffolder ile üretilmiştir. Çok karmaşık iş kuralları barındırmadığı ve generic sub-domain olduğu için DDD kullanılmadan gelitirilmiştir.
+Asp.Net Core Identity kütüphanesi kullanılmıştır. Identity Management sayfaları da Identity Scaffolder ile üretilmiştir. Çok karmaşık iş kuralları barındırmadığı ve generic sub-domain olduğu için DDD kullanılmadan geliştirilmiştir.
 
 ### Organisation
 
