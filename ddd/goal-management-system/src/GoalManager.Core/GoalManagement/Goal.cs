@@ -44,7 +44,7 @@ public class Goal : EntityBase
     return goal;
   }
 
-  internal Result Update(string title, GoalType goalType)
+  internal Result Update(string title, GoalType goalType, GoalValue goalValue)
   {
     if (string.IsNullOrWhiteSpace(title))
     {
@@ -53,6 +53,7 @@ public class Goal : EntityBase
 
     Title = title;
     GoalType = goalType;
+    GoalValue = goalValue;
 
     return Result.Success();
   }

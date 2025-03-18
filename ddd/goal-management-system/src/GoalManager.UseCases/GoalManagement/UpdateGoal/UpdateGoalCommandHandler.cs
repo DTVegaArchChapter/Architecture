@@ -15,7 +15,7 @@ internal sealed class UpdateGoalCommandHandler(IRepository<GoalSet> goalSetRepos
       return Result.Error($"Goal set not found for id: {request.GoalSetId}");
     }
 
-    var updateGoalResult = goalSet.UpdateGoal(request.GoalId, request.Title, request.GoalType);
+    var updateGoalResult = goalSet.UpdateGoal(request.GoalId, request.Title, request.GoalType, request.GoalValue);
 
     if (!updateGoalResult.IsSuccess)
     {
