@@ -1,0 +1,32 @@
+﻿@page "{goalSetId:int}/{goalId:int}"
+@model GoalManager.Web.Pages.GoalManagement.UpdateGoalModel
+@{
+    ViewData["Title"] = "Update Goal";
+}
+
+<h1 class="bg-info text-white mb-2 p-1">Update Goal</h1>
+<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="GoalTypeId" class="form-label"></label>
+        <select asp-for="@Model.GoalTypeId" asp-items="Model.GoalTypeOptions"></select>
+        <span asp-validation-for="GoalTypeId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Percentage" class="form-label"></label>
+        <input asp-for="Percentage" class="form-control" />
+        <span asp-validation-for="Percentage" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="GoalValueTypeId" class="form-label"></label>
+        <select asp-for="@Model.GoalValueTypeId" asp-items="Model.GoalValueTypeOptions"></select>
+        <span asp-validation-for="GoalValueTypeId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>

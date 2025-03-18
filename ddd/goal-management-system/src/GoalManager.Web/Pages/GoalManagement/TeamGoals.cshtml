@@ -11,7 +11,7 @@
     <div class="list-group">
         @foreach (var goal in Model.GoalSet.Goals)
         {
-            <a href="#" class="list-group-item list-group-item-action">
+            <a asp-page="UpdateGoal" asp-route-goalSetId="@goal.GoalSetId" asp-route-goalId="@goal.Id" class="list-group-item list-group-item-action">
                 <h5 class="mb-1">@goal.Title</h5>
                 <p class="mb-1">
                     <span class="me-1"><strong>Goal Type:</strong> @goal.GoalType.Name</span>
