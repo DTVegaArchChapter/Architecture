@@ -52,6 +52,18 @@ public class GoalSet : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
+  public Result UpdateGoal(int goalId, string title, GoalType goalType, GoalValue goalValue)
+  {
+    var goal = _goals.SingleOrDefault(x => x.Id == goalId);
+
+    if (goal == null)
+    {
+      return Result.Error($"Goal not found for id: {goalId}");
+    }
+
+    return goal.Update(title, goalType, goalValue);
+  }
+
   private int GetGoalsTotalPercentage()
   {
     return _goals.Sum(x => x.Percentage);
