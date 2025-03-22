@@ -29,7 +29,7 @@ internal sealed class UpdateGoalCommandHandler(IRepository<GoalSet> goalSetRepos
       return goalValueResult.ToResult();
     }
 
-    var updateGoalResult = goalSet.UpdateGoal(request.GoalId, request.Title, request.GoalType, goalValueResult.Value);
+    var updateGoalResult = goalSet.UpdateGoal(request.GoalId, request.Title, request.GoalType, goalValueResult.Value, request.Percentage);
 
     if (!updateGoalResult.IsSuccess)
     {

@@ -44,7 +44,7 @@ public class Goal : EntityBase
     return goal;
   }
 
-  internal Result Update(string title, GoalType goalType, GoalValue goalValue)
+  internal Result Update(string title, GoalType goalType, GoalValue goalValue, int percantage)
   {
     if (string.IsNullOrWhiteSpace(title))
     {
@@ -54,6 +54,7 @@ public class Goal : EntityBase
     Title = title;
     GoalType = goalType;
     GoalValue = goalValue;
+    Percentage = percantage;
 
     return Result.Success();
   }
