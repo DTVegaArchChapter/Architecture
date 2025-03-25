@@ -87,7 +87,8 @@ public class UpdateGoalModel(IMediator mediator) : PageModelBase
                      goalId,
                      Title,
                      GoalType.FromValue(GoalTypeId.GetValueOrDefault()),
-                     GoalValueType.FromValue(GoalValueTypeId.GetValueOrDefault())));
+                     GoalValueType.FromValue(GoalValueTypeId.GetValueOrDefault()),
+                     Percentage));
 
     AddResultMessages(result);
 

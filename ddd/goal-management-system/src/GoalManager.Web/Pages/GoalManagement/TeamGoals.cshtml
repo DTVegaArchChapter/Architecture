@@ -1,5 +1,8 @@
 ﻿@page "{teamId:int}"
 @model GoalManager.Web.Pages.GoalManagement.TeamGoalsModel
+<head>
+	<link href="~/css/goal-management.css" rel="stylesheet" />
+</head>
 <h1 class="bg-info text-white mb-2 p-1">@Model.Year goals</h1>
 <alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
 @if (Model.GoalSet != null)
@@ -11,19 +14,21 @@
     <div class="list-group">
         @foreach (var goal in Model.GoalSet.Goals)
         {
-            <a asp-page="UpdateGoal" asp-route-goalSetId="@goal.GoalSetId" asp-route-goalId="@goal.Id" class="list-group-item list-group-item-action">
-                <h5 class="mb-1">@goal.Title</h5>
-                <p class="mb-1">
-                    <span class="me-1"><strong>Goal Type:</strong> @goal.GoalType.Name</span>
-                    <span class="me-1"><strong>Percentage:</strong> @goal.Percentage</span>
-                </p>
-                <p class="mb-1">
-                    <span class="me-1"><strong>Value Type:</strong> @goal.GoalValue.GoalValueType.Name</span>
-                    <span class="me-1"><strong>Min Value:</strong> @goal.GoalValue.MinValue</span>
-                    <span class="me-1"><strong>Mid Value:</strong> @goal.GoalValue.MidValue</span>
-                    <span class="me-1"><strong>Max Value:</strong> @goal.GoalValue.MaxValue</span>
-                </p>
-            </a>
+			<a asp-page="UpdateGoal" asp-route-goalSetId="@goal.GoalSetId" asp-route-goalId="@goal.Id" class="list-group-item list-group-item-action">
+				<h5 class="mb-1">@goal.Title</h5>
+				<div class="info-box">
+					<p class="mb-1">
+						<span><strong>Goal Type:</strong> @goal.GoalType.Name</span>
+						<span><strong>Percentage:</strong> @goal.Percentage</span>
+					</p>
+					<p class="mb-1">
+						<span><strong>Value Type:</strong> @goal.GoalValue.GoalValueType.Name</span>
+						<span><strong>Min Value:</strong> @goal.GoalValue.MinValue</span>
+						<span><strong>Mid Value:</strong> @goal.GoalValue.MidValue</span>
+						<span><strong>Max Value:</strong> @goal.GoalValue.MaxValue</span>
+					</p>
+				</div>
+			</a>
         }
     </div>
 }
