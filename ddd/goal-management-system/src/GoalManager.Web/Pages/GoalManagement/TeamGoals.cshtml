@@ -3,32 +3,66 @@
 <head>
 	<link href="~/css/goal-management.css" rel="stylesheet" />
 </head>
-<h1 class="bg-info text-white mb-2 p-1">@Model.Year goals</h1>
+
+<h1 class="bg-info text-white mb-2 p-1">@Model.Year Goals</h1>
 <alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
 @if (Model.GoalSet != null)
 {
-    <div class="d-flex justify-content-end">
-        <a asp-page="AddGoal" asp-route-goalSetId="@Model.GoalSet.Id" class="btn btn-primary mb-2">Add Goal</a>
-    </div>
+	<div class="d-flex justify-content-end">
+		<a asp-page="AddGoal" asp-route-goalSetId="@Model.GoalSet.Id" class="btn btn-primary mb-2">Add Goal</a>
+	</div>
 
-    <div class="list-group">
-        @foreach (var goal in Model.GoalSet.Goals)
-        {
-			<a asp-page="UpdateGoal" asp-route-goalSetId="@goal.GoalSetId" asp-route-goalId="@goal.Id" class="list-group-item list-group-item-action">
-				<h5 class="mb-1">@goal.Title</h5>
-				<div class="info-box">
-					<p class="mb-1">
-						<span><strong>Goal Type:</strong> @goal.GoalType.Name</span>
-						<span><strong>Percentage:</strong> @goal.Percentage</span>
-					</p>
-					<p class="mb-1">
-						<span><strong>Value Type:</strong> @goal.GoalValue.GoalValueType.Name</span>
-						<span><strong>Min Value:</strong> @goal.GoalValue.MinValue</span>
-						<span><strong>Mid Value:</strong> @goal.GoalValue.MidValue</span>
-						<span><strong>Max Value:</strong> @goal.GoalValue.MaxValue</span>
-					</p>
-				</div>
-			</a>
-        }
-    </div>
+	<div class="list-group">
+		@foreach (var goal in Model.GoalSet.Goals)
+		{
+			<div class="list-group-item">
+				<a asp-page="UpdateGoal" asp-route-goalSetId="@goal.GoalSetId" asp-route-goalId="@goal.Id" class="text-decoration-none text-dark">
+					<h5 class="mb-1">@goal.Title</h5>
+					<div class="info-box">
+						<p class="mb-1">
+							<span><strong>Goal Type:</strong> @goal.GoalType.Name</span>
+							<span><strong>Percentage:</strong> @goal.Percentage</span>
+						</p>
+						<p class="mb-1">
+							<span><strong>Value Type:</strong> @goal.GoalValue.GoalValueType.Name</span>
+							<span><strong>Min Value:</strong> @goal.GoalValue.MinValue</span>
+							<span><strong>Mid Value:</strong> @goal.GoalValue.MidValue</span>
+							<span><strong>Max Value:</strong> @goal.GoalValue.MaxValue</span>
+						</p>
+					</div>
+				</a>
+
+				<form method="post" asp-page-handler="UpdateProgress" class="mt-2 border-top pt-2">
+					<input type="hidden" name="goalSetId" value="@Model.GoalSet.Id" />
+					<input type="hidden" name="goalId" value="@goal.Id" />
+
+					<div class="d-flex align-items-center gap-2">
+						<div class="flex-grow-1">
+							<label class="form-label"><strong>Current Progress:</strong></label>
+							<input type="number"
+								   name="actualValue"
+								   min="@goal.GoalValue.MinValue"
+								   max="@goal.GoalValue.MaxValue"
+								   value="@goal.ActualValue"
+								   class="form-control" />
+						</div>
+
+						<div class="flex-grow-1">
+							<label class="form-label"><strong>Comment:</strong></label>
+							<input type="text"
+								   name="comment"
+								   placeholder="(Optional)"
+								   class="form-control"
+								   value="@(goal.GoalProgressHistory.Count > 0 ? goal.GoalProgressHistory.Last().Comment : "")" />
+						</div>
+
+						<div class="align-self-end">
+							<button type="submit" class="btn btn-sm btn-success">Update</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		}
+	</div>
 }
