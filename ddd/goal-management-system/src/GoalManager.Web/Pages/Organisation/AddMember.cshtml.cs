@@ -50,7 +50,7 @@ public class AddMemberModel(IMediator mediator) : PageModelBase
     if (usersResult.IsSuccess)
     {
       var users = usersResult.Value.Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
-      Users.Add(new SelectListItem("Choose..", string.Empty));
+      //Users.Add(new SelectListItem("Choose..", string.Empty));
       Users.AddRange(users);
     }
 
@@ -61,7 +61,7 @@ public class AddMemberModel(IMediator mediator) : PageModelBase
     if (memberTypesResult.IsSuccess)
     {
       var memberTypes = memberTypesResult.Value.Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
-      MemberTypes.Add(new SelectListItem("Choose..", string.Empty));
+      //MemberTypes.Add(new SelectListItem("Choose..", string.Empty));
       MemberTypes.AddRange(memberTypes);
     }
 

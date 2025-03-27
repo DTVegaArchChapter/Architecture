@@ -56,7 +56,7 @@ public class UpdateGoalModel(IMediator mediator) : PageModelBase
     if (goalTypesResult.IsSuccess)
     {
       var goalTypes = goalTypesResult.Value.Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
-      GoalTypeOptions.Add(new SelectListItem("Choose..", string.Empty));
+      //GoalTypeOptions.Add(new SelectListItem("Choose..", string.Empty));
       GoalTypeOptions.AddRange(goalTypes);
     }
 
@@ -67,7 +67,7 @@ public class UpdateGoalModel(IMediator mediator) : PageModelBase
     if (goalValueTypesResult.IsSuccess)
     {
       var goalValueTypes = goalValueTypesResult.Value.Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
-      GoalValueTypeOptions.Add(new SelectListItem("Choose..", string.Empty));
+      //GoalValueTypeOptions.Add(new SelectListItem("Choose..", string.Empty));
       GoalValueTypeOptions.AddRange(goalValueTypes);
     }
 

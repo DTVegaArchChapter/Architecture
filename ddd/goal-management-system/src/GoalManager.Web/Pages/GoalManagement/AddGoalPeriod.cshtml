@@ -1,8 +1,23 @@
 ﻿@page "{teamId:int}"
 @model GoalManager.Web.Pages.GoalManagement.AddGoalPeriodModel
 @{
-    ViewData["Title"] = "Add Goal Period";
+	ViewData["Title"] = "Add Goal Period";
 }
 
-<h1 class="bg-info text-white mb-2 p-1">Add Goal Period</h1>
-<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div class="container py-4">
+	<div class="text-center mb-4">
+		<h1 class="h4 fw-light">Add Goal Period</h1>
+	</div>
+
+	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+</div>
+
+<style>
+	.container {
+		max-width: 800px;
+	}
+
+	.fw-light {
+		font-weight: 300;
+	}
+</style>

@@ -1,32 +1,83 @@
 ﻿@page "{goalSetId:int}/{goalId:int}"
 @model GoalManager.Web.Pages.GoalManagement.UpdateGoalModel
 @{
-    ViewData["Title"] = "Update Goal";
+	ViewData["Title"] = "Update Goal";
 }
 
-<h1 class="bg-info text-white mb-2 p-1">Update Goal</h1>
-<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
-<div asp-validation-summary="All" class="text-danger"></div>
-<form method="post">
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="GoalTypeId" class="form-label"></label>
-        <select asp-for="@Model.GoalTypeId" asp-items="Model.GoalTypeOptions"></select>
-        <span asp-validation-for="GoalTypeId" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Percentage" class="form-label"></label>
-        <input asp-for="@Model.Percentage" class="form-control" />
-        <span asp-validation-for="Percentage" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="GoalValueTypeId" class="form-label"></label>
-        <select asp-for="@Model.GoalValueTypeId" asp-items="Model.GoalValueTypeOptions"></select>
-        <span asp-validation-for="GoalValueTypeId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Update</button>
-</form>
+<div class="container py-4">
+	<div class="text-center mb-5">
+		<h1 class="h3 fw-light mb-2">Update Goal</h1>
+		<p class="text-muted">Modify your goal details</p>
+	</div>
+
+	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+	<div class="card border-0 shadow-sm mx-auto" style="max-width: 800px;">
+		<div class="card-body p-4 p-md-5">
+			<form method="post">
+				<div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+				<div class="row g-3">
+					<div class="col-md-12">
+						<label asp-for="Title" class="form-label small text-muted">Goal Title</label>
+						<input asp-for="Title" class="form-control" placeholder="Enter goal title" />
+						<span asp-validation-for="Title" class="text-danger small"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label asp-for="GoalTypeId" class="form-label small text-muted">Goal Type</label>
+						<select asp-for="GoalTypeId" asp-items="Model.GoalTypeOptions" class="form-select">
+							<option value="">Select goal type</option>
+						</select>
+						<span asp-validation-for="GoalTypeId" class="text-danger small"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label asp-for="Percentage" class="form-label small text-muted">Percentage</label>
+						<div class="input-group">
+							<input asp-for="Percentage" class="form-control" placeholder="0-100" />
+							<span class="input-group-text">%</span>
+						</div>
+						<span asp-validation-for="Percentage" class="text-danger small"></span>
+					</div>
+
+					<div class="col-md-12">
+						<label asp-for="GoalValueTypeId" class="form-label small text-muted">Value Type</label>
+						<select asp-for="GoalValueTypeId" asp-items="Model.GoalValueTypeOptions" class="form-select">
+							<option value="">Select value type</option>
+						</select>
+						<span asp-validation-for="GoalValueTypeId" class="text-danger small"></span>
+					</div>
+				</div>
+
+				<div class="mt-4 pt-3 border-top">
+					<button type="submit" class="btn btn-primary px-4">
+						<i class="fas fa-save me-2"></i>Update Goal
+					</button>
+					<a href="##" class="btn btn-outline-secondary ms-2" onClick="history.go(-1); return false;">Cancel</a>
+
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<style>
+	.form-control, .form-select {
+		border-radius: 0.25rem;
+		border: 1px solid #dee2e6;
+	}
+
+		.form-control:focus, .form-select:focus {
+			border-color: #86b7fe;
+			box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+		}
+
+	.card {
+		border-radius: 0.5rem;
+	}
+
+	.input-group-text {
+		background-color: #f8f9fa;
+	}
+</style>

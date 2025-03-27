@@ -1,28 +1,81 @@
 ﻿@page "AddMember/{organisationId:int}/{teamId:int}"
 @model GoalManager.Web.Pages.Organisation.AddMemberModel
 @{
-    ViewData["Title"] = "Add Member to Team";
+	ViewData["Title"] = "Add Team Member";
 }
 
-<h1 class="bg-info text-white mb-2 p-1">Add Team Member to Team</h1>
-<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
-<div asp-validation-summary="All" class="text-danger"></div>
-<form method="post">
-    <div class="mb-3">
-        <label asp-for="@Model.TeamName" class="form-label"></label>
-        <input type="text" readonly class="form-control-plaintext" asp-for="@Model.TeamName" />
-        <span asp-validation-for="@Model.TeamName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="@Model.UserId" class="form-label"></label>
-        <select asp-for="@Model.UserId" asp-items="Model.Users"></select>
-        <span asp-validation-for="@Model.UserId" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="@Model.MemberTypeId" class="form-label"></label>
-        <select asp-for="@Model.MemberTypeId" asp-items="Model.MemberTypes"></select>
-        <span asp-validation-for="@Model.MemberTypeId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Add</button>
-    <a asp-page="UpdateTeam" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@RouteData.Values["teamId"]" class="btn btn-secondary">Cancel</a>
-</form>
+<div class="container py-4">
+	<div class="text-center mb-5">
+		<h1 class="h3 fw-light mb-2">Add Team Member</h1>
+		<p class="text-muted">Add a new member to @Model.TeamName</p>
+	</div>
+
+	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+	<div class="card border-0 shadow-sm mx-auto" style="max-width: 600px;">
+		<div class="card-body p-4 p-md-5">
+			<form method="post">
+				<div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+				<div class="mb-4">
+					<label class="form-label small text-muted">Team</label>
+					<div class="form-control bg-light bg-opacity-50">
+						@Model.TeamName
+					</div>
+					<input type="hidden" asp-for="TeamName" />
+				</div>
+
+				<div class="mb-4">
+					<label asp-for="UserId" class="form-label small text-muted">Select User</label>
+					<select asp-for="UserId" asp-items="Model.Users" class="form-control form-select">
+						<option value="">Select a user</option>
+					</select>
+					<span asp-validation-for="UserId" class="text-danger small"></span>
+				</div>
+
+				<div class="mb-4">
+					<label asp-for="MemberTypeId" class="form-label small text-muted">Member Type</label>
+					<select asp-for="MemberTypeId" asp-items="Model.MemberTypes" class="form-control form-select">
+						<option value="">Select member type</option>
+					</select>
+					<span asp-validation-for="MemberTypeId" class="text-danger small"></span>
+				</div>
+
+				<div class="mt-4 pt-3 border-top d-flex justify-content-between">
+					<button type="submit" class="btn btn-primary px-4">
+						<i class="fas fa-user-plus me-2"></i>Add Member
+					</button>
+					<a asp-page="UpdateTeam"
+					   asp-route-organisationId="@RouteData.Values["organisationId"]"
+					   asp-route-teamId="@RouteData.Values["teamId"]"
+					   class="btn btn-outline-secondary">
+						Cancel
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<style>
+	.form-control, .form-select {
+		border-radius: 0.25rem;
+		border: 1px solid #dee2e6;
+	}
+
+		.form-control:focus, .form-select:focus {
+			border-color: #86b7fe;
+			box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+		}
+
+	.card {
+		border-radius: 0.5rem;
+	}
+
+	.form-select {
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+		background-repeat: no-repeat;
+		background-position: right 0.75rem center;
+		background-size: 16px 12px;
+	}
+</style>

@@ -1,64 +1,143 @@
 ﻿@page "{organisationId:int}/{teamId:int}"
 @model GoalManager.Web.Pages.Organisation.UpdateTeamModel
 @{
-    ViewData["Title"] = "Update Team";
+	ViewData["Title"] = "Update Team";
 }
 
-<h1 class="bg-info text-white mb-2 p-1">Update Team</h1>
-<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+<div class="container py-4">
+	<div class="text-center mb-5">
+		<h1 class="h3 fw-light mb-2">Update Team</h1>
+		<p class="text-muted">Manage team details and members</p>
+	</div>
 
-@if (Model.Team != null)
-{
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <form method="post">
-        <div class="mb-3">
-            <label asp-for="@Model.TeamName" class="form-label"></label>
-            <input type="text" asp-for="@Model.TeamName" class="form-control" />
-            <span asp-validation-for="@Model.TeamName" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a asp-page="Update" asp-route-id="@RouteData.Values["organisationId"]" class="btn btn-secondary">Cancel</a>
-    </form>
+	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
 
-    <div class="d-flex justify-content-end">
-        <a asp-page="AddMember" asp-route-organisationId="@RouteData.Values["organisationId"]" asp-route-teamId="@Model.Team.Id" class="btn btn-secondary mb-2 me-1">Add new Member</a>
-        <a asp-page="/GoalManagement/AddGoalPeriod" asp-route-teamid="@Model.Team.Id" class="btn btn-secondary mb-2 me-1">Create Goal Period</a>
-    </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Member Type</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!Model.Team.TeamMembers.Any())
-            {
-                <tr>
-                    <td class="bg-light" colspan="100%">
-                        <div class="p-2">There is no team members added!</div>
-                    </td>
-                </tr>
-            }
-            @foreach (var member in Model.Team.TeamMembers)
-            {
-                <tr>
-                    <th scope="row">@member.Id</th>
-                    <td>@member.Name</td>
-                    <td>@member.MemberType</td>
-                    <td>
-                        <div class="d-flex justify-content-end">
-                            <form asp-page-handler="RemoveMember" asp-route-userid="@member.UserId" method="post">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    Remove
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+	@if (Model.Team != null)
+	{
+		<div class="card border-0 shadow-sm mb-4">
+			<div class="card-body p-4 p-md-5">
+				<form method="post">
+					<div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+					<div class="mb-4">
+						<label asp-for="TeamName" class="form-label small text-muted">Team Name</label>
+						<input asp-for="TeamName" class="form-control" placeholder="Enter team name" />
+						<span asp-validation-for="TeamName" class="text-danger small"></span>
+					</div>
+
+					<div class="mt-4 pt-3 border-top d-flex justify-content-between">
+						<button type="submit" class="btn btn-primary px-4">
+							<i class="fas fa-save me-2"></i>Update Team
+						</button>
+						<a asp-page="Update" asp-route-id="@RouteData.Values["organisationId"]" class="btn btn-outline-secondary">
+							Cancel
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h2 class="h4 fw-light">Team Members</h2>
+			<div>
+				<a asp-page="AddMember"
+				   asp-route-organisationId="@RouteData.Values["organisationId"]"
+				   asp-route-teamId="@Model.Team.Id"
+				   class="btn btn-primary me-2">
+					<i class="fas fa-user-plus me-2"></i>Add Member
+				</a>
+				<a asp-page="/GoalManagement/AddGoalPeriod"
+				   asp-route-teamid="@Model.Team.Id"
+				   class="btn btn-outline-primary">
+					<i class="fas fa-calendar-plus me-2"></i>Create Goal Period
+				</a>
+			</div>
+		</div>
+
+		@if (!Model.Team.TeamMembers.Any())
+		{
+			<div class="card border-0 shadow-sm text-center py-5">
+				<i class="fas fa-users fa-3x text-muted mb-3"></i>
+				<h3 class="h5 fw-normal">No team members</h3>
+				<p class="text-muted">Add members to get started</p>
+			</div>
+		}
+		else
+		{
+			<div class="card border-0 shadow-sm">
+				<div class="table-responsive">
+					<table class="table table-hover mb-0">
+						<thead class="bg-light">
+							<tr>
+								<th class="border-0">#</th>
+								<th class="border-0">Member</th>
+								<th class="border-0">Type</th>
+								<th class="border-0 text-end"></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var member in Model.Team.TeamMembers)
+							{
+								<tr>
+									<td>
+										<div class="d-flex align-items-center">
+											<div>
+												<div>@member.Id</div>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="d-flex align-items-center">
+											<div>
+												<div>@member.Name</div>
+											</div>
+										</div>
+									</td>
+									<td>
+										<span class="badge bg-light text-dark">@member.MemberType</span>
+									</td>
+									<td class="text-end">
+										<form asp-page-handler="RemoveMember"
+											  asp-route-userid="@member.UserId"
+											  method="post">
+											<button type="submit"
+													class="btn btn-sm btn-outline-danger"
+													onclick="return confirm('Are you sure you want to remove this member?')">
+												<i class="fas fa-trash-alt"></i>
+											</button>
+										</form>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		}
+	}
+</div>
+
+<style>
+	.form-control, .form-select {
+		border-radius: 0.25rem;
+		border: 1px solid #dee2e6;
+	}
+
+		.form-control:focus, .form-select:focus {
+			border-color: #86b7fe;
+			box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+		}
+
+	.card {
+		border-radius: 0.5rem;
+	}
+
+	.table-hover tbody tr:hover {
+		background-color: rgba(0, 0, 0, 0.02);
+	}
+
+	.badge {
+		padding: 0.35em 0.65em;
+		font-weight: 500;
+	}
+</style>
