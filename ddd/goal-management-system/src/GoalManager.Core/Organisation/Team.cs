@@ -10,7 +10,7 @@ public class Team : EntityBase
   private Team() { }
 #pragma warning restore CS8618
  
-  private Team(string name, int organisationId, IList<TeamMember> teamMembers)
+  private Team(TeamName name, int organisationId, IList<TeamMember> teamMembers)
   {
     OrganisationId = organisationId;
     SetName(name);
@@ -19,7 +19,7 @@ public class Team : EntityBase
 
   private const int MaxTeamMemberCount = 10;
 
-  public string Name { get; private set; } = null!;
+  public TeamName Name { get; private set; }
 
   public int OrganisationId { get; private set; }
 
@@ -27,13 +27,8 @@ public class Team : EntityBase
 
   public Organisation Organisation { get; private set; } = null!;
 
-  internal static Result<Team> Create(string name, int organisationId)
+  internal static Result<Team> Create(TeamName name, int organisationId)
   {
-    if (string.IsNullOrWhiteSpace(name))
-    {
-      return Result<Team>.Error("Team name is required");
-    }
-
     var team = new Team(name, organisationId, new List<TeamMember>());
     team.RegisterTeamCreatedEvent();
     return team;
@@ -87,18 +82,18 @@ public class Team : EntityBase
 
   private void RegisterTeamCreatedEvent()
   {
-    RegisterDomainEvent(new TeamCreatedEvent(Name));
+    RegisterDomainEvent(new TeamCreatedEvent(Name.Value));
   }
 
-  public void Update(string name)
+  public void Update(TeamName name)
   {
     SetName(name);
 
-    RegisterDomainEvent(new TeamUpdatedEvent(Id, Name));
+    RegisterDomainEvent(new TeamUpdatedEvent(Id, Name.Value));
   }
 
-  private void SetName(string name)
+  private void SetName(TeamName name)
   {
-    Name = Guard.Against.NullOrWhiteSpace(name);
+    Name = name;
   }
 }

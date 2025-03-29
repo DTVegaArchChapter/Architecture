@@ -25,7 +25,13 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
 {
   public async Task<Result<int>> CreateOrganisation(string name, CancellationToken cancellationToken = default)
   {
-    var createResult = Organisation.Create(name);
+    var organisationNameResult = OrganisationName.Create(name);
+    if (!organisationNameResult.IsSuccess)
+    {
+      return organisationNameResult.ToResult();
+    }
+    
+    var createResult = Organisation.Create(organisationNameResult.Value);
     if (!createResult.IsSuccess)
     {
       return createResult.ToResult();
@@ -55,8 +61,14 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
     {
       return Result.Error($"Organisation with name '{name}' already exists");
     }
-
-    organisation.Update(name);
+    
+    var organisationNameResult = OrganisationName.Create(name);
+    if (!organisationNameResult.IsSuccess)
+    {
+      return organisationNameResult.ToResult();
+    }
+    
+    organisation.Update(organisationNameResult.Value);
 
     await repository.UpdateAsync(organisation, cancellationToken).ConfigureAwait(false);
 
@@ -91,7 +103,13 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
       return Result.Error("Organisation is not found");
     }
 
-    var teamResult = organisation.AddTeam(teamName);
+    var teamNameResult = TeamName.Create(teamName);
+    if (!teamNameResult.IsSuccess)
+    {
+      return teamNameResult.ToResult();
+    }
+    
+    var teamResult = organisation.AddTeam(teamNameResult.Value);
     if (!teamResult.IsSuccess)
     {
       return teamResult;
@@ -109,8 +127,14 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
     {
       return Result.Error("Organisation is not found");
     }
-
-    var teamResult = organisation.UpdateTeam(teamId, teamName);
+    
+    var teamNameResult = TeamName.Create(teamName);
+    if (!teamNameResult.IsSuccess)
+    {
+      return teamNameResult.ToResult();
+    }
+    
+    var teamResult = organisation.UpdateTeam(teamId, teamNameResult.Value);
     if (!teamResult.IsSuccess)
     {
       return teamResult;
