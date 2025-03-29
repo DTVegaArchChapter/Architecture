@@ -1,4 +1,5 @@
-﻿using GoalManager.Core.GoalManagement.Events;
+﻿using Ardalis.Result;
+using GoalManager.Core.GoalManagement.Events;
 
 namespace GoalManager.Core.GoalManagement;
 
@@ -27,9 +28,19 @@ public class Goal : EntityBase
     Percentage = percentage;
   }
 
-  public void SetActualValue(int value)
+  public Result SetActualValue(int value)
   {
+    if(value > GoalValue.MaxValue)
+    {
+      return Result.Error("Actual value cannot be bigger than max value");
+    }
+    if(value < GoalValue.MinValue)
+    {
+      return Result.Error("Actual value cannot be less than min value");
+    }
     ActualValue = value;
+
+    return Result.Success();
   }
 
   internal static Result<Goal> Create(int goalSetId, string title, GoalType goalType, GoalValue goalValue, int percentage)
@@ -58,7 +69,19 @@ public class Goal : EntityBase
 
     return Result.Success();
   }
+public Result AddProgress(int actualValue, string? comment, GoalProgressStatus status)
+{
+    var setValueResult = SetActualValue(actualValue);
+    if (!setValueResult.IsSuccess)
+        return setValueResult;
 
+    var progressResult = GoalProgress.Create(Id, actualValue, comment, status);
+    if (!progressResult.IsSuccess)
+        return progressResult.ToResult();
+
+    _goalProgressHistory.Add(progressResult.Value);
+    return Result.Success();
+}
   private void RegisterGoalCreatedEvent()
   {
     RegisterDomainEvent(new GoalCreatedEvent(Title));

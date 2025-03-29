@@ -74,4 +74,13 @@ public class GoalSet : EntityBase, IAggregateRoot
   {
     return _goals.Sum(x => x.Percentage);
   }
+
+  public Result UpdateGoalProgress(int goalId, int actualValue, string? comment, GoalProgressStatus status)
+  {
+    var goal = _goals.FirstOrDefault(g => g.Id == goalId);
+    if (goal == null)
+      return Result.Error($"Goal not found for id: {goalId}");
+
+    return goal.AddProgress(actualValue, comment, status);
+  }
 }
