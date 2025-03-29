@@ -10,26 +10,21 @@ public class Organisation : EntityBase, IAggregateRoot
   private Organisation() { }
 #pragma warning restore CS8618
 
-  private Organisation(string name, IList<Team> teams)
+  private Organisation(OrganisationName organisationName, IList<Team> teams)
   {
-    Name = Guard.Against.NullOrWhiteSpace(name);
+    OrganisationName = organisationName;
     _teams = teams;
   }
 
   private const int MaxTeamCount = 5;
 
-  public string Name { get; private set; }
+  public OrganisationName OrganisationName { get; private set; }
 
   public IReadOnlyCollection<Team> Teams => _teams.AsReadOnly();
 
-  internal static Result<Organisation> Create(string name)
+  internal static Result<Organisation> Create(OrganisationName organisationName)
   {
-    if (string.IsNullOrWhiteSpace(name))
-    {
-      return Result<Organisation>.Error("Organisation name is required");
-    }
-
-    var organisation = new Organisation(name, new List<Team>());
+    var organisation = new Organisation(organisationName, new List<Team>());
     organisation.RegisterOrganisationCreatedEvent();
     return organisation;
   }
@@ -45,14 +40,14 @@ public class Organisation : EntityBase, IAggregateRoot
     return team;
   }
 
-  internal Result AddTeam(string name)
+  internal Result AddTeam(TeamName name)
   {
     if (Teams.Count >= MaxTeamCount)
     {
       return Result.Error($"Teams count cannot be bigger than {MaxTeamCount}");
     }
 
-    if (Teams.Any(x => string.Equals(x.Name, name, StringComparison.CurrentCultureIgnoreCase)))
+    if (Teams.Any(x => x.Name.Equals(name)))
     {
       return Result.Error($"Team with name '{name}' already exists");
     }
@@ -68,9 +63,9 @@ public class Organisation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
-  internal Result UpdateTeam(int teamId, string name)
+  internal Result UpdateTeam(int teamId, TeamName name)
   {
-    if (Teams.Any(x => string.Equals(x.Name, name, StringComparison.CurrentCultureIgnoreCase)))
+    if (Teams.Any(x => x.Name.Equals(name)))
     {
       return Result.Error($"Team with name '{name}' already exists");
     }
@@ -103,37 +98,32 @@ public class Organisation : EntityBase, IAggregateRoot
 
     _teams.Remove(team);
 
-    RegisterDomainEvent(new TeamDeletedEvent(team.Id, team.Name));
+    RegisterDomainEvent(new TeamDeletedEvent(team.Id, team.Name.Value));
 
     return Result.Success();
   }
 
   internal void Delete()
   {
-    RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name));
+    RegisterDomainEvent(new OrganisationDeletedEvent(Id, OrganisationName.Value));
   }
 
-  internal Result Update(string name)
+  internal Result Update(OrganisationName organisationName)
   {
-    var result = UpdateName(name);
+    var result = UpdateName(organisationName);
     if (!result.IsSuccess)
     {
       return result;
     }
 
-    RegisterDomainEvent(new OrganisationUpdatedEvent(Id, Name));
+    RegisterDomainEvent(new OrganisationUpdatedEvent(Id, OrganisationName.Value));
 
     return result;
   }
 
-  private Result UpdateName(string name)
+  private Result UpdateName(OrganisationName organisationName)
   {
-    if (string.IsNullOrWhiteSpace(name))
-    { 
-      return Result.Error("Organisation name is required");
-    }
-
-    Name = name;
+    OrganisationName = organisationName;
     return Result.Success();
   }
 
@@ -175,6 +165,6 @@ public class Organisation : EntityBase, IAggregateRoot
 
   private void RegisterOrganisationCreatedEvent()
   {
-    RegisterDomainEvent(new OrganisationCreatedEvent(Name));
+    RegisterDomainEvent(new OrganisationCreatedEvent(OrganisationName.Value));
   }
 }

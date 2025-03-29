@@ -1,28 +1,104 @@
 ﻿@using GoalManager.Infrastructure.Identity
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
+<div class="user-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
+    <div class="dropdown">
+        <button class="user-dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">            
+            <span class="d-none d-md-inline">@UserManager.GetUserName(User)</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-cog me-2"></i>Account Settings
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <div class="auth-links">
+        <a class="auth-link" id="login" asp-area="Identity" asp-page="/Account/Login">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+        </a>
+        <span class="divider">|</span>
+        <a class="auth-link" id="register" asp-area="Identity" asp-page="/Account/Register">
+            <i class="fas fa-user-plus me-1"></i>Register
+        </a>
+    </div>
 }
-</ul>
+</div>
+
+<style>
+    .user-nav {
+        display: flex;
+        align-items: center;
+    }
+    
+    .user-dropdown-toggle {
+        background: none;
+        border: none;
+        color: var(--color-primary);
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+    
+    .user-dropdown-toggle:hover {
+        color: var(--color-accent);
+    }
+    
+    .dropdown-menu {
+        border: 1px solid var(--color-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+    
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dropdown-item:hover {
+        background-color: var(--color-light-bg);
+    }
+    
+    .auth-links {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .auth-link {
+        color: var(--color-primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .auth-link:hover {
+        color: var(--color-accent);
+    }
+    
+    .divider {
+        color: var(--color-border);
+    }
+</style>

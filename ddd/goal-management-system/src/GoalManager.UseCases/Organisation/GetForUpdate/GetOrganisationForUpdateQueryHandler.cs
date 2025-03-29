@@ -15,11 +15,11 @@ internal sealed class GetOrganisationForUpdateQueryHandler(IRepository<Core.Orga
     return new OrganisationForUpdateDto
            {
              Id = organisation.Id,
-             OrganisationName = organisation.Name,
+             OrganisationName = organisation.OrganisationName.Value,
              Teams = organisation.Teams.Select(x => new OrganisationTeamDto
                                                     {
                                                       Id = x.Id,
-                                                      Name = x.Name,
+                                                      Name = x.Name.Value,
                                                       MemberCount = x.TeamMembers.Count
                                                     }).ToList()
            };

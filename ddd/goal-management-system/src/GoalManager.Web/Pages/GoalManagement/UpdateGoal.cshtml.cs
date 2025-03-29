@@ -1,20 +1,18 @@
-﻿using GoalManager.Core.GoalManagement;
-using System.ComponentModel.DataAnnotations;
-
-using GoalManager.UseCases.GoalManagement.AddGoal;
+﻿using System.ComponentModel.DataAnnotations;
+using GoalManager.Core.GoalManagement;
+using GoalManager.UseCases.GoalManagement.GetGoal;
 using GoalManager.UseCases.GoalManagement.GetGoalTypeLookup;
+using GoalManager.UseCases.GoalManagement.GetGoalValueTypeLookup;
+using GoalManager.UseCases.GoalManagement.UpdateGoal;
 using GoalManager.Web.Common;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-using GoalManager.UseCases.GoalManagement.GetGoalValueTypeLookup;
-
 namespace GoalManager.Web.Pages.GoalManagement;
 
 [Authorize]
-public class AddGoalModel(IMediator mediator) : PageModelBase
+public class UpdateGoalModel(IMediator mediator) : PageModelBase
 {
   [BindProperty]
   [Required(ErrorMessage = "Goal Title is required.")]
@@ -29,21 +27,6 @@ public class AddGoalModel(IMediator mediator) : PageModelBase
   public int? GoalValueTypeId { get; set; }
 
   [BindProperty]
-  [Required(ErrorMessage = "Min Value is required.")]
-  [Range(0, int.MaxValue, ErrorMessage = "Min Value must be a non-negative integer.")]
-  public int MinValue { get; set; }
-
-  [BindProperty]
-  [Required(ErrorMessage = "Mid Value is required.")]
-  [Range(0, int.MaxValue, ErrorMessage = "Mid Value must be a non-negative integer.")]
-  public int MidValue { get; set; }
-
-  [BindProperty]
-  [Required(ErrorMessage = "Max Value is required.")]
-  [Range(0, int.MaxValue, ErrorMessage = "Max Value must be a non-negative integer.")]
-  public int MaxValue { get; set; }
-
-  [BindProperty]
   [Required(ErrorMessage = "Percentage is required.")]
   [Range(0, int.MaxValue, ErrorMessage = "Percentage must be a non-negative integer.")]
   public int Percentage { get; set; }
@@ -51,8 +34,21 @@ public class AddGoalModel(IMediator mediator) : PageModelBase
   public List<SelectListItem> GoalTypeOptions { get; set; } = new();
   public List<SelectListItem> GoalValueTypeOptions { get; set; } = new();
 
-  public async Task<IActionResult> OnGetAsync()
+
+  public async Task<IActionResult> OnGetAsync(int goalSetId, int goalId)
   {
+    var goalResult = await mediator.Send(new GetGoalQuery(goalSetId, goalId)).ConfigureAwait(false);
+
+    AddResultMessages(goalResult);
+
+    if (goalResult.IsSuccess)
+    {
+      Title = goalResult.Value.Title;
+      Percentage = goalResult.Value.Percentage;
+      GoalValueTypeId = goalResult.Value.GoalValue.GoalValueType.Value;
+      GoalTypeId = goalResult.Value.GoalType.Value;
+    }
+
     var goalTypesResult = await mediator.Send(new GetGoalTypeLookupQuery()).ConfigureAwait(false);
 
     AddResultMessages(goalTypesResult);
@@ -78,31 +74,29 @@ public class AddGoalModel(IMediator mediator) : PageModelBase
     return Page();
   }
 
-  public async Task<IActionResult> OnPostAsync(int goalSetId)
+  public async Task<IActionResult> OnPostAsync(int goalSetId, int goalId)
   {
     if (!ModelState.IsValid)
     {
-      return await OnGetAsync().ConfigureAwait(false);
+      return await OnGetAsync(goalSetId, goalId).ConfigureAwait(false);
     }
 
     var result = await mediator.Send(
-                   new AddGoalCommand(
+                   new UpdateGoalCommand(
                      goalSetId,
+                     goalId,
                      Title,
                      GoalType.FromValue(GoalTypeId.GetValueOrDefault()),
-                     MinValue,
-                     MidValue,
-                     MaxValue,
                      GoalValueType.FromValue(GoalValueTypeId.GetValueOrDefault()),
                      Percentage));
-    
+
     AddResultMessages(result);
 
     if (!result.IsSuccess)
     {
-      return await OnGetAsync().ConfigureAwait(false);
+      return await OnGetAsync(goalSetId, goalId).ConfigureAwait(false);
     }
 
-    return RedirectToPageWithSuccessMessage("TeamGoals", new { result.Value.TeamId }, "Goal is Added");
+    return RedirectToPageWithSuccessMessage("UpdateGoal", new { result.Value.GoalSetId, result.Value.GoalId }, "Goal is updated");
   }
 }

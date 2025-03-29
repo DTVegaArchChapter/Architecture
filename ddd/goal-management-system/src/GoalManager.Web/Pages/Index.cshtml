@@ -1,15 +1,91 @@
 ﻿@page
 @model GoalManager.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-5">Goal Manager DDD Sample App</h1>
-    <h2 class="display-6">Modules</h2>
-    <ul class="list-group list-group-flush fs-4">
-        <li class="list-group-item"><a asp-page="/Organisation/List">Organisation</a></li>
-        <li class="list-group-item"><a asp-page="/Notification/List">Notifications</a></li>
-    </ul>
+<div class="app-container">
+    <div class="text-center mb-5">
+        <h1 class="h2 fw-light mb-3">Goal Manager</h1>
+        <p class="text-muted">Domain-Driven Design Sample Application</p>
+    </div>
+
+    <div class="card border-0 shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4">
+            <h2 class="h4 fw-normal mb-4 text-center">Modules</h2>
+            
+            <div class="d-grid gap-3">
+                <a asp-page="/Organisation/List" class="app-module-card">
+                    <div class="d-flex align-items-center">
+                        <div class="app-module-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="h5 mb-0">Organisation</h3>
+                            <p class="small text-muted mb-0">Manage teams and structure</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-muted"></i>
+                </a>
+
+                <a asp-page="/Notification/List" class="app-module-card">
+                    <div class="d-flex align-items-center">
+                        <div class="app-module-icon bg-info bg-opacity-10 text-info">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h3 class="h5 mb-0">Notifications</h3>
+                            <p class="small text-muted mb-0">View system notifications</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-muted"></i>
+                </a>
+
+				<a asp-page="/GoalManagement/Goals" class="app-module-card">
+					<div class="d-flex align-items-center">
+						<div class="app-module-icon bg-info bg-opacity-10 text-info">
+							<i class="far fa-circle"></i>
+						</div>
+						<div class="ms-3">
+							<h3 class="h5 mb-0">Goals</h3>
+							<p class="small text-muted mb-0">Manage goals</p>
+						</div>
+					</div>
+					<i class="fas fa-chevron-right text-muted"></i>
+				</a>
+            </div>
+        </div>
+    </div>
 </div>
 
+<style>
+    .app-module-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: var(--color-primary);
+        transition: all 0.2s ease;
+    }
+
+    .app-module-card:hover {
+        background-color: var(--color-light-bg);
+        transform: translateY(-2px);
+    }
+
+    .app-module-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .d-grid.gap-3 {
+        grid-gap: 1rem;
+    }
+</style>

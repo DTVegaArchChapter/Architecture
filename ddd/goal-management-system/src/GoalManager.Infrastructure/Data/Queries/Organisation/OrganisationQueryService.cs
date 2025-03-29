@@ -14,13 +14,13 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
                   .Select(x => new UserTeamListItemDto
                                {
                                  TeamId = x.TeamId,
-                                 TeamName = x.Team.Name
+                                 TeamName = x.Team.Name.Value
                                }).ToListAsync();
   }
 
   public Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take)
   {
-    return dbContext.Organisation.Select(x => new OrganisationListItemDto(x.Id, x.Name, x.Teams.Count))
+    return dbContext.Organisation.Select(x => new OrganisationListItemDto(x.Id, x.OrganisationName.Value, x.Teams.Count))
       .Skip(skip ?? 0).Take(take ?? 10)
       .ToListAsync();
   }
@@ -28,12 +28,12 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
   public Task<TeamForUpdateDto?> GetTeamForUpdate(int id)
   {
     return dbContext.Team.Where(x => x.Id == id).Select(
-        x => new TeamForUpdateDto(x.Id, x.Name, x.TeamMembers.Select(y => new TeamMemberDto(y.Id, y.UserId, y.Name, y.MemberType.Name))))
+        x => new TeamForUpdateDto(x.Id, x.Name.Value, x.TeamMembers.Select(y => new TeamMemberDto(y.Id, y.UserId, y.Name, y.MemberType.Name))))
       .SingleOrDefaultAsync();
   }
 
   public Task<string?> GetTeamNameAsync(int id)
   {
-    return dbContext.Team.Where(x => x.Id == id).Select(x => x.Name).SingleOrDefaultAsync();
+    return dbContext.Team.Where(x => x.Id == id).Select(x => x.Name.Value).SingleOrDefaultAsync();
   }
 }
