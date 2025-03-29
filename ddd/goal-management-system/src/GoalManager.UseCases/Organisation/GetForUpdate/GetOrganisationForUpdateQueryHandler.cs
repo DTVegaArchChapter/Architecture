@@ -15,7 +15,7 @@ internal sealed class GetOrganisationForUpdateQueryHandler(IRepository<Core.Orga
     return new OrganisationForUpdateDto
            {
              Id = organisation.Id,
-             OrganisationName = organisation.OrganisationName.Value,
+             OrganisationName = organisation.Name.Value,
              Teams = organisation.Teams.Select(x => new OrganisationTeamDto
                                                     {
                                                       Id = x.Id,

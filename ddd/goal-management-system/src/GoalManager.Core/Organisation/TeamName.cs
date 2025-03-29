@@ -1,4 +1,4 @@
-namespace GoalManager.Core.Organisation;
+﻿namespace GoalManager.Core.Organisation;
 
 public readonly record struct TeamName
 {
@@ -22,6 +22,11 @@ public readonly record struct TeamName
   public override int GetHashCode()
   {
     return Value.GetHashCode();
+  }
+
+  public override string ToString()
+  {
+    return Value;
   }
 
   public static Result<TeamName> Create(string value)

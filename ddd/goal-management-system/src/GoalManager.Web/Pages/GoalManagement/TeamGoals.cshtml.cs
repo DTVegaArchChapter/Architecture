@@ -30,23 +30,21 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
   }
 
   public async Task<IActionResult> OnPostUpdateProgressAsync(
+      int teamId,
       int goalSetId,
       int goalId,
       int actualValue,
       string comment)
   {
-    var user = HttpContext.GetUserContext();
-
     var result = await mediator.Send(new UpdateGoalProgressCommand(
         GoalSetId: goalSetId,
         GoalId: goalId,
         ActualValue: actualValue,
-        Comment: comment,
-        GoalProgressStatus: GoalProgressStatus.WaitingForApproval
-    ));
+        Comment: comment
+    )).ConfigureAwait(false);
 
     AddResultMessages(result);
 
-    return RedirectToPage("TeamGoals", new { teamId = RouteData.Values["teamId"] });
+    return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 }

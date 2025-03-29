@@ -8,7 +8,7 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Core.Organisat
   {
     builder.HasKey(p => p.Id);
 
-    builder.Property(p => p.OrganisationName)
+    builder.Property(p => p.Name)
       .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
       .HasConversion(x => x.Value, x => new OrganisationName(x))
       .IsRequired();
@@ -18,6 +18,6 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Core.Organisat
       .WithOne(p => p.Organisation)
       .HasForeignKey(p => p.OrganisationId);
 
-    builder.HasIndex(p => p.OrganisationName).IsUnique();
+    builder.HasIndex(p => p.Name).IsUnique();
   }
 }

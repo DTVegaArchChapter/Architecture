@@ -34,10 +34,12 @@ public class Goal : EntityBase
     {
       return Result.Error("Actual value cannot be bigger than max value");
     }
+
     if(value < GoalValue.MinValue)
     {
       return Result.Error("Actual value cannot be less than min value");
     }
+
     ActualValue = value;
 
     return Result.Success();
@@ -73,13 +75,29 @@ public Result AddProgress(int actualValue, string? comment, GoalProgressStatus s
 {
     var setValueResult = SetActualValue(actualValue);
     if (!setValueResult.IsSuccess)
-        return setValueResult;
+    {
+      return setValueResult;
+    }
 
     var progressResult = GoalProgress.Create(Id, actualValue, comment, status);
     if (!progressResult.IsSuccess)
-        return progressResult.ToResult();
+    {
+      return progressResult.ToResult();
+    }
 
-    _goalProgressHistory.Add(progressResult.Value);
+    var waitingForApprovalGoalProgress  = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
+    if (waitingForApprovalGoalProgress == null)
+    {
+      _goalProgressHistory.Add(progressResult.Value);
+    }
+    else
+    {
+      progressResult.Value.Id = waitingForApprovalGoalProgress.Id;
+
+      _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
+      _goalProgressHistory.Add(progressResult.Value);
+    }
+
     return Result.Success();
 }
   private void RegisterGoalCreatedEvent()

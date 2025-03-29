@@ -20,7 +20,7 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
 
   public Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take)
   {
-    return dbContext.Organisation.Select(x => new OrganisationListItemDto(x.Id, x.OrganisationName.Value, x.Teams.Count))
+    return dbContext.Organisation.Select(x => new OrganisationListItemDto(x.Id, x.Name.Value, x.Teams.Count))
       .Skip(skip ?? 0).Take(take ?? 10)
       .ToListAsync();
   }

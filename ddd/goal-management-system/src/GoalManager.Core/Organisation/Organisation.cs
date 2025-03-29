@@ -10,15 +10,15 @@ public class Organisation : EntityBase, IAggregateRoot
   private Organisation() { }
 #pragma warning restore CS8618
 
-  private Organisation(OrganisationName organisationName, IList<Team> teams)
+  private Organisation(OrganisationName name, IList<Team> teams)
   {
-    OrganisationName = organisationName;
+    Name = name;
     _teams = teams;
   }
 
   private const int MaxTeamCount = 5;
 
-  public OrganisationName OrganisationName { get; private set; }
+  public OrganisationName Name { get; private set; }
 
   public IReadOnlyCollection<Team> Teams => _teams.AsReadOnly();
 
@@ -105,7 +105,7 @@ public class Organisation : EntityBase, IAggregateRoot
 
   internal void Delete()
   {
-    RegisterDomainEvent(new OrganisationDeletedEvent(Id, OrganisationName.Value));
+    RegisterDomainEvent(new OrganisationDeletedEvent(Id, Name.Value));
   }
 
   internal Result Update(OrganisationName organisationName)
@@ -116,14 +116,14 @@ public class Organisation : EntityBase, IAggregateRoot
       return result;
     }
 
-    RegisterDomainEvent(new OrganisationUpdatedEvent(Id, OrganisationName.Value));
+    RegisterDomainEvent(new OrganisationUpdatedEvent(Id, Name.Value));
 
     return result;
   }
 
   private Result UpdateName(OrganisationName organisationName)
   {
-    OrganisationName = organisationName;
+    Name = organisationName;
     return Result.Success();
   }
 
@@ -165,6 +165,6 @@ public class Organisation : EntityBase, IAggregateRoot
 
   private void RegisterOrganisationCreatedEvent()
   {
-    RegisterDomainEvent(new OrganisationCreatedEvent(OrganisationName.Value));
+    RegisterDomainEvent(new OrganisationCreatedEvent(Name.Value));
   }
 }
