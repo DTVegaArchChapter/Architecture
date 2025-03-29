@@ -1,16 +1,48 @@
 ﻿@page
 @model GoalManager.Web.Pages.GoalManagement.ListTeamsModel
 @{
-    ViewData["Title"] = "Goals";
+    ViewData["Title"] = "Team Goals";
 }
 
-<h1 class="bg-info text-white mb-2 p-1">Please select a team for @Model.Year goals.</h1>
-<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
-<div class="text-center">
-    <ul class="list-group list-group-flush fs-4">
-        @foreach (var team in Model.Teams)
-        {
-            <li class="list-group-item"><a asp-page="TeamGoals" asp-route-teamId="@team.TeamId">@team.TeamName</a></li>
-        }
-    </ul>
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="h3 fw-light mb-3">Select a team for @Model.Year goals</h1>
+        <p class="text-muted">Choose a team to view or manage their goals</p>
+    </div>
+
+    <alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <ul class="list-group list-group-flush">
+                    @foreach (var team in Model.Teams)
+                    {
+                        <li class="list-group-item border-0 py-3 px-4">
+                            <a asp-page="TeamGoals" 
+                               asp-route-teamId="@team.TeamId"
+                               class="d-block text-decoration-none text-reset transition-all">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fs-5">@team.TeamName</span>
+                                    <i class="fas fa-chevron-right text-muted"></i>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .transition-all {
+        transition: all 0.2s ease;
+    }
+    .list-group-item:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    a:hover {
+        transform: translateX(3px);
+    }
+</style>

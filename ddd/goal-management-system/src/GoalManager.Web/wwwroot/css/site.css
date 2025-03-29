@@ -1,22 +1,158 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* 1. TEMEL RENKLER & TYPOGRAPHY */
+:root {
+    --color-primary: #222; /* Ana metin */
+    --color-secondary: #666; /* Alt metin */
+    --color-border: #e5e5e5; /* Çerçeveler */
+    --color-bg: #fff; /* Arkaplan */
+    --color-accent: #e4002b; /* Vurgu */
+    --color-light-bg: #f9f9f9; /* Sayfa arkaplan */
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--color-primary);
+    background-color: var(--color-light-bg);
 }
+
+/* 2. TYPOGRAPHY */
+h1, h2, h3, h4 {
+    font-weight: 400;
+    letter-spacing: -0.02em;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+    a:hover {
+        color: var(--color-secondary);
+        text-decoration: underline;
+    }
+
+/* 3. LAYOUT */
+.container {
+    max-width: 1200px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* 4. NAVBAR */
+.navbar {
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* 5. BUTONS */
+.btn {
+    border-radius: 0;
+    padding: 0.5rem 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+/* 6. CARDS */
+.card {
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    transition: transform 0.3s ease;
+    background-color: var(--color-bg);
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+/* 7. FORMS */
+.form-control {
+    border-radius: 0;
+    border: 1px solid var(--color-border);
+    padding: 0.75rem;
+}
+
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: none;
+    }
+
+/* 8. TABLES */
+.table {
+    color: var(--color-primary);
+}
+
+    .table th {
+        border-top: none;
+        border-bottom: 1px solid var(--color-border);
+        font-weight: 500;
+    }
+
+/* 9. UTILITIES */
+.border-light {
+    border-color: var(--color-border) !important;
+}
+
+.bg-light {
+    background-color: var(--color-light-bg) !important;
+}
+
+/* 10. RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+    body {
+        font-size: 0.95rem;
+    }
+}
+
+.form-range {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    background: #e9ecef;
+    border-radius: 5px;
+    outline: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+    .form-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+        .form-range::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+    .form-range::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        cursor: pointer;
+    }
