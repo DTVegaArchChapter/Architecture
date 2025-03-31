@@ -21,9 +21,9 @@
 					<div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
 
 					<div class="mb-4">
-						<label asp-for="Organisation.OrganisationName" class="form-label small text-muted">Organization Name</label>
-						<input asp-for="Organisation.OrganisationName" class="form-control" placeholder="Enter organization name" />
-						<span asp-validation-for="Organisation.OrganisationName" class="text-danger small"></span>
+						<label asp-for="@Model.Organisation.OrganisationName" class="form-label small text-muted">Organization Name</label>
+						<input asp-for="@Model.Organisation.OrganisationName" class="form-control" placeholder="Enter organization name" />
+						<span asp-validation-for="@Model.Organisation.OrganisationName" class="text-danger small"></span>
 					</div>
 
 					<div class="mt-4 pt-3 border-top d-flex justify-content-between">

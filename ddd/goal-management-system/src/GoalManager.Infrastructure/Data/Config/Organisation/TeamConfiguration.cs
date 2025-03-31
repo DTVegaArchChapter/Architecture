@@ -10,6 +10,7 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
 
     builder.Property(p => p.Name)
       .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
+      .HasConversion(x => x.Value, x => new TeamName(x))
       .IsRequired();
 
     builder

@@ -1,4 +1,6 @@
-﻿namespace GoalManager.Infrastructure.Data.Config.Organisation;
+﻿using GoalManager.Core.Organisation;
+
+namespace GoalManager.Infrastructure.Data.Config.Organisation;
 
 public class OrganisationConfiguration : IEntityTypeConfiguration<Core.Organisation.Organisation>
 {
@@ -8,6 +10,7 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Core.Organisat
 
     builder.Property(p => p.Name)
       .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
+      .HasConversion(x => x.Value, x => new OrganisationName(x))
       .IsRequired();
 
     builder

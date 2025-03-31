@@ -13,8 +13,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoalManager.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250225223610_AddGoalGoalSetGoalProgress")]
-    partial class AddGoalGoalSetGoalProgress
+    [Migration("20250331131611_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,11 @@ namespace GoalManager.Infrastructure.Data.Migrations
 
                     b.Property<int>("GoalType")
                         .HasColumnType("int");
+
+                    b.Property<int>("Percentage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Title")
                         .IsRequired()
