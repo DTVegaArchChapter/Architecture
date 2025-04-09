@@ -1,0 +1,38 @@
+# This is a generated file. Not intended for manual editing.
+version: "3.4"
+services:
+  webapp:
+    build:
+      context: "/home/boraa/Documents/Projects/Github/DTVegaArchChapter/Architecture/ddd/goal-management-system"
+      dockerfile: "src/GoalManager.Web/Dockerfile"
+      target: "base"
+      args:
+        BUILD_CONFIGURATION: "Debug"
+    command: []
+    entrypoint:
+    - "/opt/JetBrains/RiderDebuggerTools/linux-x64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/JetBrains/RiderDebuggerTools/JetBrains.Debugger.Worker.runtimeconfig.json"
+    - "--mode=server"
+    - "--frontend-port=57000"
+    - "--backend-port=57200"
+    - "--roslyn-worker-port=57400"
+    - "--timeout=60"
+    environment:
+      ASPNETCORE_STATICWEBASSETS: "/app/bin/Debug/net9.0/GoalManager.Web.staticwebassets.runtime.CT.json"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      RIDER_DEBUGGER_LOG_DIR: "/var/opt/JetBrains/RiderDebuggerTools"
+      RESHARPER_LOG_CONF: "/etc/opt/JetBrains/RiderDebuggerTools/backend-log.xml"
+    image: "webapp:dev"
+    ports:
+    - "127.0.0.1:57002:57000"
+    - "127.0.0.1:57202:57200"
+    - "127.0.0.1:57402:57400"
+    volumes:
+    - "/home/boraa/Documents/Projects/Github/DTVegaArchChapter/Architecture/ddd/goal-management-system/src/GoalManager.Web:/app:rw"
+    - "/home/boraa/Documents/Projects/Github/DTVegaArchChapter/Architecture/ddd/goal-management-system:/src:rw"
+    - "/home/boraa/.nuget/packages:/home/app/.nuget/packages"
+    - "/home/boraa/.local/share/JetBrains/RiderRemoteDebugger/2024.3.6/Linux64:/opt/JetBrains/RiderDebuggerTools"
+    - "/snap/rider/554/bin/backend-log.xml:/etc/opt/JetBrains/RiderDebuggerTools/backend-log.xml"
+    - "/home/boraa/.cache/JetBrains/Rider2024.3/log/DebuggerWorker/JetBrains.Debugger.Worker.2025_3_31_17_32_30:/var/opt/JetBrains/RiderDebuggerTools:rw"
+    working_dir: "/app"

@@ -1,4 +1,4 @@
-﻿using GoalManager.Core.Interfaces;
+using GoalManager.Core.Interfaces;
 using GoalManager.Core.Notification;
 
 using MediatR;

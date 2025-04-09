@@ -2,5 +2,5 @@
 
 public sealed class OrganisationByNameSpec : Specification<Organisation>
 {
-  public OrganisationByNameSpec(string name) => Query.Where(x => x.Name.Value == name);
+  public OrganisationByNameSpec(string name) => Query.Where(x => x.Name.Equals(name));
 }

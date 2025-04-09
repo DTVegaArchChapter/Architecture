@@ -23,4 +23,8 @@
     <ProjectReference Include="..\GoalManager.Core\GoalManager.Core.csproj" />
     <ProjectReference Include="..\GoalManager.UseCases\GoalManager.UseCases.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
 </Project>
