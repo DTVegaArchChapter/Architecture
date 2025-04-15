@@ -1,6 +1,32 @@
 ﻿@page "{teamId:int}"
 @model GoalManager.Web.Pages.GoalManagement.TeamGoalsModel
 
+@section Style
+{
+    <style>
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        a[asp-page="UpdateGoal"] {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+}
+
 <div class="container py-4">
 	<div class="d-flex justify-content-between align-items-center mb-4">
 		<div>
@@ -72,7 +98,7 @@
 											   max="@goal.GoalValue.MaxValue"
 											   value="@goal.ActualValue"
 											   class="form-range"
-											   oninput="updateSliderValue(this)" />
+											   oninput="updateSliderValue(this, @goal.Id)" />
 										<span id="sliderValue-@goal.Id" class="text-nowrap" style="min-width: 40px;">
 											@goal.ActualValue
 										</span>
@@ -102,31 +128,11 @@
 	}
 </div>
 
-<script>
-	function updateSliderValue(slider) {
-		document.getElementById('sliderValue-' + slider.closest('.card').id).textContent = slider.value;
-	}
-</script>
-
-<style>
-	.card {
-		border: 1px solid #e9ecef;
-		border-radius: 0.5rem;
-		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-		transition: transform 0.2s ease-in-out;
-	}
-
-		.card:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-		}
-
-	.card-body {
-		padding: 1.5rem;
-	}
-
-	a[asp-page="UpdateGoal"] {
-		position: relative;
-		z-index: 1;
-	}
-</style>
+@section Scripts
+{
+    <script>
+        function updateSliderValue(slider, id) {
+            document.getElementById('sliderValue-'+id).textContent = slider.value;
+        }
+    </script>
+}

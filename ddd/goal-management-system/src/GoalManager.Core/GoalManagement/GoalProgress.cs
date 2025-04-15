@@ -7,7 +7,7 @@ public class GoalProgress : EntityBase
     
   }
 
-  public GoalProgress(int goalId,int actualValue, string? comment, GoalProgressStatus status)
+  public GoalProgress(int goalId, int actualValue, string? comment, GoalProgressStatus status)
   {
     GoalId = goalId;
     ActualValue = actualValue;
@@ -21,7 +21,7 @@ public class GoalProgress : EntityBase
   public string? Comment { get; private set; }
   public GoalProgressStatus Status { get; set; } = null!;
 
-  public static Result<GoalProgress> Create(int goalId,int actualValue, string? comment, GoalProgressStatus goalProgressStatus)
+  public static Result<GoalProgress> Create(int goalId, int actualValue, string? comment, GoalProgressStatus goalProgressStatus)
   {
     var goalProgress = new GoalProgress(goalId, actualValue, comment, goalProgressStatus);
 
