@@ -10,7 +10,7 @@ public class MimeKitEmailSender(ILogger<MimeKitEmailSender> logger,
 
   public async Task SendEmailAsync(string to, string from, string subject, string body)
   {
-    _logger.LogWarning("Sending email to {to} from {from} with subject {subject} using {type}.", to, from, subject, this.ToString());
+    _logger.LogWarning("Sending email to {To} from {From} with subject {Subject} using {Type}.", to, from, subject, this.ToString());
 
     using var client = new MailKit.Net.Smtp.SmtpClient(); 
     await client.ConnectAsync(_mailserverConfiguration.Hostname, 
