@@ -30,11 +30,11 @@ public class Goal : EntityBase
 
   public Result SetActualValue(int value)
   {
-    if(value > GoalValue.MaxValue)
+    if (value > GoalValue.MaxValue)
     {
       return Result.Error("Actual value cannot be bigger than max value");
     }
-    if(value < GoalValue.MinValue)
+    if (value < GoalValue.MinValue)
     {
       return Result.Error("Actual value cannot be less than min value");
     }
@@ -69,21 +69,45 @@ public class Goal : EntityBase
 
     return Result.Success();
   }
-public Result AddProgress(int actualValue, string? comment, GoalProgressStatus status)
-{
+  public Result AddProgress(int actualValue, string? comment, GoalProgressStatus status)
+  {
     var setValueResult = SetActualValue(actualValue);
     if (!setValueResult.IsSuccess)
-        return setValueResult;
+      return setValueResult;
 
     var progressResult = GoalProgress.Create(Id, actualValue, comment, status);
     if (!progressResult.IsSuccess)
-        return progressResult.ToResult();
+      return progressResult.ToResult();
+    //Diğer kayıtları siliyoruz 
+    _goalProgressHistory.Clear();
 
     _goalProgressHistory.Add(progressResult.Value);
     return Result.Success();
-}
+  }
   private void RegisterGoalCreatedEvent()
   {
     RegisterDomainEvent(new GoalCreatedEvent(Title));
+  }
+
+  public Result UpdateProgressStatus(GoalProgressStatus newStatus, string? comment = null)
+  {
+    if (!_goalProgressHistory.Any())
+      return Result.Error("No progress record found to update");
+
+    var latestProgress = _goalProgressHistory.OrderByDescending(p => p.Id).First();
+
+    var updatedProgress = GoalProgress.Create(
+        Id,
+        latestProgress.ActualValue,
+        comment ?? latestProgress.Comment,
+        newStatus);
+
+    if (!updatedProgress.IsSuccess)
+      return updatedProgress.ToResult();
+
+    _goalProgressHistory.Remove(latestProgress);
+    _goalProgressHistory.Add(updatedProgress.Value);
+
+    return Result.Success();
   }
 }

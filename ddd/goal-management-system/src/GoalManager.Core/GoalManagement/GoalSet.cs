@@ -62,7 +62,7 @@ public class GoalSet : EntityBase, IAggregateRoot
     }
 
     var totalPercentage = GetGoalsTotalPercentage();
-    if ((totalPercentage-goal.Percentage) + percentage > 100)
+    if ((totalPercentage - goal.Percentage) + percentage > 100)
     {
       return Result.Error($"Total percentage of goals cannot exceed 100. Current total percentage is {totalPercentage}");
     }
@@ -82,5 +82,13 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Goal not found for id: {goalId}");
 
     return goal.AddProgress(actualValue, comment, status);
+  }
+  public Result UpdateGoalStatus(int goalId, GoalProgressStatus status, string? comment = null)
+  {
+    var goal = _goals.FirstOrDefault(g => g.Id == goalId);
+    if (goal == null)
+      return Result.Error($"Goal not found for id: {goalId}");
+
+    return goal.UpdateProgressStatus(status, comment);
   }
 }
