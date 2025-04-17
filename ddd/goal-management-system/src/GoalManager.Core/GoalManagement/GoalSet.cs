@@ -55,7 +55,6 @@ public class GoalSet : EntityBase, IAggregateRoot
   public Result UpdateGoal(int goalId, string title, GoalType goalType, GoalValue goalValue, int percentage)
   {
     var goal = _goals.SingleOrDefault(x => x.Id == goalId);
-
     if (goal == null)
     {
       return Result.Error($"Goal not found for id: {goalId}");
@@ -77,9 +76,11 @@ public class GoalSet : EntityBase, IAggregateRoot
 
   public Result UpdateGoalProgress(int goalId, int actualValue, string? comment, GoalProgressStatus status)
   {
-    var goal = _goals.FirstOrDefault(g => g.Id == goalId);
+    var goal = _goals.SingleOrDefault(g => g.Id == goalId);
     if (goal == null)
+    {
       return Result.Error($"Goal not found for id: {goalId}");
+    }
 
     return goal.AddProgress(actualValue, comment, status);
   }

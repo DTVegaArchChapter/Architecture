@@ -1,4 +1,4 @@
-namespace GoalManager.Core.Organisation;
+﻿namespace GoalManager.Core.Organisation;
 
 public readonly record struct OrganisationName
 {
@@ -12,6 +12,11 @@ public readonly record struct OrganisationName
     }
 
     Value = value;
+  }
+
+  public override string ToString()
+  {
+    return Value;
   }
 
   public static Result<OrganisationName> Create(string value)

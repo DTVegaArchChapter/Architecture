@@ -81,7 +81,10 @@ public class Goal : EntityBase
     //Diğer kayıtları siliyoruz 
     _goalProgressHistory.Clear();
 
-    _goalProgressHistory.Add(progressResult.Value);
+      _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
+      _goalProgressHistory.Add(progressResult.Value);
+    }
+
     return Result.Success();
   }
   private void RegisterGoalCreatedEvent()
