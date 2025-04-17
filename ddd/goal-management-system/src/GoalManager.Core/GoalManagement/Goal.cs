@@ -78,12 +78,9 @@ public class Goal : EntityBase
     var progressResult = GoalProgress.Create(Id, actualValue, comment, status);
     if (!progressResult.IsSuccess)
       return progressResult.ToResult();
-    //Diğer kayıtları siliyoruz 
-    _goalProgressHistory.Clear();
 
-      _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
-      _goalProgressHistory.Add(progressResult.Value);
-    }
+    _goalProgressHistory.Clear();
+    _goalProgressHistory.Add(progressResult.Value);
 
     return Result.Success();
   }
