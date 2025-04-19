@@ -79,8 +79,18 @@ public class Goal : EntityBase
     if (!progressResult.IsSuccess)
       return progressResult.ToResult();
 
-    _goalProgressHistory.Clear();
-    _goalProgressHistory.Add(progressResult.Value);
+    var waitingForApprovalGoalProgress = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
+    if (waitingForApprovalGoalProgress == null)
+    {
+      _goalProgressHistory.Add(progressResult.Value);
+    }
+    else
+    {
+      progressResult.Value.Id = waitingForApprovalGoalProgress.Id;
+
+      _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
+      _goalProgressHistory.Add(progressResult.Value);
+    }
 
     return Result.Success();
   }

@@ -1,9 +1,15 @@
-﻿namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
-public sealed class GetPendingApprovalGoalsQueryHandler(IGoalManagementQueryService goalQueryService)
+﻿using GoalManager.UseCases.Organisation;
+
+namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+public sealed class GetPendingApprovalGoalsQueryHandler(IGoalManagementQueryService goalQueryService, IOrganisationQueryService organisationQueryService)
     : IQueryHandler<GetPendingApprovalGoalsQuery, List<PendingApprovalGoalDto>>
 {
-  public Task<List<PendingApprovalGoalDto>> Handle(GetPendingApprovalGoalsQuery request, CancellationToken cancellationToken)
+  public async Task<List<PendingApprovalGoalDto>> Handle(GetPendingApprovalGoalsQuery request, CancellationToken cancellationToken)
   {
-    return goalQueryService.GetPendingApprovalGoalsForTeamLeader(request.TeamLeaderUserId);
+    var teamMembers = await organisationQueryService.GetTeamMemberUserIdsByTeamLeader(request.TeamLeaderUserId);
+    var teamIds = teamMembers.SelectMany(x => x.Value).Distinct().ToList();
+    var teamNamesDict = await organisationQueryService.GetTeamNamesAsync(teamIds);
+
+    return await goalQueryService.GetPendingApprovalGoalsForTeamLeader(request.TeamLeaderUserId, teamMembers, teamNamesDict);
   }
 }

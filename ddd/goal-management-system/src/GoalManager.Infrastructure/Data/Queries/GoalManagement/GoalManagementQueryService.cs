@@ -7,11 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoalManager.Infrastructure.Data.Queries.GoalManagement;
 
-public sealed class GoalManagementQueryService(AppDbContext appDbContext, IOrganisationQueryService organisationQueryService) : IGoalManagementQueryService
+public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoalManagementQueryService
 {
-  public async Task<List<PendingApprovalGoalDto>> GetPendingApprovalGoalsForTeamLeader(int teamLeaderUserId)
+  public async Task<List<PendingApprovalGoalDto>> GetPendingApprovalGoalsForTeamLeader(int teamLeaderUserId, Dictionary<int, List<int>> teamMembers, Dictionary<int, string> teamNamesDict)
   {
-    var teamMembers = await organisationQueryService.GetTeamMemberUserIdsByTeamLeader(teamLeaderUserId);
     if (!teamMembers.Any()) return [];
 
     var userIds = teamMembers.Keys.ToList();
@@ -23,10 +22,13 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext, IOrgan
         where userIds.Contains(goalSet.UserId)
            && teamIds.Contains(goalSet.TeamId)
         let latestProgress = goal.GoalProgressHistory
-            .Where(p => p.Status == GoalProgressStatus.WaitingForApproval)
             .OrderByDescending(p => p.Id)
             .FirstOrDefault()
         where latestProgress != null
+           && latestProgress.Status == GoalProgressStatus.WaitingForApproval
+           && goal.GoalProgressHistory
+               .Where(p => p.Status == GoalProgressStatus.Approved || p.Status == GoalProgressStatus.Rejected)
+               .All(p => p.Id < latestProgress.Id)
         select new
         {
           GoalId = goal.Id,
@@ -40,8 +42,6 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext, IOrgan
           GoalSetId = goalSet.Id
         })
         .ToListAsync();
-
-    var teamNamesDict = await organisationQueryService.GetTeamNamesAsync(teamIds);
 
     return results.Select(x => new PendingApprovalGoalDto
     {
