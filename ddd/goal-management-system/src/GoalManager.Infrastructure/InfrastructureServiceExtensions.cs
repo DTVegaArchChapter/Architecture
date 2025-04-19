@@ -1,8 +1,10 @@
 ﻿using GoalManager.Core.Organisation;
 using GoalManager.Infrastructure.Data;
+using GoalManager.Infrastructure.Data.Queries.GoalManagement;
 using GoalManager.Infrastructure.Data.Queries.Notification;
 using GoalManager.Infrastructure.Data.Queries.Organisation;
 using GoalManager.Infrastructure.Identity;
+using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.Identity;
 using GoalManager.UseCases.Notification;
 using GoalManager.UseCases.Organisation;
@@ -26,7 +28,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped<IIdentityRepository, IdentityRepository>()
       .AddScoped<IOrganisationQueryService, OrganisationQueryService>()
       .AddScoped<INotificationQueryService, NotificationQueryService>()
-      .AddScoped<IOrganisationService, OrganisationService>();
+      .AddScoped<IOrganisationService, OrganisationService>()
+      .AddScoped<IGoalManagementQueryService, GoalManagementQueryService>();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

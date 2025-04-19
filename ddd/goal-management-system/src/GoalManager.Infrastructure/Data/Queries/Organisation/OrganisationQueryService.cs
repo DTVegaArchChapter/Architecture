@@ -1,4 +1,5 @@
-﻿using GoalManager.UseCases.Organisation;
+﻿using GoalManager.Core.Organisation;
+using GoalManager.UseCases.Organisation;
 using GoalManager.UseCases.Organisation.GetTeamForUpdate;
 using GoalManager.UseCases.Organisation.ListOrganisations;
 using GoalManager.UseCases.Organisation.ListUserTeams;
@@ -35,5 +36,24 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
   public Task<string?> GetTeamNameAsync(int id)
   {
     return dbContext.Team.Where(x => x.Id == id).Select(x => x.Name.Value).SingleOrDefaultAsync();
+  }
+
+public async Task<Dictionary<int, List<int>>> GetTeamMemberUserIdsByTeamLeader(int teamLeaderUserId)
+{
+    return await dbContext.TeamMember
+        .Where(tm => dbContext.TeamMember
+            .Where(leader => leader.UserId == teamLeaderUserId && leader.MemberType == TeamMemberType.TeamLeader)
+            .Select(leader => leader.TeamId)
+            .Contains(tm.TeamId) && tm.UserId != teamLeaderUserId)
+        .GroupBy(tm => tm.UserId)
+        .Select(g => new { UserId = g.Key, TeamIds = g.Select(x => x.TeamId).ToList() })
+        .ToDictionaryAsync(x => x.UserId, x => x.TeamIds);
+}
+
+  public async Task<Dictionary<int, string>> GetTeamNamesAsync(List<int> teamIds)
+  {
+    return await dbContext.Team
+        .Where(t => teamIds.Contains(t.Id))
+        .ToDictionaryAsync(t => t.Id, t => t.Name.Value);
   }
 }
