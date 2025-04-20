@@ -30,12 +30,12 @@ public class Goal : EntityBase
 
   public Result SetActualValue(int value)
   {
-    if(value > GoalValue.MaxValue)
+    if (value > GoalValue.MaxValue)
     {
       return Result.Error("Actual value cannot be bigger than max value");
     }
 
-    if(value < GoalValue.MinValue)
+    if (value < GoalValue.MinValue)
     {
       return Result.Error("Actual value cannot be less than min value");
     }
@@ -72,7 +72,7 @@ public class Goal : EntityBase
     return Result.Success();
   }
 
-  public Result AddProgress(int actualValue, string? comment)
+  public Result AddProgress(int teamId, int userId, int actualValue, string? comment)
   {
       var setValueResult = SetActualValue(actualValue);
       if (!setValueResult.IsSuccess)
@@ -100,7 +100,7 @@ public class Goal : EntityBase
         _goalProgressHistory.Add(goalProgress);
       }
 
-      RegisterDomainEvent(new GoalProgressAddedEvent(Id, actualValue));
+      RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
 
       return Result.Success();
   }

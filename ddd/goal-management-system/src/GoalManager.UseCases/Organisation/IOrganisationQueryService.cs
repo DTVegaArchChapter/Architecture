@@ -13,4 +13,6 @@ public interface IOrganisationQueryService
   Task<string?> GetTeamNameAsync(int id);
 
   Task<List<UserTeamListItemDto>> ListUserTeams(int userId);
+
+  Task<List<int>> GetTeamLeaderUserIdsAsync(int teamId);
 }

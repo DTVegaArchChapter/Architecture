@@ -1,4 +1,5 @@
-﻿using GoalManager.Core.Notification;
+﻿using GoalManager.Core.GoalManagement;
+using GoalManager.Core.Notification;
 using GoalManager.Core.Organisation;
 
 using SmartEnum.EFCore;
@@ -17,6 +18,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
   public DbSet<TeamMember> TeamMember => Set<TeamMember>();
 
   public DbSet<NotificationItem> NotificationItem => Set<NotificationItem>();
+
+  public DbSet<Goal> Goal => Set<Goal>();
+
+  public DbSet<GoalSet> GoalSet => Set<GoalSet>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
