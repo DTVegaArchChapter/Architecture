@@ -23,7 +23,7 @@ public static class OptionConfigs
       // add list services for diagnostic purposes - see https://github.com/ardalis/AspNetCoreStartupServices
       services.Configure<ServiceConfig>(config =>
       {
-        config.Services = new List<ServiceDescriptor>(builder.Services);
+        config.Services = [..builder.Services];
 
         // optional - default path to view services is /listallservices - recommended to choose your own path
         config.Path = "/listservices";

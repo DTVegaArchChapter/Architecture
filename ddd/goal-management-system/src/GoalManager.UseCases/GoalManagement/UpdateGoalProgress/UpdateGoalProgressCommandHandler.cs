@@ -18,8 +18,7 @@ internal sealed class UpdateGoalProgressCommandHandler(IRepository<GoalSet> goal
     var result = goalSet.UpdateGoalProgress(
         request.GoalId,
         request.ActualValue,
-        request.Comment,
-        GoalProgressStatus.WaitingForApproval);
+        request.Comment);
 
     if (!result.IsSuccess)
     {

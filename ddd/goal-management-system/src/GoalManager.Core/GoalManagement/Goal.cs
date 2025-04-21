@@ -30,12 +30,12 @@ public class Goal : EntityBase
 
   public Result SetActualValue(int value)
   {
-    if(value > GoalValue.MaxValue)
+    if (value > GoalValue.MaxValue)
     {
       return Result.Error("Actual value cannot be bigger than max value");
     }
 
-    if(value < GoalValue.MinValue)
+    if (value < GoalValue.MinValue)
     {
       return Result.Error("Actual value cannot be less than min value");
     }
@@ -71,35 +71,40 @@ public class Goal : EntityBase
 
     return Result.Success();
   }
-public Result AddProgress(int actualValue, string? comment, GoalProgressStatus status)
-{
-    var setValueResult = SetActualValue(actualValue);
-    if (!setValueResult.IsSuccess)
-    {
-      return setValueResult;
-    }
 
-    var progressResult = GoalProgress.Create(Id, actualValue, comment, status);
-    if (!progressResult.IsSuccess)
-    {
-      return progressResult.ToResult();
-    }
+  public Result AddProgress(int teamId, int userId, int actualValue, string? comment)
+  {
+      var setValueResult = SetActualValue(actualValue);
+      if (!setValueResult.IsSuccess)
+      {
+        return setValueResult;
+      }
 
-    var waitingForApprovalGoalProgress  = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
-    if (waitingForApprovalGoalProgress == null)
-    {
-      _goalProgressHistory.Add(progressResult.Value);
-    }
-    else
-    {
-      progressResult.Value.Id = waitingForApprovalGoalProgress.Id;
+      var progressCreateResult = GoalProgress.Create(Id, actualValue, comment, GoalProgressStatus.WaitingForApproval);
+      if (!progressCreateResult.IsSuccess)
+      {
+        return progressCreateResult.ToResult();
+      }
 
-      _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
-      _goalProgressHistory.Add(progressResult.Value);
-    }
+      var goalProgress = progressCreateResult.Value;
+      var waitingForApprovalGoalProgress  = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
+      if (waitingForApprovalGoalProgress == null)
+      {
+        _goalProgressHistory.Add(goalProgress);
+      }
+      else
+      {
+        goalProgress.Id = waitingForApprovalGoalProgress.Id;
 
-    return Result.Success();
-}
+        _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
+        _goalProgressHistory.Add(goalProgress);
+      }
+
+      RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
+
+      return Result.Success();
+  }
+
   private void RegisterGoalCreatedEvent()
   {
     RegisterDomainEvent(new GoalCreatedEvent(Title));

@@ -1,8 +1,9 @@
 ﻿using GoalManager.Core.Organisation;
 using GoalManager.Infrastructure.Data;
-using GoalManager.Infrastructure.Data.Queries.Notification;
-using GoalManager.Infrastructure.Data.Queries.Organisation;
 using GoalManager.Infrastructure.Identity;
+using GoalManager.Infrastructure.Queries.Identity;
+using GoalManager.Infrastructure.Queries.Notification;
+using GoalManager.Infrastructure.Queries.Organisation;
 using GoalManager.UseCases.Identity;
 using GoalManager.UseCases.Notification;
 using GoalManager.UseCases.Organisation;
@@ -23,7 +24,7 @@ public static class InfrastructureServiceExtensions
 
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
       .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
-      .AddScoped<IIdentityRepository, IdentityRepository>()
+      .AddScoped<IIdentityQueryService, IdentityQueryService>()
       .AddScoped<IOrganisationQueryService, OrganisationQueryService>()
       .AddScoped<INotificationQueryService, NotificationQueryService>()
       .AddScoped<IOrganisationService, OrganisationService>();

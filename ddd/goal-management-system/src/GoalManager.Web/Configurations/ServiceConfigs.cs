@@ -15,14 +15,11 @@ public static class ServiceConfigs
     {
       // Use a local test email server
       // See: https://ardalis.com/configuring-a-local-test-email-server/
-      services.AddScoped<IEmailSender, MimeKitEmailSender>();
-
-      // Otherwise use this:
-      //builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
+      services.AddSingleton<IEmailSender, MimeKitEmailSender>();
     }
     else
     {
-      services.AddScoped<IEmailSender, MimeKitEmailSender>();
+      services.AddSingleton<IEmailSender, MimeKitEmailSender>();
     }
 
     logger.LogInformation("{Project} services registered", "Mediatr and Email Sender");
