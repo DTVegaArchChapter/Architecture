@@ -16,4 +16,6 @@ public interface IOrganisationQueryService
   Task<Dictionary<int, List<int>>> GetTeamMemberUserIdsByTeamLeader(int teamLeaderUserId);
   Task<Dictionary<int, string>> GetTeamNamesAsync(List<int> teamIds);
 
+
+  Task<List<int>> GetTeamLeaderUserIdsAsync(int teamId);
 }

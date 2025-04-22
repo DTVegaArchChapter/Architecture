@@ -69,31 +69,40 @@ public class Goal : EntityBase
 
     return Result.Success();
   }
-  public Result AddProgress(int actualValue, string? comment, GoalProgressStatus status)
+
+  public Result AddProgress(int teamId, int userId, int actualValue, string? comment)
   {
-    var setValueResult = SetActualValue(actualValue);
-    if (!setValueResult.IsSuccess)
-      return setValueResult;
+      var setValueResult = SetActualValue(actualValue);
+      if (!setValueResult.IsSuccess)
+      {
+        return setValueResult;
+      }
 
-    var progressResult = GoalProgress.Create(Id, actualValue, comment, status);
-    if (!progressResult.IsSuccess)
-      return progressResult.ToResult();
+      var progressCreateResult = GoalProgress.Create(Id, actualValue, comment, GoalProgressStatus.WaitingForApproval);
+      if (!progressCreateResult.IsSuccess)
+      {
+        return progressCreateResult.ToResult();
+      }
 
-    var waitingForApprovalGoalProgress = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
-    if (waitingForApprovalGoalProgress == null)
-    {
-      _goalProgressHistory.Add(progressResult.Value);
-    }
-    else
-    {
-      progressResult.Value.Id = waitingForApprovalGoalProgress.Id;
+      var goalProgress = progressCreateResult.Value;
+      var waitingForApprovalGoalProgress  = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
+      if (waitingForApprovalGoalProgress == null)
+      {
+        _goalProgressHistory.Add(goalProgress);
+      }
+      else
+      {
+        goalProgress.Id = waitingForApprovalGoalProgress.Id;
 
-      _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
-      _goalProgressHistory.Add(progressResult.Value);
-    }
+        _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
+        _goalProgressHistory.Add(goalProgress);
+      }
 
-    return Result.Success();
+      RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
+
+      return Result.Success();
   }
+
   private void RegisterGoalCreatedEvent()
   {
     RegisterDomainEvent(new GoalCreatedEvent(Title));

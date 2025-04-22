@@ -74,7 +74,7 @@ public class GoalSet : EntityBase, IAggregateRoot
     return _goals.Sum(x => x.Percentage);
   }
 
-  public Result UpdateGoalProgress(int goalId, int actualValue, string? comment, GoalProgressStatus status)
+  public Result UpdateGoalProgress(int goalId, int actualValue, string? comment)
   {
     var goal = _goals.SingleOrDefault(g => g.Id == goalId);
     if (goal == null)
@@ -82,7 +82,7 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Goal not found for id: {goalId}");
     }
 
-    return goal.AddProgress(actualValue, comment, status);
+    return goal.AddProgress(TeamId, UserId, actualValue, comment);
   }
   public Result UpdateGoalStatus(int goalId, GoalProgressStatus status, string? comment = null)
   {

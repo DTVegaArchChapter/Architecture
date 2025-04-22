@@ -24,6 +24,7 @@ public class SmtpEmailSender(ILogger<SmtpEmailSender> logger,
     };
     message.To.Add(new MailAddress(to));
     await emailClient.SendMailAsync(message);
-    _logger.LogWarning("Sending email to {to} from {from} with subject {subject} using {type}.", to, from, subject, this.ToString());
+
+    _logger.LogWarning("Sending email to {To} from {From} with subject {Subject} using {Type}.", to, from, subject, this.ToString());
   }
 }

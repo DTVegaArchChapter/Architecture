@@ -3,7 +3,7 @@ using GoalManager.UseCases.Identity;
 
 namespace GoalManager.UseCases.Organisation.AddTeamMember;
 
-internal sealed class AddTeamMemberCommandHandler(IOrganisationService organisationService, IIdentityRepository identityRepository) : ICommandHandler<AddTeamMemberCommand, Result>
+internal sealed class AddTeamMemberCommandHandler(IOrganisationService organisationService, IIdentityQueryService identityRepository) : ICommandHandler<AddTeamMemberCommand, Result>
 {
   public async Task<Result> Handle(AddTeamMemberCommand request, CancellationToken cancellationToken)
   {

@@ -10,7 +10,7 @@ public sealed class GetGoalSetQueryHandler(IRepository<GoalPeriod> goalPeriodRep
     var period = await goalPeriodRepository.SingleOrDefaultAsync(new GoalPeriodByTeamIdAndYearSpec(request.TeamId, request.Year), cancellationToken);
     if (period == null)
     {
-      return Result.Error($"{request.Year} year's goal period is not created for the specified team.");
+      return Result.Error($"{request.Year} year's goal period is not created for the specified team. Go to Update Team page and click Create Goal Period button.");
     }
 
     var goalSet = await goalSetRepository.SingleOrDefaultAsync(new GoalSetWithGoalsByPeriodIdTeamIdUserIdSpec(period.Id, request.TeamId, request.UserId), cancellationToken);

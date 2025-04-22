@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
-
+using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.Notification;
 using GoalManager.UseCases.Notification.List;
 
-namespace GoalManager.Infrastructure.Data.Queries.Notification;
+namespace GoalManager.Infrastructure.Queries.Notification;
 
 public sealed class NotificationQueryService(AppDbContext appDbContext) : INotificationQueryService
 {
