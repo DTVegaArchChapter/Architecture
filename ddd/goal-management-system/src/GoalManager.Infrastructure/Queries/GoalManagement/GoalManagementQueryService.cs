@@ -1,11 +1,12 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Core.Organisation;
+using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.Organisation;
 using Microsoft.EntityFrameworkCore;
 
-namespace GoalManager.Infrastructure.Data.Queries.GoalManagement;
+namespace GoalManager.Infrastructure.Queries.GoalManagement;
 
 public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoalManagementQueryService
 {

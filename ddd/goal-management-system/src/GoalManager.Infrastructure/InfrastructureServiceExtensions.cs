@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.Organisation;
 using GoalManager.Infrastructure.Data;
 using GoalManager.Infrastructure.Identity;
+using GoalManager.Infrastructure.Queries.GoalManagement;
 using GoalManager.Infrastructure.Queries.Identity;
 using GoalManager.Infrastructure.Queries.Notification;
 using GoalManager.Infrastructure.Queries.Organisation;
