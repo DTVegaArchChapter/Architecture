@@ -34,12 +34,10 @@ public class Goal : EntityBase
     {
       return Result.Error("Actual value cannot be bigger than max value");
     }
-
     if (value < GoalValue.MinValue)
     {
       return Result.Error("Actual value cannot be less than min value");
     }
-
     ActualValue = value;
 
     return Result.Success();
@@ -108,5 +106,27 @@ public class Goal : EntityBase
   private void RegisterGoalCreatedEvent()
   {
     RegisterDomainEvent(new GoalCreatedEvent(Title));
+  }
+
+  public Result UpdateProgressStatus(GoalProgressStatus newStatus, string? comment = null)
+  {
+    if (!_goalProgressHistory.Any())
+      return Result.Error("No progress record found to update");
+
+    var latestProgress = _goalProgressHistory.OrderByDescending(p => p.Id).First();
+
+    var updatedProgress = GoalProgress.Create(
+        Id,
+        latestProgress.ActualValue,
+        comment ?? latestProgress.Comment,
+        newStatus);
+
+    if (!updatedProgress.IsSuccess)
+      return updatedProgress.ToResult();
+
+    _goalProgressHistory.Remove(latestProgress);
+    _goalProgressHistory.Add(updatedProgress.Value);
+
+    return Result.Success();
   }
 }

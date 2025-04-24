@@ -1,0 +1,126 @@
+﻿@page
+@model GoalManager.Web.Pages.GoalManagement.PendingGoalsModel
+@{
+	ViewData["Title"] = "Pending Goals";
+	var groupedGoals = Model.PendingGoals.GroupBy(x => x.TeamName);
+}
+
+<div class="container py-4">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<h1 class="h3 fw-light mb-0">Pending Goals for Approval</h1>
+		</div>
+	</div>
+
+	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+	@if (!Model.PendingGoals.Any())
+	{
+		<div class="card border-0 shadow-sm text-center py-5">
+			<i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+			<h3 class="h5 fw-normal">No pending goals</h3>
+			<p class="text-muted mb-4">There are currently no goals awaiting approval.</p>
+		</div>
+	}
+	else
+	{
+		<div class="card border-0 shadow-sm">
+			<div class="table-responsive">
+				<table class="table table-hover mb-0">
+					<thead class="bg-light">
+						<tr>
+							<th class="border-0">Team</th>
+							<th class="border-0">Goal Title</th>
+							<th class="border-0">User</th>
+							<th class="border-0 text-center">Progress</th>
+							<th class="border-0">Comment</th>
+							<th class="border-0 text-end">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var goal in Model.PendingGoals)
+						{
+							<tr>
+								<td class="align-middle">
+									<span class="badge bg-light text-dark">@goal.TeamName</span>
+								</td>
+								<td class="align-middle">
+									<div class="text-truncate" style="max-width: 200px;" title="@goal.GoalTitle">
+										@goal.GoalTitle
+									</div>
+								</td>
+								<td class="align-middle">
+									<small class="text-muted">ID: @goal.GoalOwnerUserId</small>
+								</td>
+								<td class="align-middle text-center">
+									<div class="d-flex align-items-center gap-2">
+										<span>@goal.ActualValue</span>
+										<div class="progress flex-grow-1" style="height: 6px;">
+											<div class="progress-bar bg-warning"
+												 style="width: @CalculatePercentage(goal.MinValue, goal.MaxValue, goal.ActualValue)%"></div>
+										</div>
+									</div>
+								</td>
+								<td class="align-middle">
+									<div class="text-truncate" style="max-width: 150px;" title="@goal.Comment">
+										@(string.IsNullOrEmpty(goal.Comment) ? "-" : goal.Comment)
+									</div>
+								</td>
+								<td class="align-middle text-end">
+									<div class="d-flex justify-content-end gap-2">
+										<form asp-page-handler="Approve" method="post">
+											<input type="hidden" name="goalSetId" value="@goal.GoalSetId" />
+											<input type="hidden" name="goalId" value="@goal.GoalId" />
+											<button type="submit" class="btn btn-sm btn-outline-success">
+												<i class="fas fa-check"></i> Approve
+											</button>
+										</form>
+										<form asp-page-handler="Reject" method="post">
+											<input type="hidden" name="goalSetId" value="@goal.GoalSetId" />
+											<input type="hidden" name="goalId" value="@goal.GoalId" />
+											<button type="submit" class="btn btn-sm btn-outline-danger"
+													onclick="return confirm('Reject this goal?')">
+												<i class="fas fa-times"></i> Reject
+											</button>
+										</form>
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	}
+</div>
+
+@functions {
+	private int CalculatePercentage(decimal min, decimal max, decimal actual)
+	{
+		if (max <= min) return 0;
+		var percentage = (actual - min) / (max - min) * 100;
+		return (int)Math.Clamp(percentage, 0, 100);
+	}
+}
+
+<style>
+	.text-truncate {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.table td, .table th {
+		vertical-align: middle;
+	}
+
+	.progress {
+		min-width: 80px;
+		background-color: #e9ecef;
+	}
+
+	.badge {
+		padding: 0.35em 0.65em;
+		font-size: 0.875em;
+	}
+</style>

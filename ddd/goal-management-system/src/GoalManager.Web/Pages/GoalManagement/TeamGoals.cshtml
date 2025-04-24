@@ -47,6 +47,9 @@
 		<div class="mb-4">
 			@foreach (var goal in Model.GoalSet.Goals)
 			{
+				var latestStatus = goal.GoalProgressHistory
+				.OrderByDescending(p => p.Id)
+				.FirstOrDefault()?.Status.ToString() ?? "No Status";
 				<div class="card mb-3">
 					<div class="card-body">
 						<div class="d-flex justify-content-between align-items-start mb-3">
@@ -54,11 +57,15 @@
 							   asp-route-goalSetId="@goal.GoalSetId"
 							   asp-route-goalId="@goal.Id"
 							   class="text-decoration-none text-reset w-100">
-								<div class="d-flex justify-content-between align-items-center w-100">
+								<div class="d-flex justify-content-between align-items-start mb-3">
 									<h5 class="mb-1 fw-normal">@goal.Title</h5>
-									<span class="badge bg-light text-dark ms-2">@goal.GoalType.Name</span>
+									<div class="d-flex align-items-center gap-2">
+										<span class="badge @(GetBadgeStyle(latestStatus))">
+											@latestStatus
+										</span>
+										<span class="badge bg-light text-dark">@goal.GoalType.Name</span>
+									</div>
 								</div>
-
 								<div class="row g-3 mb-3">
 									<div class="col-md-3">
 										<div class="text-muted small">Percentage</div>
@@ -128,11 +135,43 @@
 	}
 </div>
 
-@section Scripts
-{
-    <script>
-        function updateSliderValue(slider, id) {
-            document.getElementById('sliderValue-'+id).textContent = slider.value;
-        }
-    </script>
-}
+<script>
+	function updateSliderValue(slider) {
+		document.getElementById('sliderValue-' + slider.closest('.card').id).textContent = slider.value;
+	}
+	@functions {
+		string GetBadgeStyle(string status)
+		{
+			return status switch
+			{
+				"WaitingForApproval" => "bg-warning text-dark",
+				"Approved" => "bg-success text-white",
+				"Rejected" => "bg-danger text-white",
+				_ => "bg-secondary text-white" // Varsayılan durum
+			};
+		}
+	}
+</script>
+
+<style>
+	.card {
+		border: 1px solid #e9ecef;
+		border-radius: 0.5rem;
+		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+		transition: transform 0.2s ease-in-out;
+	}
+
+		.card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+		}
+
+	.card-body {
+		padding: 1.5rem;
+	}
+
+	a[asp-page="UpdateGoal"] {
+		position: relative;
+		z-index: 1;
+	}
+</style>
