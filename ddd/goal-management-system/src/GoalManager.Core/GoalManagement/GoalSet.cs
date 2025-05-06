@@ -1,4 +1,6 @@
-﻿namespace GoalManager.Core.GoalManagement;
+﻿using MediatR;
+
+namespace GoalManager.Core.GoalManagement;
 
 public class GoalSet : EntityBase, IAggregateRoot
 {
@@ -52,12 +54,18 @@ public class GoalSet : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
-  public Result UpdateGoal(int goalId, string title, GoalType goalType, GoalValue goalValue, int percentage)
+  public Result UpdateGoal(int goalId, string title, GoalType goalType, GoalValueType goalValueType, int percentage)
   {
     var goal = _goals.SingleOrDefault(x => x.Id == goalId);
     if (goal == null)
     {
       return Result.Error($"Goal not found for id: {goalId}");
+    }
+
+    var goalValueResult = GoalValue.Create(goal.GoalValue.MinValue, goal.GoalValue.MidValue, goal.GoalValue.MaxValue, goalValueType);
+    if (!goalValueResult.IsSuccess)
+    {
+      return goalValueResult.ToResult();
     }
 
     var totalPercentage = GetGoalsTotalPercentage();
@@ -66,7 +74,7 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Total percentage of goals cannot exceed 100. Current total percentage is {totalPercentage}");
     }
 
-    return goal.Update(title, goalType, goalValue, percentage);
+    return goal.Update(title, goalType, goalValueResult.Value, percentage);
   }
 
   private int GetGoalsTotalPercentage()
