@@ -44,17 +44,13 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
     return dbContext.TeamMember.AsNoTracking().Where(x => x.TeamId == teamId && x.MemberType == TeamMemberType.TeamLeader).Select(x => x.UserId).ToListAsync();
   }
 
-public async Task<Dictionary<int, List<int>>> GetTeamMemberUserIdsByTeamLeader(int teamLeaderUserId)
-{
-    return await dbContext.TeamMember
-        .Where(tm => dbContext.TeamMember
-            .Where(leader => leader.UserId == teamLeaderUserId && leader.MemberType == TeamMemberType.TeamLeader)
-            .Select(leader => leader.TeamId)
-            .Contains(tm.TeamId) && tm.UserId != teamLeaderUserId)
-        .GroupBy(tm => tm.UserId)
-        .Select(g => new { UserId = g.Key, TeamIds = g.Select(x => x.TeamId).ToList() })
-        .ToDictionaryAsync(x => x.UserId, x => x.TeamIds);
-}
+  public Task<List<int>> GetTeamIds(int teamLeaderUserId)
+  {
+      return dbContext.TeamMember
+          .Where(tm => tm.UserId == teamLeaderUserId)
+          .Select(x => x.TeamId)
+          .ToListAsync();
+  }
 
   public async Task<Dictionary<int, string>> GetTeamNamesAsync(List<int> teamIds)
   {

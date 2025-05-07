@@ -42,6 +42,10 @@ internal sealed class GoalConfiguration : IEntityTypeConfiguration<Goal>
       .HasForeignKey(gp => gp.GoalId)
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.HasOne(x => x.GoalProgress)
+      .WithOne(x => x.CurrentGoal)
+      .HasForeignKey<Goal>(x => x.ProgressId);
+
     builder.HasIndex(g => g.Title);
   }
 }

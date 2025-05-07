@@ -20,10 +20,5 @@ internal sealed class GoalProgressConfiguration : IEntityTypeConfiguration<GoalP
     builder.Property(gp => gp.Status)
       .HasConversion(p => p.Value, p => GoalProgressStatus.FromValue(p))
       .IsRequired();
-
-    builder.HasOne(gp => gp.Goal)
-      .WithMany(g => g.GoalProgressHistory)
-      .HasForeignKey(gp => gp.GoalId)
-      .OnDelete(DeleteBehavior.Cascade);
   }
 }

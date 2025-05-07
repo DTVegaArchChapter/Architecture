@@ -1,5 +1,4 @@
-﻿using Ardalis.Result;
-using GoalManager.Core.GoalManagement.Events;
+﻿using GoalManager.Core.GoalManagement.Events;
 
 namespace GoalManager.Core.GoalManagement;
 
@@ -11,9 +10,13 @@ public class Goal : EntityBase
   public int? ActualValue { get; private set; }
   public int GoalSetId { get; private set; }
   public int Percentage { get; private set; }
+  public int? ProgressId { get; private set; } = null!;
+
 
   private readonly IList<GoalProgress> _goalProgressHistory = [];
   public IReadOnlyCollection<GoalProgress> GoalProgressHistory => _goalProgressHistory.AsReadOnly();
+
+  public GoalProgress? GoalProgress { get; set; }
 
 #pragma warning disable CS8618 // Required by Entity Framework
   private Goal() { }
@@ -97,6 +100,8 @@ public class Goal : EntityBase
         _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
         _goalProgressHistory.Add(goalProgress);
       }
+
+      GoalProgress = goalProgress;
 
       RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
 

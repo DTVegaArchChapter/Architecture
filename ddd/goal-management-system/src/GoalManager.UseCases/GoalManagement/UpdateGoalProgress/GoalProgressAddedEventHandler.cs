@@ -18,7 +18,7 @@ internal sealed class GoalProgressAddedEventHandler(
     var teamLeaderEmails = await identityQueryService.GetUserEmails(teamLeaderUserIds).ConfigureAwait(false);
     var userName = await identityQueryService.GetUserName(notification.UserId).ConfigureAwait(false) ?? "unknown";
    
-    foreach (var email in teamLeaderEmails)
+    foreach (var email in teamLeaderEmails.Values)
     {
       await emailSender.SendEmailAsync(
         email,
