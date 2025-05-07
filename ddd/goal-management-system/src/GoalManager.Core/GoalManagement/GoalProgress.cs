@@ -29,4 +29,13 @@ public class GoalProgress : EntityBase
 
     return goalProgress;
   }
+
+  public Result Update(int actualValue, string? comment, GoalProgressStatus goalProgressStatus)
+  {
+    ActualValue = actualValue;
+    Comment = comment;
+    Status = goalProgressStatus;
+
+    return Result.Success();
+  }
 }

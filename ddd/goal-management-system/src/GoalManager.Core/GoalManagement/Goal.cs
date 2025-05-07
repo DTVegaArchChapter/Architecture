@@ -81,27 +81,23 @@ public class Goal : EntityBase
         return setValueResult;
       }
 
-      var progressCreateResult = GoalProgress.Create(Id, actualValue, comment, GoalProgressStatus.WaitingForApproval);
-      if (!progressCreateResult.IsSuccess)
+      var currentGoalProgress = GoalProgress;
+      if (currentGoalProgress == null)
       {
-        return progressCreateResult.ToResult();
-      }
+        var progressCreateResult = GoalProgress.Create(Id, actualValue, comment, GoalProgressStatus.WaitingForApproval);
+        if (!progressCreateResult.IsSuccess)
+        {
+          return progressCreateResult.ToResult();
+        }
 
-      var goalProgress = progressCreateResult.Value;
-      var waitingForApprovalGoalProgress  = _goalProgressHistory.Where(x => x.Status == GoalProgressStatus.WaitingForApproval).OrderByDescending(x => x.Id).LastOrDefault();
-      if (waitingForApprovalGoalProgress == null)
-      {
-        _goalProgressHistory.Add(goalProgress);
+        GoalProgress = progressCreateResult.Value;
+
+        _goalProgressHistory.Add(progressCreateResult.Value);
       }
       else
       {
-        goalProgress.Id = waitingForApprovalGoalProgress.Id;
-
-        _goalProgressHistory.Remove(waitingForApprovalGoalProgress);
-        _goalProgressHistory.Add(goalProgress);
+        currentGoalProgress.Update(actualValue, comment, GoalProgressStatus.WaitingForApproval);
       }
-
-      GoalProgress = goalProgress;
 
       RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
 
