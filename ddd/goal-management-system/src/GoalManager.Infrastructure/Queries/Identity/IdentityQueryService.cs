@@ -18,8 +18,8 @@ internal sealed class IdentityQueryService(IdentityDbContext identityDbContext) 
              .SingleOrDefaultAsync();
   }
 
-  public Task<List<string>> GetUserEmails(IList<int> userIds)
+  public Task<Dictionary<int, string>> GetUserEmails(IList<int> userIds)
   {
-    return identityDbContext.Users.AsNoTracking().Where(x => userIds.Contains(x.Id)).Select(x => x.Email!).ToListAsync();
+    return identityDbContext.Users.AsNoTracking().Where(x => userIds.Contains(x.Id)).ToDictionaryAsync(x => x.Id, x => x.Email!);
   }
 }

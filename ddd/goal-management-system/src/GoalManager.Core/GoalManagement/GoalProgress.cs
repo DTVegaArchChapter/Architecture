@@ -19,7 +19,9 @@ public class GoalProgress : EntityBase
   public Goal Goal { get; private set; } = null!;
   public int ActualValue { get; private set; }
   public string? Comment { get; private set; }
-  public GoalProgressStatus Status { get; set; } = null!;
+  public GoalProgressStatus Status { get; private set; } = null!;
+
+  public Goal CurrentGoal { get; private set; } = null!;
 
   public static Result<GoalProgress> Create(int goalId, int actualValue, string? comment, GoalProgressStatus goalProgressStatus)
   {

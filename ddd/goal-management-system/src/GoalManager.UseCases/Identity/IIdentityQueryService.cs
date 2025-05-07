@@ -8,5 +8,5 @@ public interface IIdentityQueryService
 
   Task<string?> GetUserName(int id);
 
-  Task<List<string>> GetUserEmails(IList<int> userIds);
+  Task<Dictionary<int, string>> GetUserEmails(IList<int> userIds);
 }
