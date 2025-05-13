@@ -10,8 +10,8 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
   public async Task<List<PendingApprovalGoalDto>> GetPendingApprovalGoals(IList<int> teamIds)
   {
     var results = await (
-        from goal in appDbContext.Goal
-        join goalSet in appDbContext.GoalSet on goal.GoalSetId equals goalSet.Id
+        from goal in appDbContext.Goal.AsNoTracking()
+        join goalSet in appDbContext.GoalSet.AsNoTracking() on goal.GoalSetId equals goalSet.Id
         where teamIds.Contains(goalSet.TeamId) && goal.GoalProgress!.Status == GoalProgressStatus.WaitingForApproval
         select new
         {
