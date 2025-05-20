@@ -1,30 +1,31 @@
 ﻿@page "{teamId:int}"
+@using GoalManager.Core.GoalManagement
 @model GoalManager.Web.Pages.GoalManagement.TeamGoalsModel
 
 @section Style
 {
-    <style>
-        .card {
-            border: 1px solid #e9ecef;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            transition: transform 0.2s ease-in-out;
-        }
+	<style>
+		.card {
+		border: 1px solid #e9ecef;
+		border-radius: 0.5rem;
+		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+		transition: transform 0.2s ease-in-out;
+		}
 
-            .card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            }
+		.card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+		}
 
-        .card-body {
-            padding: 1.5rem;
-        }
+		.card-body {
+		padding: 1.5rem;
+		}
 
-        a[asp-page="UpdateGoal"] {
-            position: relative;
-            z-index: 1;
-        }
-    </style>
+		a[asp-page="UpdateGoal"] {
+		position: relative;
+		z-index: 1;
+		}
+	</style>
 }
 
 <div class="container py-4">
@@ -49,46 +50,95 @@
 			{
 				var latestStatus = goal.GoalProgressHistory
 				.OrderByDescending(p => p.Id)
-				.FirstOrDefault()?.Status.ToString() ?? "No Status";
+				.FirstOrDefault()?.Status;
+				var isReadOnly = latestStatus == GoalProgressStatus.LastApproved || latestStatus == GoalProgressStatus.WaitingForLastApproval;
+				var latestStatusText = latestStatus?.ToString() ?? "No Status";
 				<div class="card mb-3">
 					<div class="card-body">
 						<div class="d-flex justify-content-between align-items-start mb-3">
-							<a asp-page="UpdateGoal"
-							   asp-route-goalSetId="@goal.GoalSetId"
-							   asp-route-goalId="@goal.Id"
-							   class="text-decoration-none text-reset w-100">
-								<div class="d-flex justify-content-between align-items-start mb-3">
-									<h5 class="mb-1 fw-normal">@goal.Title</h5>
-									<div class="d-flex align-items-center gap-2">
-										<span class="badge @(GetBadgeStyle(latestStatus))">
-											@latestStatus
-										</span>
-										<span class="badge bg-light text-dark">@goal.GoalType.Name</span>
+							@if (isReadOnly)
+							{
+								<div class="text-decoration-none text-reset w-100" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">
+									<div class="d-flex justify-content-between align-items-start mb-3">
+										<h5 class="mb-1 fw-normal">@goal.Title</h5>
+										<div class="d-flex align-items-center gap-2">
+											<span class="badge @(GetBadgeStyle(latestStatusText))">
+												@latestStatusText
+											</span>
+											<span class="badge bg-light text-dark">@goal.GoalType.Name</span>
+										</div>
+									</div>
+									<div class="row g-3 mb-3">
+										<div class="col-md-3">
+											<div class="text-muted small">Percentage</div>
+											<div>@goal.Percentage%</div>
+										</div>
+										<div class="col-md-3">
+											<div class="text-muted small">Value Type</div>
+											<div>@goal.GoalValue.GoalValueType.Name</div>
+										</div>
+										<div class="col-md-2">
+											<div class="text-muted small">Min</div>
+											<div>@goal.GoalValue.MinValue</div>
+										</div>
+										<div class="col-md-2">
+											<div class="text-muted small">Mid</div>
+											<div>@goal.GoalValue.MidValue</div>
+										</div>
+										<div class="col-md-2">
+											<div class="text-muted small">Max</div>
+											<div>@goal.GoalValue.MaxValue</div>
+										</div>
+										@if (latestStatus ==  GoalProgressStatus.LastApproved)
+										{
+											<div class="col-md-2">
+												<div class="text-muted small">Point</div>
+												<div>@(goal.Point == null ? "-" : goal.Point)</div>
+											</div>
+										}
+								
 									</div>
 								</div>
-								<div class="row g-3 mb-3">
-									<div class="col-md-3">
-										<div class="text-muted small">Percentage</div>
-										<div>@goal.Percentage%</div>
+							}
+							else
+							{
+								<a asp-page="UpdateGoal"
+								   asp-route-goalSetId="@goal.GoalSetId"
+								   asp-route-goalId="@goal.Id"
+								   class="text-decoration-none text-reset w-100">
+									<div class="d-flex justify-content-between align-items-start mb-3">
+										<h5 class="mb-1 fw-normal">@goal.Title</h5>
+										<div class="d-flex align-items-center gap-2">
+											<span class="badge @(GetBadgeStyle(latestStatusText))">
+												@latestStatusText
+											</span>
+											<span class="badge bg-light text-dark">@goal.GoalType.Name</span>
+										</div>
 									</div>
-									<div class="col-md-3">
-										<div class="text-muted small">Value Type</div>
-										<div>@goal.GoalValue.GoalValueType.Name</div>
+									<div class="row g-3 mb-3">
+										<div class="col-md-3">
+											<div class="text-muted small">Percentage</div>
+											<div>@goal.Percentage%</div>
+										</div>
+										<div class="col-md-3">
+											<div class="text-muted small">Value Type</div>
+											<div>@goal.GoalValue.GoalValueType.Name</div>
+										</div>
+										<div class="col-md-2">
+											<div class="text-muted small">Min</div>
+											<div>@goal.GoalValue.MinValue</div>
+										</div>
+										<div class="col-md-2">
+											<div class="text-muted small">Mid</div>
+											<div>@goal.GoalValue.MidValue</div>
+										</div>
+										<div class="col-md-2">
+											<div class="text-muted small">Max</div>
+											<div>@goal.GoalValue.MaxValue</div>
+										</div>
 									</div>
-									<div class="col-md-2">
-										<div class="text-muted small">Min</div>
-										<div>@goal.GoalValue.MinValue</div>
-									</div>
-									<div class="col-md-2">
-										<div class="text-muted small">Mid</div>
-										<div>@goal.GoalValue.MidValue</div>
-									</div>
-									<div class="col-md-2">
-										<div class="text-muted small">Max</div>
-										<div>@goal.GoalValue.MaxValue</div>
-									</div>
-								</div>
-							</a>
+								</a>
+							}
 						</div>
 
 						<form method="post" asp-page-handler="UpdateProgress">
@@ -105,7 +155,8 @@
 											   max="@goal.GoalValue.MaxValue"
 											   value="@goal.ActualValue"
 											   class="form-range"
-											   oninput="updateSliderValue(this, @goal.Id)" />
+											   oninput="updateSliderValue(this, @goal.Id)"
+										@(isReadOnly ? "disabled" : "") />
 										<span id="sliderValue-@goal.Id" class="text-nowrap" style="min-width: 40px;">
 											@goal.ActualValue
 										</span>
@@ -118,11 +169,12 @@
 										   name="comment"
 										   placeholder="(Optional)"
 										   class="form-control form-control-sm"
-										   value="@(goal.GoalProgressHistory.Count > 0 ? goal.GoalProgressHistory.Last().Comment : "")" />
+										   value="@(goal.GoalProgressHistory.Count > 0 ? goal.GoalProgressHistory.Last().Comment : "")"
+									@(isReadOnly ? "readonly" : "") />
 								</div>
 
 								<div class="col-md-1">
-									<button type="submit" class="btn btn-sm btn-outline-primary">
+									<button type="submit" class="btn btn-sm btn-outline-primary" @(isReadOnly ? "disabled" : "")>
 										<i class="fas fa-edit"></i>
 									</button>
 								</div>
@@ -133,6 +185,28 @@
 			}
 		</div>
 	}
+	@if (Model.GoalSet?.IsReadyForLastApprove()?.Value ?? false)
+	{
+
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<div>
+				<span class="h3 fw-light mb-1">Send last approve.</span>
+				<br />
+				<span class="text-sm-center fw-light mb-1">after that goals will be readonly</span>
+			</div>
+
+			<form method="post" asp-page-handler="LastUpdateOnProgress">
+				<button type="submit" class="btn btn-primary">
+					<i class="fas fa-plus me-2"></i>Send Last Approve
+				</button>
+			</form>
+
+		</div>
+
+	}
+	
+
+
 </div>
 
 <script>

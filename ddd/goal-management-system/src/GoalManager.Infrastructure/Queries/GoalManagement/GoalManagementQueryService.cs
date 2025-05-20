@@ -9,10 +9,11 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
 {
   public async Task<List<PendingApprovalGoalDto>> GetPendingApprovalGoals(IList<int> teamIds)
   {
+
     var results = await (
         from goal in appDbContext.Goal
         join goalSet in appDbContext.GoalSet on goal.GoalSetId equals goalSet.Id
-        where teamIds.Contains(goalSet.TeamId) && goal.GoalProgress!.Status == GoalProgressStatus.WaitingForApproval
+        where teamIds.Contains(goalSet.TeamId) && (goal.GoalProgress!.Status == GoalProgressStatus.WaitingForApproval || goal.GoalProgress!.Status == GoalProgressStatus.WaitingForLastApproval || goal.GoalProgress!.Status == GoalProgressStatus.LastApproved)
         select new
         {
           GoalId = goal.Id,
@@ -21,6 +22,8 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
           goal.GoalValue.MaxValue,
           goal.GoalProgress!.ActualValue,
           goal.GoalProgress!.Comment,
+          goal.GoalProgress!.Status,
+          goal.Point,
           goalSet.UserId,
           goalSet.TeamId,
           GoalSetId = goalSet.Id
@@ -36,6 +39,8 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
       MaxValue = x.MaxValue,
       ActualValue = x.ActualValue,
       Comment = x.Comment,
+      GoalProgressStatus = x.Status,
+      Point = x.Point,
       UserId = x.UserId,
       TeamId = x.TeamId
     }).ToList();

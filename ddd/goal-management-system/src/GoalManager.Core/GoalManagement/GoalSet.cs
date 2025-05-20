@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MediatR;
 
 namespace GoalManager.Core.GoalManagement;
 
@@ -22,6 +23,9 @@ public class GoalSet : EntityBase, IAggregateRoot
   public int UserId { get; private set; }
   public int PeriodId { get; private set; }
   public int TeamId { get; private set; }
+  [NotMapped]
+  public double? Point { get => _goals.Any(x => x.Point == null) ? null : _goals.Sum(x => x.Point * (x.Percentage / 100.0)); }
+  public string? CharacterPoint { get; private set; }
 
   public IReadOnlyCollection<Goal> Goals => _goals.AsReadOnly();
 
@@ -100,4 +104,34 @@ public class GoalSet : EntityBase, IAggregateRoot
 
     return goal.UpdateProgressStatus(status, comment);
   }
+
+
+  public Result CalculateGoalPoint(int goalId)
+  {
+    var goal = _goals.FirstOrDefault(g => g.Id == goalId);
+    if (goal == null)
+      return Result.Error($"Goal not found for id: {goalId}");
+
+    return goal.CalculatePoint();
+  }
+
+  public Result<bool> IsReadyForLastApprove()
+  {
+    // goal lerindeki son progressler onaylandıysa ve goalerinin Percentage değerlerinin toplamı 100'e eşitse
+    var isReady = _goals.All(g => g.GoalProgressHistory.LastOrDefault()?.Status == GoalProgressStatus.Approved) &&
+                  _goals.Sum(g => g.Percentage) == 100;
+
+    return isReady
+      ? Result<bool>.Success(true)
+      : Result<bool>.Error("Goal set is not ready for last approve");
+
+  }
+
+
+  public Result SetCharacterPoint(string character)
+  {
+    CharacterPoint = character;
+    return Result.Success();
+  }
+
 }

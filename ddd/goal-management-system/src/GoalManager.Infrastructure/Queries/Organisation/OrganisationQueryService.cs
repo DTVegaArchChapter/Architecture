@@ -16,7 +16,8 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
                   .Select(x => new UserTeamListItemDto
                                {
                                  TeamId = x.TeamId,
-                                 TeamName = x.Team.Name.Value
+                                 TeamName = x.Team.Name.Value,
+                                 TeamMemberType = x.MemberType
                                }).ToListAsync();
   }
 
