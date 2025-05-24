@@ -1,5 +1,8 @@
 ﻿using GoalManager.Core.GoalManagement;
+using GoalManager.UseCases.GoalManagement.CalculateAllGoalPointCommand;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatusCommand;
 using GoalManager.UseCases.GoalManagement.UpdateGoalStatusCommand;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -11,12 +14,20 @@ namespace GoalManager.Web.Pages.GoalManagement;
 public class PendingGoalsModel(IMediator mediator) : PageModelBase
 {
   public List<PendingApprovalGoalDto> PendingGoals { get; private set; } = [];
+  public List<GetPendingLastApprovalGoalSetsDto> LastPendingGoalSets { get; private set; } = [];
 
   public async Task<IActionResult> OnGetAsync()
   {
     var user = HttpContext.GetUserContext();
 
-    PendingGoals = await mediator.Send(new GetPendingApprovalGoalsQuery(user.Id));
+    var pendingApprovalGoalDtos = await mediator.Send(new GetPendingApprovalGoalsQuery(user.Id));
+    
+
+    PendingGoals = pendingApprovalGoalDtos
+        .Where(x =>  x.GoalProgressStatus == GoalProgressStatus.WaitingForApproval)
+        .ToList();
+
+    LastPendingGoalSets = (await mediator.Send(new GetPendingLastApprovalGoalSetsQuery(user.Id))).Value;
 
     return Page();
   }
@@ -37,6 +48,33 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
     return RedirectToPage();
   }
 
+  public async Task<IActionResult> OnPostLastApproveAndCalculateLastPointAsync(int goalSetId)
+  {
+    var command = new UpdateGoalSetStatusCommand(
+        goalSetId,
+        GoalSetStatus.LastApproved);
+
+    var result = await mediator.Send(command);
+
+    if (result.IsSuccess)
+      SuccessMessages.Add("Goal Last Approved successfully");
+    else
+      ErrorMessages.Add("Couldnt Update");
+
+    var pointCommand = new CalculateAllGoalPointCommand(
+        goalSetId
+        );
+
+    var pointResult = await mediator.Send(pointCommand);
+
+    if (pointResult.IsSuccess)
+      SuccessMessages.Add("Goal point successfully set");
+    else
+      ErrorMessages.Add("Couldnt set point");
+
+    return RedirectToPage();
+  }
+
   public async Task<IActionResult> OnPostRejectAsync(int goalSetId, int goalId)
   {
     var command = new UpdateGoalStatusCommand(
@@ -53,4 +91,6 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
 
     return RedirectToPage();
   }
+
+
 }

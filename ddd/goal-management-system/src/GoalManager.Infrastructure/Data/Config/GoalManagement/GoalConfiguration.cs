@@ -22,6 +22,10 @@ internal sealed class GoalConfiguration : IEntityTypeConfiguration<Goal>
       .HasDefaultValue(0)
       .IsRequired();
 
+    builder.Property(g => g.Point)
+      .IsRequired(false);
+
+
     builder.ComplexProperty(g => g.GoalValue, gv =>
     {
       gv.Property(x => x.MinValue).IsRequired();
@@ -45,6 +49,8 @@ internal sealed class GoalConfiguration : IEntityTypeConfiguration<Goal>
     builder.HasOne(x => x.GoalProgress)
       .WithOne(x => x.CurrentGoal)
       .HasForeignKey<Goal>(x => x.ProgressId);
+
+  
 
     builder.HasIndex(g => g.Title);
   }

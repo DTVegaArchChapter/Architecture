@@ -17,6 +17,10 @@ internal sealed class GoalSetConfiguration : IEntityTypeConfiguration<GoalSet>
     builder.Property(gs => gs.TeamId)
       .IsRequired();
 
+    builder.Property(gs => gs.CharacterPoint)
+      .IsRequired(false)
+      .HasMaxLength(5);
+
     builder.HasMany(gs => gs.Goals)
       .WithOne()
       .HasForeignKey(g => g.GoalSetId)
