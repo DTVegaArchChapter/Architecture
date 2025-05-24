@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using MediatR;
 
 namespace GoalManager.Core.GoalManagement;
 
@@ -26,6 +25,7 @@ public class GoalSet : EntityBase, IAggregateRoot
   [NotMapped]
   public double? Point { get => _goals.Any(x => x.Point == null) ? null : _goals.Sum(x => x.Point * (x.Percentage / 100.0)); }
   public string? CharacterPoint { get; private set; }
+  public GoalSetStatus? Status { get; private set; } = null!;
 
   public IReadOnlyCollection<Goal> Goals => _goals.AsReadOnly();
 
@@ -115,15 +115,22 @@ public class GoalSet : EntityBase, IAggregateRoot
     return goal.CalculatePoint();
   }
 
+  public Result CalculateAllGoalPoint()
+  {
+    foreach (var goal in _goals)
+    {
+      goal.CalculatePoint();
+    }
+
+    return Result.Success();
+  }
+
   public Result<bool> IsReadyForLastApprove()
   {
-    // goal lerindeki son progressler onaylandıysa ve goalerinin Percentage değerlerinin toplamı 100'e eşitse
-    var isReady = _goals.All(g => g.GoalProgressHistory.LastOrDefault()?.Status == GoalProgressStatus.Approved) &&
-                  _goals.Sum(g => g.Percentage) == 100;
+    var isReady = (_goals.All(g => g.GoalProgressHistory.LastOrDefault()?.Status == GoalProgressStatus.Approved) &&
+                  _goals.Sum(g => g.Percentage) == 100) && !(Status == GoalSetStatus.WaitingForLastApproval || Status == GoalSetStatus.LastApproved);
 
-    return isReady
-      ? Result<bool>.Success(true)
-      : Result<bool>.Error("Goal set is not ready for last approve");
+    return Result<bool>.Success(isReady);
 
   }
 
@@ -131,6 +138,13 @@ public class GoalSet : EntityBase, IAggregateRoot
   public Result SetCharacterPoint(string character)
   {
     CharacterPoint = character;
+    return Result.Success();
+  }
+
+  public Result UpdateStatus(GoalSetStatus status)
+  {
+    Status = status;
+
     return Result.Success();
   }
 

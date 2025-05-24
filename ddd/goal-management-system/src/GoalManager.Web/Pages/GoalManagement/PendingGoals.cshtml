@@ -95,7 +95,7 @@
 	}
 
 
-	@if (Model.LastPendingGoals.Any())
+	@if (Model.LastPendingGoalSets.Any())
 	{
 
 		<br />
@@ -114,57 +114,38 @@
 					<thead class="bg-light">
 						<tr>
 							<th class="border-0">Team</th>
-							<th class="border-0">Goal Title</th>
+							<th class="border-0">Goal Set Id</th>
 							<th class="border-0">User</th>
-							<th class="border-0 text-center">Progress</th>
-							<th class="border-0">Comment</th>
+							<th class="border-0">Status</th>
 							<th class="border-0 text-end">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var goal in Model.LastPendingGoals)
+						@foreach (var goaSet in Model.LastPendingGoalSets)
 						{
 							<tr>
 								<td class="align-middle">
-									<span class="badge bg-light text-dark">@goal.TeamName</span>
+									<span class="badge bg-light text-dark">@goaSet.TeamName</span>
 								</td>
 								<td class="align-middle">
-									<div class="text-truncate" style="max-width: 200px;" title="@goal.GoalTitle">
-										@goal.GoalTitle
+									<div class="text-truncate" style="max-width: 200px;" title="@goaSet.GoalSetId">
+										@goaSet.GoalSetId
 									</div>
 								</td>
 								<td class="align-middle">
-									<small class="text-muted">@goal.User</small>
+									<small class="text-muted">@goaSet.User</small>
 								</td>
-								<td class="align-middle text-center">
-									<div class="d-flex align-items-center gap-2">
-										<span>@goal.ActualValue</span>
-										<div class="progress flex-grow-1" style="height: 6px;">
-											<div class="progress-bar bg-warning"
-												 style="width: @CalculatePercentage(goal.MinValue, goal.MaxValue, goal.ActualValue)%"></div>
-										</div>
-									</div>
-								</td>
+
 								<td class="align-middle">
-									<div class="text-truncate" style="max-width: 150px;" title="@goal.Comment">
-										@(string.IsNullOrEmpty(goal.Comment) ? "-" : goal.Comment)
-									</div>
+									<small class="text-muted">@goaSet.Status</small>
 								</td>
+
 								<td class="align-middle text-end">
 									<div class="d-flex justify-content-end gap-2">
 										<form asp-page-handler="LastApproveAndCalculateLastPoint" method="post">
-											<input type="hidden" name="goalSetId" value="@goal.GoalSetId" />
-											<input type="hidden" name="goalId" value="@goal.GoalId" />
+											<input type="hidden" name="goalSetId" value="@goaSet.GoalSetId" />
 											<button type="submit" class="btn btn-sm btn-outline-success">
 												<i class="fas fa-check"></i> Last Approve And Calculate GoalPoint
-											</button>
-										</form>
-										<form asp-page-handler="Reject" method="post">
-											<input type="hidden" name="goalSetId" value="@goal.GoalSetId" />
-											<input type="hidden" name="goalId" value="@goal.GoalId" />
-											<button type="submit" class="btn btn-sm btn-outline-danger"
-													onclick="return confirm('Reject this goal?')">
-												<i class="fas fa-times"></i> Reject
 											</button>
 										</form>
 									</div>

@@ -1,8 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
-using GoalManager.Core.Organisation;
 using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
-using GoalManager.UseCases.GoalManagement.UpdateGoalStatusCommand;
+using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatusCommand;
 using GoalManager.Web.Common;
 
 using Microsoft.AspNetCore.Authorization;
@@ -44,36 +43,24 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
 
   public async Task<IActionResult> OnPostLastUpdateOnProgressAsync(int teamId)
   {
-
     await GetGoalSet(teamId);
 
     if (GoalSet == null || GoalSet.Goals == null)
       return RedirectToPage();
 
-
     List<int> errorGoalId = new List<int>();
 
-    foreach (var item in GoalSet.Goals)
-    {
-      var command = new UpdateGoalStatusCommand(
-      GoalSet.Id,
-      item.Id,
-      GoalProgressStatus.WaitingForLastApproval);
+    var command = new UpdateGoalSetStatusCommand(
+    GoalSet.Id,
+    GoalSetStatus.WaitingForLastApproval);
 
-      var result = await mediator.Send(command);
-
-      if(result.IsError())
-        errorGoalId.Add(item.Id);
-    }
-
-
+    var result = await mediator.Send(command);
 
     if (errorGoalId.Count == 0)
       SuccessMessages.Add("Goal set WaitingForLastApproval successfully");
     else
     {
-      var failedIds = string.Join(", ", errorGoalId);
-      ErrorMessages.Add($"Could not update the following goal IDs: {failedIds}");
+      ErrorMessages.Add($"Could not update the  goal set ID: {GoalSet.Id}");
     }
 
     return RedirectToPage();

@@ -143,29 +143,29 @@ public class Goal : EntityBase
     return Result.Success();
   }
 
-private double CalculatePoint(double? actual, double stage1, double stage2, double stage3)
-    {
-        if (actual == null)
-            return 0;
+  private double CalculatePoint(double? actual, double min, double mid, double max)
+  {
+      if (actual == null)
+          return 0;
 
-        double actualValue = actual.Value;
+      double actualValue = actual.Value;
 
-        if (actualValue < stage1)
-            return 0;
+      if (actualValue < min)
+          return 0;
 
-        if (actualValue == stage1)
-            return 60;
+      if (actualValue == min)
+          return 60;
 
-        if (actualValue > stage1 && actualValue < stage2) // lineer calculation
-            return 60 + ((actualValue - stage1) / (stage2 - stage1)) * (80 - 60);
+      if (actualValue > min && actualValue < mid) // lineer calculation
+          return 60 + ((actualValue - min) / (mid - min)) * (80 - 60);
 
-        if (actualValue == stage2)
-            return 80;
+      if (actualValue == mid)
+          return 80;
 
-        if (actualValue > stage2 && actualValue < stage3) // lineer calculation
-            return 80 + ((actualValue - stage2) / (stage3 - stage2)) * (100 - 80);
+      if (actualValue > mid && actualValue < max) // lineer calculation
+          return 80 + ((actualValue - mid) / (max - mid)) * (100 - 80);
 
-        // actualValue >= stage3  
-        return 100;
-    }
+      // actualValue >= max  
+      return 100;
+  }
 }

@@ -1,9 +1,9 @@
 ﻿using GoalManager.Core.GoalManagement;
-using GoalManager.Core.Organisation;
-using GoalManager.UseCases.GoalManagement.CalculateGoalPointCommand;
+using GoalManager.UseCases.GoalManagement.CalculateAllGoalPointCommand;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatusCommand;
 using GoalManager.UseCases.GoalManagement.UpdateGoalStatusCommand;
-using GoalManager.UseCases.Organisation.ListUserTeams;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,30 +14,20 @@ namespace GoalManager.Web.Pages.GoalManagement;
 public class PendingGoalsModel(IMediator mediator) : PageModelBase
 {
   public List<PendingApprovalGoalDto> PendingGoals { get; private set; } = [];
-  public List<PendingApprovalGoalDto> LastPendingGoals { get; private set; } = [];
-  public List<PendingApprovalGoalDto> LastApprovedGoals { get; private set; } = [];
+  public List<GetPendingLastApprovalGoalSetsDto> LastPendingGoalSets { get; private set; } = [];
 
   public async Task<IActionResult> OnGetAsync()
   {
     var user = HttpContext.GetUserContext();
 
     var pendingApprovalGoalDtos = await mediator.Send(new GetPendingApprovalGoalsQuery(user.Id));
-    var userTeams = await mediator.Send(new ListUserTeamsQuery(user.Id));
-    var leaderOwnTeamsId = userTeams.Where(x => x.TeamMemberType == TeamMemberType.TeamLeader).Select(x => x.TeamId);
-
+    
 
     PendingGoals = pendingApprovalGoalDtos
         .Where(x =>  x.GoalProgressStatus == GoalProgressStatus.WaitingForApproval)
         .ToList();
 
-    LastPendingGoals = pendingApprovalGoalDtos
-        .Where(x => leaderOwnTeamsId.Contains(x.TeamId) && x.GoalProgressStatus == GoalProgressStatus.WaitingForLastApproval)
-        .ToList();
-
-    LastApprovedGoals = pendingApprovalGoalDtos
-     .Where(x => leaderOwnTeamsId.Contains(x.TeamId) && x.GoalProgressStatus == GoalProgressStatus.LastApproved)
-     .ToList();
-
+    LastPendingGoalSets = (await mediator.Send(new GetPendingLastApprovalGoalSetsQuery(user.Id))).Value;
 
     return Page();
   }
@@ -58,12 +48,11 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
     return RedirectToPage();
   }
 
-  public async Task<IActionResult> OnPostLastApproveAndCalculateLastPointAsync(int goalSetId, int goalId)
+  public async Task<IActionResult> OnPostLastApproveAndCalculateLastPointAsync(int goalSetId)
   {
-    var command = new UpdateGoalStatusCommand(
+    var command = new UpdateGoalSetStatusCommand(
         goalSetId,
-        goalId,
-        GoalProgressStatus.LastApproved);
+        GoalSetStatus.LastApproved);
 
     var result = await mediator.Send(command);
 
@@ -72,9 +61,9 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
     else
       ErrorMessages.Add("Couldnt Update");
 
-    var pointCommand = new CalculateGoalPointCommand(
-        goalSetId,
-        goalId);
+    var pointCommand = new CalculateAllGoalPointCommand(
+        goalSetId
+        );
 
     var pointResult = await mediator.Send(pointCommand);
 
