@@ -5,6 +5,7 @@ using GoalManager.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoalManager.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250518133607_AddGoalPoint")]
+    partial class AddGoalPoint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +48,8 @@ namespace GoalManager.Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<double?>("Point")
-                        .HasColumnType("float");
+                    b.Property<int?>("Point")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ProgressId")
                         .HasColumnType("int");
@@ -144,14 +147,7 @@ namespace GoalManager.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CharacterPoint")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
                     b.Property<int>("PeriodId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.Property<int>("TeamId")
