@@ -1,4 +1,4 @@
-﻿using GoalManager.Core.GoalManagement;
+using GoalManager.Core.GoalManagement;
 using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
@@ -12,9 +12,9 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
   {
 
     var results = await (
-        from goal in appDbContext.Goal
-        join goalSet in appDbContext.GoalSet on goal.GoalSetId equals goalSet.Id
-        where teamIds.Contains(goalSet.TeamId) && (goal.GoalProgress!.Status == GoalProgressStatus.WaitingForApproval)
+        from goal in appDbContext.Goal.AsNoTracking()
+        join goalSet in appDbContext.GoalSet.AsNoTracking() on goal.GoalSetId equals goalSet.Id
+        where teamIds.Contains(goalSet.TeamId) && goal.GoalProgress!.Status == GoalProgressStatus.WaitingForApproval
         select new
         {
           GoalId = goal.Id,
