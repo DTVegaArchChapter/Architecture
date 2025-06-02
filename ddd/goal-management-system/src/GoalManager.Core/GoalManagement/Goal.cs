@@ -11,8 +11,6 @@ public class Goal : EntityBase
   public int GoalSetId { get; private set; }
   public int Percentage { get; private set; }
   public int? ProgressId { get; private set; } = null!;
-  public double? Point { get; set; }
-
 
   private readonly IList<GoalProgress> _goalProgressHistory = [];
   public IReadOnlyCollection<GoalProgress> GoalProgressHistory => _goalProgressHistory.AsReadOnly();
@@ -76,7 +74,7 @@ public class Goal : EntityBase
 
   public Result AddProgress(int teamId, int userId, int actualValue, string? comment, GoalProgressStatus? status = null)
   {
-      GoalProgressStatus _status = status ?? GoalProgressStatus.WaitingForApproval;
+      var newStatus = status ?? GoalProgressStatus.WaitingForApproval;
       var setValueResult = SetActualValue(actualValue);
       if (!setValueResult.IsSuccess)
       {
@@ -86,7 +84,7 @@ public class Goal : EntityBase
       var currentGoalProgress = GoalProgress;
       if (currentGoalProgress == null)
       {
-        var progressCreateResult = GoalProgress.Create(Id, actualValue, comment, _status);
+        var progressCreateResult = GoalProgress.Create(Id, actualValue, comment, newStatus);
         if (!progressCreateResult.IsSuccess)
         {
           return progressCreateResult.ToResult();
@@ -98,7 +96,7 @@ public class Goal : EntityBase
       }
       else
       {
-        currentGoalProgress.Update(actualValue, comment, _status);
+        currentGoalProgress.Update(actualValue, comment, newStatus);
       }
 
       RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
@@ -133,39 +131,5 @@ public class Goal : EntityBase
     GoalProgress = updatedProgress.Value;
 
     return Result.Success();
-  }
-
-
-  public Result CalculatePoint()
-  {
-    Point = CalculatePoint(ActualValue, GoalValue.MinValue, GoalValue.MidValue, GoalValue.MaxValue);
-
-    return Result.Success();
-  }
-
-  private double CalculatePoint(double? actual, double min, double mid, double max)
-  {
-      if (actual == null)
-          return 0;
-
-      double actualValue = actual.Value;
-
-      if (actualValue < min)
-          return 0;
-
-      if (actualValue == min)
-          return 60;
-
-      if (actualValue > min && actualValue < mid) // lineer calculation
-          return 60 + ((actualValue - min) / (mid - min)) * (80 - 60);
-
-      if (actualValue == mid)
-          return 80;
-
-      if (actualValue > mid && actualValue < max) // lineer calculation
-          return 80 + ((actualValue - mid) / (max - mid)) * (100 - 80);
-
-      // actualValue >= max  
-      return 100;
   }
 }

@@ -2,7 +2,8 @@
 using GoalManager.Core.GoalManagement;
 using GoalManager.Core;
 
-namespace GoalManager.UseCases.GoalManagement.UpdateGoalStatusCommand;
+namespace GoalManager.UseCases.GoalManagement.UpdateGoalStatus;
+
 public sealed class UpdateGoalStatusCommandHandler(IRepository<GoalSet> goalSetRepository)
     : ICommandHandler<UpdateGoalStatusCommand, Result>
 {

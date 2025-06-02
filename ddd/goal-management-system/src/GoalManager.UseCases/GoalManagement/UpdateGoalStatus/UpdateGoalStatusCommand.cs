@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
 
-namespace GoalManager.UseCases.GoalManagement.UpdateGoalStatusCommand;
+namespace GoalManager.UseCases.GoalManagement.UpdateGoalStatus;
+
 public record UpdateGoalStatusCommand(
     int GoalSetId,
     int GoalId,

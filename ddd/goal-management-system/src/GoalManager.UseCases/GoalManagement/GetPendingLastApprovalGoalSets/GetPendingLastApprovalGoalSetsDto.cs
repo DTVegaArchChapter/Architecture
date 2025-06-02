@@ -1,5 +1,8 @@
 ﻿
+using GoalManager.Core.GoalManagement;
+
 namespace GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+
 public class GetPendingLastApprovalGoalSetsDto
 {
   public int TeamId { get; set; }
@@ -13,5 +16,4 @@ public class GetPendingLastApprovalGoalSetsDto
   public string? User { get; set; }
 
   public GoalSetStatus? Status { get; set; }
-
 }

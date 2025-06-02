@@ -1,4 +1,4 @@
-using GoalManager.Core.GoalManagement;
+﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
@@ -24,7 +24,6 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
           goal.GoalProgress!.ActualValue,
           goal.GoalProgress!.Comment,
           goal.GoalProgress!.Status,
-          goal.Point,
           goalSet.UserId,
           goalSet.TeamId,
           GoalSetId = goalSet.Id
@@ -41,7 +40,6 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
       ActualValue = x.ActualValue,
       Comment = x.Comment,
       GoalProgressStatus = x.Status,
-      Point = x.Point,
       UserId = x.UserId,
       TeamId = x.TeamId
     }).ToList();

@@ -1,4 +1,5 @@
 ﻿
+namespace GoalManager.Core.GoalManagement;
 
 public class GoalSetStatus : SmartEnum<GoalSetStatus>
 {

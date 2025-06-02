@@ -7,7 +7,7 @@ public class CalculateCharacterPointCommandHandler(IRepository<GoalSet> goalSetR
 {
   public async Task<Result> Handle(CalculateCharacterPointCommand request, CancellationToken cancellationToken)
   {
-    var goalSets = await goalSetRepository.ListAsync(new GoalSetsWithGoalsByTeamIdSpec(request.TeamId));
+    var goalSets = await goalSetRepository.ListAsync(new GoalSetsWithGoalsByTeamIdSpec(request.TeamId), cancellationToken);
 
 
     var isCanCalculate = !goalSets.Any(x => x.Goals.Any(g => g.Point == null));
@@ -20,7 +20,7 @@ public class CalculateCharacterPointCommandHandler(IRepository<GoalSet> goalSetR
 
     CalculateCharacterPoint(goalSets);
 
-    await goalSetRepository.UpdateRangeAsync(goalSets);
+    await goalSetRepository.UpdateRangeAsync(goalSets, cancellationToken);
 
     return Result.Success();
   }

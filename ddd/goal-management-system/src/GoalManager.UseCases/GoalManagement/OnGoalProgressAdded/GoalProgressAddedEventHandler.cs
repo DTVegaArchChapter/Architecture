@@ -5,7 +5,7 @@ using GoalManager.UseCases.Organisation;
 
 using MediatR;
 
-namespace GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
+namespace GoalManager.UseCases.GoalManagement.OnGoalProgressAdded;
 
 internal sealed class GoalProgressAddedEventHandler(
   IOrganisationQueryService organisationQueryService,
