@@ -2,8 +2,6 @@
 using GoalManager.UseCases.GoalManagement.CalculateAllGoalPointCommand;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
-using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatusCommand;
-using GoalManager.UseCases.GoalManagement.UpdateGoalStatusCommand;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

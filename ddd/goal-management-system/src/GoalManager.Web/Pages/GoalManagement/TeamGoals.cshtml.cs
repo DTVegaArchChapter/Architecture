@@ -1,7 +1,6 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
-using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatusCommand;
 using GoalManager.Web.Common;
 
 using Microsoft.AspNetCore.Authorization;

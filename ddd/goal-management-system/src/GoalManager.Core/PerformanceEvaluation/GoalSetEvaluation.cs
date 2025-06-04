@@ -6,7 +6,7 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
 
   public int GoalSetId { get; private set; }
 
-  public double? PerformancePoint { get; private set; }
+  public double? PerformanceScore { get; private set; }
 
   public string? PerformanceGrade { get; private set; }
 
@@ -41,7 +41,7 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
       goal.CalculatePoint();
     }
 
-    PerformancePoint = _goalEvaluations.Sum(x => x.Point.GetValueOrDefault() * (x.Percentage / 100.0));
+    PerformanceScore = _goalEvaluations.Sum(x => x.Point.GetValueOrDefault() * (x.Percentage / 100.0));
 
     return Result.Success();
   }

@@ -4,7 +4,8 @@ using GoalManager.UseCases.GoalManagement;
 
 namespace GoalManager.UseCases.PerformanceEvaluation.CalculatePerformanceEvaluation;
 
-public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagementQueryService goalManagementQueryService) : ICommandHandler<CalculatePerformanceEvaluationCommand, Result>
+public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagementQueryService goalManagementQueryService, IRepository<GoalSetEvaluation> goalSetEvaluationRepository)
+  : ICommandHandler<CalculatePerformanceEvaluationCommand, Result>
 {
   public async Task<Result> Handle(CalculatePerformanceEvaluationCommand request, CancellationToken cancellationToken)
   {
@@ -14,10 +15,15 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
       return teamGoalSetEvaluationsResult.ToResult();
     }
 
-    foreach (var teamGoalSetEvaluation in teamGoalSetEvaluationsResult.Value)
+    var goalSetEvaluations = teamGoalSetEvaluationsResult.Value;
+    foreach (var teamGoalSetEvaluation in goalSetEvaluations)
     {
       teamGoalSetEvaluation.CalculatePerformancePoint();
     }
+
+    CalculatePerformanceGrades(goalSetEvaluations);
+
+    await goalSetEvaluationRepository.AddRangeAsync(goalSetEvaluations, cancellationToken).ConfigureAwait(false);
 
     return Result.Success();
   }
@@ -33,13 +39,21 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
 
       foreach (var goalPerformanceData in memberPerformanceData.Goals)
       {
-        var goalEvaluationValueResult = GoalEvaluationValue.Create(goalPerformanceData.GoalValue.MinValue, goalPerformanceData.GoalValue.MidValue, goalPerformanceData.GoalValue.MaxValue);
+        var goalEvaluationValueResult = GoalEvaluationValue.Create(
+          goalPerformanceData.GoalValue.MinValue,
+          goalPerformanceData.GoalValue.MidValue,
+          goalPerformanceData.GoalValue.MaxValue);
         if (!goalEvaluationValueResult.IsSuccess)
         {
           return goalEvaluationValueResult.ToResult();
         }
 
-        var goalEvaluationResult = GoalEvaluation.Create(0, goalPerformanceData.Title, goalEvaluationValueResult.Value, goalPerformanceData.ActualValue.GetValueOrDefault(), goalPerformanceData.Percentage);
+        var goalEvaluationResult = GoalEvaluation.Create(
+          0,
+          goalPerformanceData.Title,
+          goalEvaluationValueResult.Value,
+          goalPerformanceData.ActualValue.GetValueOrDefault(),
+          goalPerformanceData.Percentage);
         if (!goalEvaluationResult.IsSuccess)
         {
           return goalEvaluationResult.ToResult();
@@ -58,5 +72,28 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
     }
 
     return teamGoalSetEvaluations;
+  }
+
+  private static void CalculatePerformanceGrades(List<GoalSetEvaluation> goalSets)
+  {
+    var scores = goalSets.Select(x => x.PerformanceScore.GetValueOrDefault()).ToList();
+    double avg = scores.Average();
+    double stdDev = Math.Sqrt(scores.Sum(s => Math.Pow(s - avg, 2)) / scores.Count);
+
+    foreach (var goal in goalSets)
+    {
+      var score = goal.PerformanceScore.GetValueOrDefault();
+      double z = (score - avg) / stdDev;
+      string grade = z switch
+      {
+        > 1.5 => "A",
+        > 0.5 => "B",
+        > -0.5 => "C",
+        > -1.5 => "D",
+        _ => "F"
+      };
+
+      goal.SetPerformanceGrade(grade);
+    }
   }
 }

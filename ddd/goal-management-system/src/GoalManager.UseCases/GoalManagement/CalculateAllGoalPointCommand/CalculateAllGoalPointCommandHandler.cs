@@ -1,6 +1,4 @@
-﻿
-using GoalManager.Core;
-using GoalManager.Core.GoalManagement;
+﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Core.GoalManagement.Specifications;
 
 namespace GoalManager.UseCases.GoalManagement.CalculateAllGoalPointCommand;
