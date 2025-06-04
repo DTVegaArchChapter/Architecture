@@ -27,7 +27,7 @@ public class GoalEvaluation : EntityBase
     Percentage = percentage;
   }
 
-  internal static Result<GoalEvaluation> Create(int goalSetEvaluationId, string goalTitle, GoalEvaluationValue goalValue, int actualValue, int percentage)
+  public static Result<GoalEvaluation> Create(int goalSetEvaluationId, string goalTitle, GoalEvaluationValue goalValue, int actualValue, int percentage)
   {
     if (string.IsNullOrWhiteSpace(goalTitle))
     {

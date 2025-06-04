@@ -9,8 +9,4 @@
     <ProjectReference Include="..\GoalManager.Core\GoalManager.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="PerformanceEvaluation\CalculatePerformanceEvaluation\" />
-  </ItemGroup>
-
 </Project>

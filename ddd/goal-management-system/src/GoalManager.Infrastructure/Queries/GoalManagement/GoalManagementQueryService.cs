@@ -3,6 +3,7 @@ using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+using GoalManager.UseCases.GoalManagement.GetTeamPerformanceData;
 
 namespace GoalManager.Infrastructure.Queries.GoalManagement;
 
@@ -62,5 +63,34 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
             .ToListAsync();
 
     return results;
+  }
+
+  public async Task<TeamPerformanceDataDto> GetTeamPerformanceData(int teamId)
+  {
+    var teamMemberPerformanceData = await appDbContext.GoalSet.AsNoTracking()
+                                      .Where(goalSet => goalSet.TeamId == teamId)
+                                      .Select(
+                                        goalSet => new TeamMemberPerformanceDataDto
+                                                   {
+                                                     GoalSetId = goalSet.Id,
+                                                     UserId = goalSet.UserId,
+                                                     Goals = goalSet.Goals.Select(
+                                                         x => new GoalPerformanceDataDto
+                                                              {
+                                                                Title = x.Title,
+                                                                Percentage = x.Percentage,
+                                                                ActualValue = x.ActualValue,
+                                                                GoalType = x.GoalType,
+                                                                GoalValue = x.GoalValue
+                                                              })
+                                                       .ToList()
+                                                   })
+      .ToListAsync();
+
+    return new TeamPerformanceDataDto
+           {
+             TeamId = teamId, 
+             TeamMembersPerformanceData = teamMemberPerformanceData
+           };
   }
 }

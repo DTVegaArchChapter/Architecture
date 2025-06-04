@@ -26,10 +26,7 @@ internal sealed class AddGoalCommandHandler(IRepository<GoalSet> goalSetReposito
       return addGoalResult.ToResult();
     }
 
-
-
     await goalSetRepository.UpdateAsync(goalSet, cancellationToken).ConfigureAwait(false);
-
 
     return (goalSet.TeamId, goalSet.PeriodId);
   }

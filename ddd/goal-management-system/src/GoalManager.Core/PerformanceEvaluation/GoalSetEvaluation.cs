@@ -1,14 +1,14 @@
 ﻿namespace GoalManager.Core.PerformanceEvaluation;
 
-internal class GoalSetEvaluation : EntityBase, IAggregateRoot
+public class GoalSetEvaluation : EntityBase, IAggregateRoot
 {
   private readonly IList<GoalEvaluation> _goalEvaluations = [];
 
   public int GoalSetId { get; private set; }
 
-  public double? Point { get; private set; }
+  public double? PerformancePoint { get; private set; }
 
-  public string? CharacterPoint { get; private set; }
+  public string? PerformanceGrade { get; private set; }
 
   public IReadOnlyCollection<GoalEvaluation> GoalEvaluations => _goalEvaluations.AsReadOnly();
 
@@ -28,20 +28,20 @@ internal class GoalSetEvaluation : EntityBase, IAggregateRoot
     return new GoalSetEvaluation(goalSetId, goalEvaluations);
   }
 
-  public Result SetCharacterPoint(string character)
+  public Result SetPerformanceGrade(string grade)
   {
-    CharacterPoint = character;
+    PerformanceGrade = grade;
     return Result.Success();
   }
 
-  public Result CalculateAllGoalPoint()
+  public Result CalculatePerformancePoint()
   {
     foreach (var goal in _goalEvaluations)
     {
       goal.CalculatePoint();
     }
 
-    Point = _goalEvaluations.Sum(x => x.Point.GetValueOrDefault() * (x.Percentage / 100.0));
+    PerformancePoint = _goalEvaluations.Sum(x => x.Point.GetValueOrDefault() * (x.Percentage / 100.0));
 
     return Result.Success();
   }
