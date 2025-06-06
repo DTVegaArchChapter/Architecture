@@ -1,6 +1,5 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Core.Organisation;
-using GoalManager.UseCases.GoalManagement.CalculateCharacterPointCommand;
 using GoalManager.UseCases.GoalManagement.GetAllGoalSetsByTeamId;
 using GoalManager.UseCases.Organisation.ListUserTeams;
 using GoalManager.Web.Common;

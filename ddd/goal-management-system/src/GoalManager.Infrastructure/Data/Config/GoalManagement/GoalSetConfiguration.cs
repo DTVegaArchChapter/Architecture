@@ -2,7 +2,7 @@
 
 namespace GoalManager.Infrastructure.Data.Config.GoalManagement;
 
-internal sealed class GoalSetConfiguration : IEntityTypeConfiguration<GoalSet>
+internal sealed class GoalSetEvaluationConfiguration : IEntityTypeConfiguration<GoalSet>
 {
   public void Configure(EntityTypeBuilder<GoalSet> builder)
   {
