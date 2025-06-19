@@ -13,15 +13,19 @@ public sealed class UpdateGoalStatusCommandHandler(IRepository<GoalSet> goalSetR
         new GoalSetWithGoalsByGoalSetIdSpec(request.GoalSetId), cancellationToken);
 
     if (goalSet == null)
+    {
       return Result.Error($"GoalSet not found: {request.GoalSetId}");
+    }
 
     var result = goalSet.UpdateGoalStatus(request.GoalId, request.Status, request.Comment);
 
     if (!result.IsSuccess)
+    {
       return result.ToResult();
+    }
 
     await goalSetRepository.UpdateAsync(goalSet, cancellationToken);
 
-    return Result.Success(result);
+    return result;
   }
 }

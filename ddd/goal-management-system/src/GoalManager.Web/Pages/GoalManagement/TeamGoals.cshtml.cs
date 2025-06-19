@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
+using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatus;
 using GoalManager.Web.Common;
 
 using Microsoft.AspNetCore.Authorization;
@@ -47,7 +48,7 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
     if (GoalSet == null || GoalSet.Goals == null)
       return RedirectToPage();
 
-    List<int> errorGoalId = new List<int>();
+    List<int> errorGoalId = [];
 
     var command = new UpdateGoalSetStatusCommand(
     GoalSet.Id,

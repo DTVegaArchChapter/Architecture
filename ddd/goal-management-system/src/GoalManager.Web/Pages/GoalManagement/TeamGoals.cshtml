@@ -90,14 +90,6 @@
 											<div class="text-muted small">Max</div>
 											<div>@goal.GoalValue.MaxValue</div>
 										</div>
-										@if (Model.GoalSet.Status == GoalSetStatus.LastApproved)
-										{
-											<div class="col-md-2">
-												<div class="text-muted small">Point</div>
-												<div>@(goal.Point == null ? "-" : goal.Point)</div>
-											</div>
-										}
-								
 									</div>
 								</div>
 							}
@@ -186,28 +178,6 @@
 			}
 		</div>
 	}
-	@if (Model.GoalSet?.IsReadyForLastApprove()?.Value ?? false)
-	{
-
-		<div class="d-flex justify-content-between align-items-center mb-4">
-			<div>
-				<span class="h3 fw-light mb-1">Send last approve.</span>
-				<br />
-				<span class="text-sm-center fw-light mb-1">after that goals will be readonly</span>
-			</div>
-
-			<form method="post" asp-page-handler="LastUpdateOnProgress">
-				<button type="submit" class="btn btn-primary">
-					<i class="fas fa-plus me-2"></i>Send Last Approve
-				</button>
-			</form>
-
-		</div>
-
-	}
-	
-
-
 </div>
 
 <script>

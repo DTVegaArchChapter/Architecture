@@ -3,6 +3,7 @@ namespace GoalManager.Core.GoalManagement;
 
 public class GoalSetStatus : SmartEnum<GoalSetStatus>
 {
+  public static readonly GoalSetStatus None = new(nameof(None), 0);
   public static readonly GoalSetStatus WaitingForLastApproval = new(nameof(WaitingForLastApproval), 1);
   public static readonly GoalSetStatus LastApproved = new(nameof(LastApproved), 2);
 

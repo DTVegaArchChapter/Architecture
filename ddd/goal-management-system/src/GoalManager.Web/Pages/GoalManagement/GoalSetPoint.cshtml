@@ -12,11 +12,8 @@
 		<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
 	</div>
 
-
-
 	@if (Model.GoalSets.Any())
 	{
-
 		<div class="card border-0 shadow-sm">
 			<div class="table-responsive">
 				<table class="table table-hover mb-0">
@@ -38,16 +35,6 @@
 								<td class="align-middle">
 									<small class="text-muted">@goalSet.UserId</small>
 								</td>
-								<td class="align-middle">
-									<div class="text-truncate" style="max-width: 150px;">
-										@(goalSet.Point == null ? "-" : goalSet.Point)
-									</div>
-								</td>
-								<td class="align-middle">
-									<div class="text-truncate" style="max-width: 150px;">
-										@(string.IsNullOrEmpty(goalSet.CharacterPoint) ? "-" : goalSet.CharacterPoint)
-									</div>
-								</td>
 							</tr>
 						}
 					</tbody>
@@ -67,13 +54,8 @@
 					</form>
 				</div>
 			}
-			
-
 		</div>
 	}
-
-
-
 </div>
 
 @functions {

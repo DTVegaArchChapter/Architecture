@@ -6,7 +6,6 @@ using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace GoalManager.Web.Pages.GoalManagement;
 
 [Authorize]
@@ -15,7 +14,7 @@ public class GoalSetPointModel(IMediator mediator) : PageModelBase
   [BindProperty(SupportsGet = true)]
   public int TeamId { get; set; }
 
-  public List<GoalSet> GoalSets { get; set; } = new List<GoalSet>();
+  public List<GoalSet> GoalSets { get; set; } = [];
   public bool IsCanCalculate { get; set; }
   public bool IsTeamLead { get; set; }
   public async Task<IActionResult> OnGetAsync()
@@ -25,13 +24,12 @@ public class GoalSetPointModel(IMediator mediator) : PageModelBase
 
     var user = HttpContext.GetUserContext();
     var userTeams = await mediator.Send(new ListUserTeamsQuery(user.Id));
-    var isTeamLead = userTeams.Where(x => x.TeamMemberType == TeamMemberType.TeamLeader && x.TeamId == TeamId).Any();
+    var isTeamLead = userTeams.Any(x => x.TeamMemberType == TeamMemberType.TeamLeader && x.TeamId == TeamId);
 
     IsTeamLead = isTeamLead;
     if (IsTeamLead)
     {
       GoalSets = goalSets.Value;
-      IsCanCalculate = !goalSets.Value.Any(x => x.Goals.Any(g => g.Point == null));
     }
     else
     {
@@ -42,14 +40,9 @@ public class GoalSetPointModel(IMediator mediator) : PageModelBase
     return Page();
   }
 
-  public async Task<IActionResult> OnPostCalculateCharacterPointAsync()
+  public IActionResult OnPostCalculateCharacterPoint()
   {
-
-    var result = await mediator.Send(new CalculateCharacterPointCommand(TeamId));
-
-    AddResultMessages(result);
     return RedirectToPage();
-    
   }
 }
 

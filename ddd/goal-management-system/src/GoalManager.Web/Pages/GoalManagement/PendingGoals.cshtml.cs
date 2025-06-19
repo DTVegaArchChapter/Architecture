@@ -1,7 +1,8 @@
 ﻿using GoalManager.Core.GoalManagement;
-using GoalManager.UseCases.GoalManagement.CalculateAllGoalPointCommand;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatus;
+using GoalManager.UseCases.GoalManagement.UpdateGoalStatus;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,17 +60,6 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
     else
       ErrorMessages.Add("Couldnt Update");
 
-    var pointCommand = new CalculateAllGoalPointCommand(
-        goalSetId
-        );
-
-    var pointResult = await mediator.Send(pointCommand);
-
-    if (pointResult.IsSuccess)
-      SuccessMessages.Add("Goal point successfully set");
-    else
-      ErrorMessages.Add("Couldnt set point");
-
     return RedirectToPage();
   }
 
@@ -89,6 +79,4 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
 
     return RedirectToPage();
   }
-
-
 }
