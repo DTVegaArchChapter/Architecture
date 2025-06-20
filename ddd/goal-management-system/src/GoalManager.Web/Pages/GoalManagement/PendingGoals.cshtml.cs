@@ -51,7 +51,7 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
   {
     var command = new UpdateGoalSetStatusCommand(
         goalSetId,
-        GoalSetStatus.LastApproved);
+        GoalSetStatus.Approved);
 
     var result = await mediator.Send(command);
 

@@ -18,9 +18,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
   public DbSet<TeamMember> TeamMember => Set<TeamMember>();
 
   public DbSet<NotificationItem> NotificationItem => Set<NotificationItem>();
+
   public DbSet<GoalSet> GoalSet => Set<GoalSet>();
+
   public DbSet<Goal> Goal => Set<Goal>();
+
   public DbSet<GoalProgress> GoalProgress => Set<GoalProgress>();
+
+  public DbSet<GoalPeriod> GoalPeriod => Set<GoalPeriod>();
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);

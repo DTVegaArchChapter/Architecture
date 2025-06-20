@@ -1,10 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-
-# Create the directory before switching to non-root user
-RUN mkdir -p /home/app/.aspnet/DataProtection-Keys && \
-    chown -R ${APP_UID}:${APP_UID} /home/app/.aspnet
-
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081

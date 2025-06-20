@@ -50,7 +50,7 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
   {
     var results = await(
             from goalSet in appDbContext.GoalSet
-            where teamIds.Contains(goalSet.TeamId) && (goalSet.Status == GoalSetStatus.WaitingForLastApproval)
+            where teamIds.Contains(goalSet.TeamId) && (goalSet.Status == GoalSetStatus.WaitingApproval)
             select new GetPendingLastApprovalGoalSetsDto
             {
               GoalSetId = goalSet.Id,
@@ -74,6 +74,7 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
                                                    {
                                                      GoalSetId = goalSet.Id,
                                                      UserId = goalSet.UserId,
+                                                     GoalSetStatus = goalSet.Status,
                                                      Goals = goalSet.Goals.Select(
                                                          x => new GoalPerformanceDataDto
                                                               {
@@ -92,5 +93,22 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
              TeamId = teamId, 
              TeamMembersPerformanceData = teamMemberPerformanceData
            };
+  }
+
+  public async Task<List<TeamMemberGoalSetListItemDto>> GetTeamMemberGoalSetsList(IList<int> teamIds)
+  {
+    var results = await (
+                          from goalSet in appDbContext.GoalSet.AsNoTracking() 
+                          join goalPeriod in appDbContext.GoalPeriod on goalSet.TeamId equals goalPeriod.TeamId 
+                          where teamIds.Contains(goalSet.TeamId) && goalPeriod.Year == DateTime.Now.Year
+                          select new TeamMemberGoalSetListItemDto
+                                {
+                                   Status = goalSet.Status,
+                                   TeamId = goalSet.TeamId,
+                                   UserId = goalSet.UserId
+                                 })
+                    .ToListAsync();
+
+    return results;
   }
 }

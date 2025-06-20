@@ -52,7 +52,7 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
 
     var command = new UpdateGoalSetStatusCommand(
     GoalSet.Id,
-    GoalSetStatus.WaitingForLastApproval);
+    GoalSetStatus.WaitingApproval);
 
     var result = await mediator.Send(command);
 

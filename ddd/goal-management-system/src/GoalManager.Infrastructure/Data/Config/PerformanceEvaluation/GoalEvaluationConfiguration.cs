@@ -1,5 +1,4 @@
-﻿using GoalManager.Core.GoalManagement;
-using GoalManager.Core.PerformanceEvaluation;
+﻿using GoalManager.Core.PerformanceEvaluation;
 
 namespace GoalManager.Infrastructure.Data.Config.PerformanceEvaluation;
 

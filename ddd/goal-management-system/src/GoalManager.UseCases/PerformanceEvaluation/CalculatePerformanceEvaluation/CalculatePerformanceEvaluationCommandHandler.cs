@@ -1,4 +1,5 @@
 ﻿using GoalManager.Core;
+using GoalManager.Core.GoalManagement;
 using GoalManager.Core.PerformanceEvaluation;
 using GoalManager.UseCases.GoalManagement;
 
@@ -25,13 +26,18 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
 
     await goalSetEvaluationRepository.AddRangeAsync(goalSetEvaluations, cancellationToken).ConfigureAwait(false);
 
-    return Result.Success();
+    return Result.SuccessWithMessage("Performance Evaluation calculation finished for the team.");
   }
 
   private async Task<Result<List<GoalSetEvaluation>>> GetTeamGoalSetEvaluation(int teamId)
   {
     var teamGoalSetEvaluations = new List<GoalSetEvaluation>();
     var data = await goalManagementQueryService.GetTeamPerformanceData(teamId).ConfigureAwait(false);
+
+    if (data.TeamMembersPerformanceData.Any(x => x.GoalSetStatus != GoalSetStatus.Approved))
+    {
+      return Result.Error("Cannot calculate performance evaluation for team because not all team user goals are approved.");
+    }
 
     foreach (var memberPerformanceData in data.TeamMembersPerformanceData)
     {

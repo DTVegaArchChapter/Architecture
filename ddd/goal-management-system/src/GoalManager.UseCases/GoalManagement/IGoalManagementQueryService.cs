@@ -11,4 +11,6 @@ public interface IGoalManagementQueryService
   Task<List<GetPendingLastApprovalGoalSetsDto>> GetPendingLastApprovalGoalSets(IList<int> teamIds);
 
   Task<TeamPerformanceDataDto> GetTeamPerformanceData(int teamId);
+
+  Task<List<TeamMemberGoalSetListItemDto>> GetTeamMemberGoalSetsList(IList<int> teamIds);
 }
