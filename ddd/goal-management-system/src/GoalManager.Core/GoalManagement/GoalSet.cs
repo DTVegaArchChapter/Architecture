@@ -103,9 +103,19 @@ public class GoalSet : EntityBase, IAggregateRoot
     return goal.UpdateProgressStatus(status, comment);
   }
 
-  public Result UpdateStatus(GoalSetStatus status)
+  public Result SendToApproval()
   {
-    Status = status;
+    if (!_goals.All(x => x.GoalProgress != null && x.GoalProgress.Status == GoalProgressStatus.Approved))
+    {
+      return Result.Error("Cannot send goal set to approval if not all goals are approved");
+    }
+
+    if (_goals.Sum(x => x.Percentage) != 100)
+    {
+      return Result.Error("Cannot send goal set to approval if sum of all goal percentages is not 100%");
+    }
+
+    Status = GoalSetStatus.WaitingApproval;
 
     return Result.Success();
   }

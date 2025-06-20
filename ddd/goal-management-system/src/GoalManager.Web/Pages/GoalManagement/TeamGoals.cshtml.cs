@@ -1,7 +1,8 @@
 ﻿using GoalManager.Core.GoalManagement;
+using GoalManager.Core.Organisation;
 using GoalManager.UseCases.GoalManagement.GetGoalSet;
+using GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
-using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatus;
 using GoalManager.Web.Common;
 
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
   public GoalSet? GoalSet { get; private set; }
   public async Task<IActionResult> OnGetAsync(int teamId)
   {
-    AddResultMessages(await GetGoalSet(teamId));
+    await SetGoalSet(teamId).ConfigureAwait(false);
     return Page();
   }
 
@@ -39,35 +40,16 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
     return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 
-
-
-  public async Task<IActionResult> OnPostLastUpdateOnProgressAsync(int teamId)
+  public async Task<IActionResult> OnPostSendToApprovalAsync(int teamId, int goalSetId)
   {
-    await GetGoalSet(teamId);
+    var result = await mediator.Send(new SendGoalSetToApprovalCommand(goalSetId)).ConfigureAwait(false);
 
-    if (GoalSet == null || GoalSet.Goals == null)
-      return RedirectToPage();
+    AddResultMessages(result);
 
-    List<int> errorGoalId = [];
-
-    var command = new UpdateGoalSetStatusCommand(
-    GoalSet.Id,
-    GoalSetStatus.WaitingApproval);
-
-    var result = await mediator.Send(command);
-
-    if (errorGoalId.Count == 0)
-      SuccessMessages.Add("Goal set WaitingForLastApproval successfully");
-    else
-    {
-      ErrorMessages.Add($"Could not update the  goal set ID: {GoalSet.Id}");
-    }
-
-    return RedirectToPage();
+    return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 
-
-  private async Task<Result<GoalSet>> GetGoalSet(int teamId)
+  private async Task SetGoalSet(int teamId)
   {
     var year = DateTime.Now.Year;
     var user = HttpContext.GetUserContext();
@@ -79,6 +61,6 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
       GoalSet = goalSetResult.Value;
     }
 
-    return goalSetResult;
+    AddResultMessages(goalSetResult);
   }
 }

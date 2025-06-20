@@ -1,7 +1,6 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
-using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatus;
 using GoalManager.UseCases.GoalManagement.UpdateGoalStatus;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -41,22 +40,6 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
 
     if (result.IsSuccess)
       SuccessMessages.Add("Goal approved successfully");
-    else
-      ErrorMessages.Add("Couldnt Update");
-
-    return RedirectToPage();
-  }
-
-  public async Task<IActionResult> OnPostLastApproveAndCalculateLastPointAsync(int goalSetId)
-  {
-    var command = new UpdateGoalSetStatusCommand(
-        goalSetId,
-        GoalSetStatus.Approved);
-
-    var result = await mediator.Send(command);
-
-    if (result.IsSuccess)
-      SuccessMessages.Add("Goal Last Approved successfully");
     else
       ErrorMessages.Add("Couldnt Update");
 
