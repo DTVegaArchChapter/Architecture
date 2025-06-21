@@ -25,14 +25,14 @@
     {
         @foreach (var item in Model.Items)
         {
-            <h2 class="h4 fw-light mb-0">@item.TeamName</h2>
+            <h2 class="h4 fw-light mb-0">Team: @item.TeamName</h2>
             <div class="card border-0 shadow-sm">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="bg-light">
                         <tr>
-                            <th class="border-0">User</th>
-                            <th class="border-0">Approval Status</th>
+                            <th class="border-0">Team Member</th>
+                            <th class="border-0">Goal Set Approval Status</th>
                         </tr>
                         </thead>
                         <tbody>
