@@ -57,7 +57,7 @@
                     .FirstOrDefault()?.Status;
                 var latestStatusText = latestStatus?.ToString() ?? "No Status";
 
-                var isReadOnly = Model.GoalSet.Status == GoalSetStatus.Approved || Model.GoalSet.Status == GoalSetStatus.WaitingApproval;
+                var isReadOnly = Model.GoalSet.Status == GoalSetStatus.Approved || Model.GoalSet.Status == GoalSetStatus.WaitingForApproval;
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">

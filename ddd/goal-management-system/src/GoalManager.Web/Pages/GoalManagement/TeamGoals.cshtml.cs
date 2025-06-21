@@ -1,5 +1,4 @@
 ﻿using GoalManager.Core.GoalManagement;
-using GoalManager.Core.Organisation;
 using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;

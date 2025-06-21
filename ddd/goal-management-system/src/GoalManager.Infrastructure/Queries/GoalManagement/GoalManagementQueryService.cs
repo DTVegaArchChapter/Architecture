@@ -2,6 +2,7 @@
 using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
 using GoalManager.UseCases.GoalManagement.GetTeamGoalSetListsOfTeamLeader;
 using GoalManager.UseCases.GoalManagement.GetTeamPerformanceData;
 
@@ -11,7 +12,6 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
 {
   public async Task<List<PendingApprovalGoalDto>> GetPendingApprovalGoals(IList<int> teamIds)
   {
-
     var results = await (
         from goal in appDbContext.Goal.AsNoTracking()
         join goalSet in appDbContext.GoalSet.AsNoTracking() on goal.GoalSetId equals goalSet.Id
@@ -46,6 +46,18 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
     }).ToList();
   }
 
+  public Task<List<PendingApprovalGoalSetDto>> GetPendingApprovalGoalSets(IList<int> teamIds)
+  {
+    return (from goalSet in appDbContext.GoalSet.AsNoTracking()
+            where teamIds.Contains(goalSet.TeamId) && goalSet.Status == GoalSetStatus.WaitingForApproval
+            select new PendingApprovalGoalSetDto
+                   {
+                     UserId = goalSet.UserId, 
+                     TeamId = goalSet.TeamId, 
+                     GoalSetId = goalSet.Id
+                   }).ToListAsync();
+  }
+
   public async Task<TeamPerformanceDataDto> GetTeamPerformanceData(int teamId)
   {
     var teamMemberPerformanceData = await appDbContext.GoalSet.AsNoTracking()
@@ -76,20 +88,17 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
            };
   }
 
-  public async Task<List<TeamMemberGoalSetListItemDto>> GetTeamMemberGoalSetsList(IList<int> teamIds)
+  public Task<List<TeamMemberGoalSetListItemDto>> GetTeamMemberGoalSetsList(IList<int> teamIds)
   {
-    var results = await (
-                          from goalSet in appDbContext.GoalSet.AsNoTracking() 
-                          join goalPeriod in appDbContext.GoalPeriod on goalSet.TeamId equals goalPeriod.TeamId 
-                          where teamIds.Contains(goalSet.TeamId) && goalPeriod.Year == DateTime.Now.Year
-                          select new TeamMemberGoalSetListItemDto
-                                {
-                                   Status = goalSet.Status,
-                                   TeamId = goalSet.TeamId,
-                                   UserId = goalSet.UserId
-                                 })
-                    .ToListAsync();
-
-    return results;
+    return (
+            from goalSet in appDbContext.GoalSet.AsNoTracking() 
+            join goalPeriod in appDbContext.GoalPeriod on goalSet.TeamId equals goalPeriod.TeamId 
+            where teamIds.Contains(goalSet.TeamId) && goalPeriod.Year == DateTime.Now.Year
+            select new TeamMemberGoalSetListItemDto
+                  {
+                     Status = goalSet.Status,
+                     TeamId = goalSet.TeamId,
+                     UserId = goalSet.UserId
+                   }).ToListAsync();
   }
 }

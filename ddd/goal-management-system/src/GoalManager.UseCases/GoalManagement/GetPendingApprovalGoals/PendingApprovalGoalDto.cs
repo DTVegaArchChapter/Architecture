@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
 
 namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+
 public record PendingApprovalGoalDto
 {
   public int TeamId { get; set; }
@@ -24,6 +25,6 @@ public record PendingApprovalGoalDto
   public int ActualValue { get; set; }
 
   public string? Comment { get; set; }
+
   public GoalProgressStatus? GoalProgressStatus { get; set; }
-  public double? Point { get; set; }
 }

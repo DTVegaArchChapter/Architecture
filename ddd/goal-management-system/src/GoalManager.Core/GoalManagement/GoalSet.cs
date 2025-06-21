@@ -32,6 +32,11 @@ public class GoalSet : EntityBase, IAggregateRoot
 
   public Result AddGoal(string title, GoalType goalType, GoalValue goalValue, int percentage)
   {
+    if (Status == GoalSetStatus.WaitingForApproval || Status == GoalSetStatus.Approved)
+    {
+      return Result.Error($"Cannot add goals to goal set. Because goal set status is {Status.Name}");
+    }
+
     if (Goals.Count >= MaxGoalCount)
     {
       return Result.Error($"Goals count cannot be bigger than {MaxGoalCount}");
@@ -115,7 +120,7 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error("Cannot send goal set to approval if sum of all goal percentages is not 100%");
     }
 
-    Status = GoalSetStatus.WaitingApproval;
+    Status = GoalSetStatus.WaitingForApproval;
 
     return Result.Success();
   }

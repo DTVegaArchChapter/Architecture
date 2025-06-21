@@ -1,5 +1,6 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
 using GoalManager.UseCases.GoalManagement.UpdateGoalStatus;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -12,16 +13,14 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
 {
   public List<PendingApprovalGoalDto> PendingGoals { get; private set; } = [];
 
+  public List<PendingApprovalGoalSetDto> PendingGoalSets { get; private set; } = [];
+
   public async Task<IActionResult> OnGetAsync()
   {
     var user = HttpContext.GetUserContext();
 
-    var pendingApprovalGoalDtos = await mediator.Send(new GetPendingApprovalGoalsQuery(user.Id));
-    
-
-    PendingGoals = pendingApprovalGoalDtos
-        .Where(x =>  x.GoalProgressStatus == GoalProgressStatus.WaitingForApproval)
-        .ToList();
+    PendingGoals = await mediator.Send(new GetPendingApprovalGoalsQuery(user.Id)).ConfigureAwait(false);
+    PendingGoalSets = await mediator.Send(new GetPendingApprovalGoalSetsQuery(user.Id)).ConfigureAwait(false);
 
     return Page();
   }
