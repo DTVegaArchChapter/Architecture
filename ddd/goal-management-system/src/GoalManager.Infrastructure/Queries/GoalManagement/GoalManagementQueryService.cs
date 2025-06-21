@@ -2,7 +2,7 @@
 using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
-using GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+using GoalManager.UseCases.GoalManagement.GetTeamGoalSetListsOfTeamLeader;
 using GoalManager.UseCases.GoalManagement.GetTeamPerformanceData;
 
 namespace GoalManager.Infrastructure.Queries.GoalManagement;
@@ -44,25 +44,6 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
       UserId = x.UserId,
       TeamId = x.TeamId
     }).ToList();
-  }
-
-  public async Task<List<GetPendingLastApprovalGoalSetsDto>> GetPendingLastApprovalGoalSets(IList<int> teamIds)
-  {
-    var results = await(
-            from goalSet in appDbContext.GoalSet
-            where teamIds.Contains(goalSet.TeamId) && (goalSet.Status == GoalSetStatus.WaitingApproval)
-            select new GetPendingLastApprovalGoalSetsDto
-            {
-              GoalSetId = goalSet.Id,
-              Status = goalSet.Status,
-              TeamId = goalSet.TeamId,
-              TeamName = string.Empty,
-              UserId = goalSet.UserId,
-              User = string.Empty
-            })
-            .ToListAsync();
-
-    return results;
   }
 
   public async Task<TeamPerformanceDataDto> GetTeamPerformanceData(int teamId)

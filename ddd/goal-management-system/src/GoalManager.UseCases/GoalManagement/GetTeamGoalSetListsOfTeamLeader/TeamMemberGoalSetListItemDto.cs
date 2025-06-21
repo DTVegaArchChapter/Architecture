@@ -1,6 +1,6 @@
 ﻿using GoalManager.Core.GoalManagement;
 
-namespace GoalManager.UseCases.GoalManagement.GetPendingLastApprovalGoalSets;
+namespace GoalManager.UseCases.GoalManagement.GetTeamGoalSetListsOfTeamLeader;
 
 public sealed class TeamMemberGoalSetListItemDto
 {
