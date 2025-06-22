@@ -4,6 +4,8 @@
 
 @{
     ViewData["Title"] = $"{Model.Year} Goals";
+
+    var isReadOnly = Model.GoalSet?.Status == GoalSetStatus.Approved || Model.GoalSet?.Status == GoalSetStatus.WaitingForApproval;
 }
 
 @section Style
@@ -29,20 +31,56 @@
 		position: relative;
 		z-index: 1;
 		}
+
+        .status-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .status-badge i {
+                font-size: 1.1rem;
+            }
+
+        .status-approved {
+            background-color: #198754;
+            color: white;
+        }
+
+        .status-waiting {
+            background-color: #ffc107;
+            color: #212529;
+        }
 	</style>
 }
 
 <div class="container py-4">
 	<div class="d-flex justify-content-between align-items-center mb-4">
-		<div>
-			<h1 class="h3 fw-light mb-1">@Model.Year Goals</h1>
-		</div>
-		@if (Model.GoalSet != null)
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 fw-light mb-1">@Model.Year Goals</h1>
+        </div>
+		@if (Model.GoalSet != null && !isReadOnly)
 		{
 			<a asp-page="AddGoal" asp-route-goalSetId="@Model.GoalSet.Id" class="btn btn-primary">
 				<i class="fas fa-plus me-2"></i>Add Goal
 			</a>
-		}
+		} 
+        else if (Model.GoalSet?.Status == GoalSetStatus.Approved)
+        {
+            <div class="status-badge status-approved mt-2">
+                <i class="fas fa-check-circle"></i> Approved
+            </div>
+        }
+        else if (Model.GoalSet?.Status == GoalSetStatus.WaitingForApproval)
+        {
+            <div class="status-badge status-waiting mt-2">
+                <i class="fas fa-clock"></i> Waiting For Approval
+            </div>
+        }
 	</div>
 
 	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
@@ -52,12 +90,9 @@
         <div class="mb-4">
             @foreach (var goal in Model.GoalSet.Goals)
             {
-                var latestStatus = goal.GoalProgressHistory
-                    .OrderByDescending(p => p.Id)
-                    .FirstOrDefault()?.Status;
+                var latestStatus = goal.Status;
                 var latestStatusText = latestStatus?.ToString() ?? "No Status";
 
-                var isReadOnly = Model.GoalSet.Status == GoalSetStatus.Approved || Model.GoalSet.Status == GoalSetStatus.WaitingForApproval;
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
@@ -100,7 +135,7 @@
                             else
                             {
                                 <a asp-page="UpdateGoal"
-                                   asp-route-goalSetId="@goal.GoalSetId"
+                                   asp-route-goalSetId="@Model.GoalSet.Id"
                                    asp-route-goalId="@goal.Id"
                                    class="text-decoration-none text-reset w-100">
                                     <div class="d-flex justify-content-between align-items-start mb-3">
@@ -166,7 +201,7 @@
                                            name="comment"
                                            placeholder="(Optional)"
                                            class="form-control form-control-sm"
-                                           value="@(goal.GoalProgressHistory.Count > 0 ? goal.GoalProgressHistory.Last().Comment : "")"
+                                           value="@goal.Comment"
                                            @(isReadOnly ? "readonly" : "") />
                                 </div>
 
@@ -181,15 +216,18 @@
                 </div>
             }
         </div>
-        <div class="d-flex justify-content-end mt-3">
-            <form asp-page-handler="SendToApproval" method="post">
-                <input type="hidden" name="goalSetId" value="@Model.GoalSet.Id" />
-                <input type="hidden" name="teamId" value="@Model.GoalSet.TeamId" />
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-paper-plane"></i> Send to Approval
-                </button>
-            </form>
-        </div>
+        @if (!isReadOnly)
+        {
+            <div class="d-flex justify-content-end mt-3">
+                <form asp-page-handler="SendToApproval" method="post">
+                    <input type="hidden" name="goalSetId" value="@Model.GoalSet.Id" />
+                    <input type="hidden" name="teamId" value="@Model.GoalSet.TeamId" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send to Approval
+                    </button>
+                </form>
+            </div>
+        }
 	}
 </div>
 

@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Infrastructure.Data;
 using GoalManager.UseCases.GoalManagement;
+using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
 using GoalManager.UseCases.GoalManagement.GetTeamGoalSetListsOfTeamLeader;
@@ -100,5 +101,30 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
                      TeamId = goalSet.TeamId,
                      UserId = goalSet.UserId
                    }).ToListAsync();
+  }
+
+  public Task<GoalSetDto?> GetGoalSet(int teamId, int year, int userId)
+  {
+    return (from goalSet in appDbContext.GoalSet.AsNoTracking()
+            join goalPeriod in appDbContext.GoalPeriod on goalSet.TeamId equals goalPeriod.TeamId
+            where goalPeriod.TeamId == teamId && goalPeriod.Year == year && goalSet.UserId == userId
+            select new GoalSetDto
+                   {
+                     Id = goalSet.Id,
+                     TeamId = goalSet.TeamId,
+                     UserId = goalSet.UserId,
+                     Status = goalSet.Status,
+                     Goals = goalSet.Goals.Select(g => new GoalDto
+                                                       {
+                                                         Id = g.Id,
+                                                         Title = g.Title,
+                                                         GoalType = g.GoalType,
+                                                         GoalValue = g.GoalValue,
+                                                         ActualValue = g.ActualValue,
+                                                         Percentage = g.Percentage,
+                                                         Status = g.GoalProgress == null ? null : g.GoalProgress.Status,
+                                                         Comment = g.GoalProgress == null ? null : g.GoalProgress.Comment
+                     }).ToList()
+                   }).SingleOrDefaultAsync();
   }
 }

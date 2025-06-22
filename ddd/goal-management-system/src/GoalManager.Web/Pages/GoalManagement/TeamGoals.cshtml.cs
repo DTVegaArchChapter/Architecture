@@ -1,5 +1,4 @@
-﻿using GoalManager.Core.GoalManagement;
-using GoalManager.UseCases.GoalManagement.GetGoalSet;
+﻿using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
 using GoalManager.Web.Common;
@@ -13,10 +12,10 @@ namespace GoalManager.Web.Pages.GoalManagement;
 public class TeamGoalsModel(IMediator mediator) : PageModelBase
 {
   public int Year { get; private set; }
-  public GoalSet? GoalSet { get; private set; }
+  public GoalSetDto? GoalSet { get; private set; }
   public async Task<IActionResult> OnGetAsync(int teamId)
   {
-    await SetGoalSet(teamId).ConfigureAwait(false);
+    await LoadGoalSet(teamId).ConfigureAwait(false);
     return Page();
   }
 
@@ -48,7 +47,7 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
     return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 
-  private async Task SetGoalSet(int teamId)
+  private async Task LoadGoalSet(int teamId)
   {
     var year = DateTime.Now.Year;
     var user = HttpContext.GetUserContext();
