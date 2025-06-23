@@ -22,10 +22,6 @@ internal sealed class GoalConfiguration : IEntityTypeConfiguration<Goal>
       .HasDefaultValue(0)
       .IsRequired();
 
-    builder.Property(g => g.Point)
-      .IsRequired(false);
-
-
     builder.ComplexProperty(g => g.GoalValue, gv =>
     {
       gv.Property(x => x.MinValue).IsRequired();

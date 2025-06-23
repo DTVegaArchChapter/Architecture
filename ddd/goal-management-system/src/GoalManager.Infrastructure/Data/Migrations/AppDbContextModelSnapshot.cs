@@ -18,7 +18,7 @@ namespace GoalManager.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -44,9 +44,6 @@ namespace GoalManager.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
-
-                    b.Property<double?>("Point")
-                        .HasColumnType("float");
 
                     b.Property<int?>("ProgressId")
                         .HasColumnType("int");
@@ -143,10 +140,6 @@ namespace GoalManager.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CharacterPoint")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
 
                     b.Property<int>("PeriodId")
                         .HasColumnType("int");
@@ -262,6 +255,80 @@ namespace GoalManager.Infrastructure.Data.Migrations
                     b.ToTable("TeamMember");
                 });
 
+            modelBuilder.Entity("GoalManager.Core.PerformanceEvaluation.GoalEvaluation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActualValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoalSetEvaluationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("GoalTitle")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Percentage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<double?>("Point")
+                        .HasColumnType("float");
+
+                    b.ComplexProperty<Dictionary<string, object>>("GoalValue", "GoalManager.Core.PerformanceEvaluation.GoalEvaluation.GoalValue#GoalEvaluationValue", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("MaxValue")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("MidValue")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("MinValue")
+                                .HasColumnType("int");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoalSetEvaluationId");
+
+                    b.HasIndex("GoalTitle");
+
+                    b.ToTable("GoalEvaluation");
+                });
+
+            modelBuilder.Entity("GoalManager.Core.PerformanceEvaluation.GoalSetEvaluation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GoalSetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PerformanceGrade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("PerformanceScore")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoalSetId");
+
+                    b.ToTable("GoalSetEvaluation");
+                });
+
             modelBuilder.Entity("GoalManager.Core.GoalManagement.Goal", b =>
                 {
                     b.HasOne("GoalManager.Core.GoalManagement.GoalSet", null)
@@ -310,6 +377,15 @@ namespace GoalManager.Infrastructure.Data.Migrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("GoalManager.Core.PerformanceEvaluation.GoalEvaluation", b =>
+                {
+                    b.HasOne("GoalManager.Core.PerformanceEvaluation.GoalSetEvaluation", null)
+                        .WithMany("GoalEvaluations")
+                        .HasForeignKey("GoalSetEvaluationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GoalManager.Core.GoalManagement.Goal", b =>
                 {
                     b.Navigation("GoalProgressHistory");
@@ -334,6 +410,11 @@ namespace GoalManager.Infrastructure.Data.Migrations
             modelBuilder.Entity("GoalManager.Core.Organisation.Team", b =>
                 {
                     b.Navigation("TeamMembers");
+                });
+
+            modelBuilder.Entity("GoalManager.Core.PerformanceEvaluation.GoalSetEvaluation", b =>
+                {
+                    b.Navigation("GoalEvaluations");
                 });
 #pragma warning restore 612, 618
         }

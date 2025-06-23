@@ -21,6 +21,17 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
                                }).ToListAsync();
   }
 
+  public Task<List<TeamLookupItemDto>> ListTeamLeaderTeams(int userId)
+  {
+    return dbContext.TeamMember.AsNoTracking()
+      .Where(x => x.UserId == userId && x.MemberType == TeamMemberType.TeamLeader)
+      .Select(x => new TeamLookupItemDto
+      {
+                     TeamId = x.TeamId,
+                     TeamName = x.Team.Name.Value
+                   }).ToListAsync();
+  }
+
   public Task<List<OrganisationListItemDto>> ListAsync(int? skip, int? take)
   {
     return dbContext.Organisation.AsNoTracking().Select(x => new OrganisationListItemDto(x.Id, x.Name.Value, x.Teams.Count))
@@ -51,6 +62,14 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
           .Where(tm => tm.UserId == userId)
           .Select(x => x.TeamId)
           .ToListAsync();
+  }
+
+  public Task<List<int>> GetTeamLeaderTeamIds(int userId)
+  {
+    return dbContext.TeamMember.AsNoTracking()
+      .Where(tm => tm.UserId == userId && tm.MemberType == TeamMemberType.TeamLeader)
+      .Select(x => x.TeamId)
+      .ToListAsync();
   }
 
   public async Task<Dictionary<int, string>> GetTeamNamesAsync(List<int> teamIds)

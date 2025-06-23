@@ -1,0 +1,60 @@
+﻿@page
+@model GoalManager.Web.Pages.PerformanceEvaluation.ListModel
+@{
+    ViewData["Title"] = "Calculate Performance Evaluation";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-light mb-0">Calculate Performance Evaluation</h1>
+        </div>
+    </div>
+
+    <alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+    @if (Model.Items == null || Model.Items.Count == 0)
+    {
+        <div class="card border-0 shadow-sm text-center py-5">
+            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+            <h3 class="h5 fw-normal">No teams</h3>
+            <p class="text-muted mb-4">There are currently no teams to calculate performance evaluation.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.Items)
+        {
+            <h2 class="h4 fw-light mb-0">Team: @item.TeamName</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                        <tr>
+                            <th class="border-0">Team Member</th>
+                            <th class="border-0">Goal Set Approval Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var goalSet in item.GoalSets)
+                        {
+                            <tr>
+                                <td class="align-middle"><span class="badge bg-light text-dark">@goalSet.User</span></td>
+                                <td class="align-middle"><small class="text-muted">@goalSet.Status?.Name</small></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-3 mb-4">
+                <form asp-page-handler="CalculateEvaluation" method="post">
+                    <input type="hidden" name="teamId" value="@item.TeamId" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i> Calculate Performance Evaluation
+                    </button>
+                </form>
+            </div>
+        }
+    }
+</div>

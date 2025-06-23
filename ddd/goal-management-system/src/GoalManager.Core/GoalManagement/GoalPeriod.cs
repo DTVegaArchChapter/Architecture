@@ -11,7 +11,7 @@ public class GoalPeriod : EntityBase, IAggregateRoot
   private GoalPeriod() { }
 #pragma warning restore CS8618
 
-  private GoalPeriod(int teamId, int year, IList<Goal> teamGoals)
+  private GoalPeriod(int teamId, int year)
   {
     TeamId = teamId;
     Year = year;
@@ -19,7 +19,7 @@ public class GoalPeriod : EntityBase, IAggregateRoot
 
   public static Result<GoalPeriod> Create(int teamId, int year)
   {
-    var goalPeriod = new GoalPeriod(teamId, year, new List<Goal>());
+    var goalPeriod = new GoalPeriod(teamId, year);
     goalPeriod.RegisterGoalPeriodCreatedEvent();
     return goalPeriod;
   }

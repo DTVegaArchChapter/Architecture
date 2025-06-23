@@ -2,7 +2,7 @@
 
 namespace GoalManager.Infrastructure.Data.Config.GoalManagement;
 
-internal sealed class GoalSetConfiguration : IEntityTypeConfiguration<GoalSet>
+internal sealed class GoalSetEvaluationConfiguration : IEntityTypeConfiguration<GoalSet>
 {
   public void Configure(EntityTypeBuilder<GoalSet> builder)
   {
@@ -16,10 +16,6 @@ internal sealed class GoalSetConfiguration : IEntityTypeConfiguration<GoalSet>
 
     builder.Property(gs => gs.TeamId)
       .IsRequired();
-
-    builder.Property(gs => gs.CharacterPoint)
-      .IsRequired(false)
-      .HasMaxLength(5);
 
     builder.HasMany(gs => gs.Goals)
       .WithOne()

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace GoalManager.Core.GoalManagement;
+﻿namespace GoalManager.Core.GoalManagement;
 
 public class GoalSet : EntityBase, IAggregateRoot
 {
@@ -22,9 +20,7 @@ public class GoalSet : EntityBase, IAggregateRoot
   public int UserId { get; private set; }
   public int PeriodId { get; private set; }
   public int TeamId { get; private set; }
-  [NotMapped]
-  public double? Point { get => _goals.Any(x => x.Point == null) ? null : _goals.Sum(x => x.Point * (x.Percentage / 100.0)); }
-  public string? CharacterPoint { get; private set; }
+
   public GoalSetStatus? Status { get; private set; } = null!;
 
   public IReadOnlyCollection<Goal> Goals => _goals.AsReadOnly();
@@ -36,6 +32,11 @@ public class GoalSet : EntityBase, IAggregateRoot
 
   public Result AddGoal(string title, GoalType goalType, GoalValue goalValue, int percentage)
   {
+    if (Status == GoalSetStatus.WaitingForApproval || Status == GoalSetStatus.Approved)
+    {
+      return Result.Error($"Cannot add goals to goal set. Because goal set status is {Status.Name}");
+    }
+
     if (Goals.Count >= MaxGoalCount)
     {
       return Result.Error($"Goals count cannot be bigger than {MaxGoalCount}");
@@ -100,52 +101,61 @@ public class GoalSet : EntityBase, IAggregateRoot
   {
     var goal = _goals.FirstOrDefault(g => g.Id == goalId);
     if (goal == null)
+    {
       return Result.Error($"Goal not found for id: {goalId}");
+    }
 
     return goal.UpdateProgressStatus(status, comment);
   }
 
-
-  public Result CalculateGoalPoint(int goalId)
+  public Result SendToApproval()
   {
-    var goal = _goals.FirstOrDefault(g => g.Id == goalId);
-    if (goal == null)
-      return Result.Error($"Goal not found for id: {goalId}");
-
-    return goal.CalculatePoint();
-  }
-
-  public Result CalculateAllGoalPoint()
-  {
-    foreach (var goal in _goals)
+    if (!_goals.All(x => x.GoalProgress != null && x.GoalProgress.Status == GoalProgressStatus.Approved))
     {
-      goal.CalculatePoint();
+      return Result.Error("Cannot send goal set to approval if not all goals are approved");
     }
 
-    return Result.Success();
-  }
+    if (_goals.Sum(x => x.Percentage) != 100)
+    {
+      return Result.Error("Cannot send goal set to approval if sum of all goal percentages is not 100%");
+    }
 
-  public Result<bool> IsReadyForLastApprove()
-  {
-    var isReady = (_goals.All(g => g.GoalProgressHistory.LastOrDefault()?.Status == GoalProgressStatus.Approved) &&
-                  _goals.Sum(g => g.Percentage) == 100) && !(Status == GoalSetStatus.WaitingForLastApproval || Status == GoalSetStatus.LastApproved);
-
-    return Result<bool>.Success(isReady);
-
-  }
-
-
-  public Result SetCharacterPoint(string character)
-  {
-    CharacterPoint = character;
-    return Result.Success();
-  }
-
-  public Result UpdateStatus(GoalSetStatus status)
-  {
-    Status = status;
+    Status = GoalSetStatus.WaitingForApproval;
 
     return Result.Success();
   }
 
+  public Result Approve()
+  {
+    if (Status != GoalSetStatus.WaitingForApproval)
+    {
+      return Result.Error($"Cannot approve goal set. Current status is {Status?.Name ?? "New"}");
+    }
+
+    if (!_goals.All(x => x.GoalProgress != null && x.GoalProgress.Status == GoalProgressStatus.Approved))
+    {
+      return Result.Error("Cannot send goal set to approval if not all goals are approved");
+    }
+
+    if (_goals.Sum(x => x.Percentage) != 100)
+    {
+      return Result.Error("Cannot send goal set to approval if sum of all goal percentages is not 100%");
+    }
+
+    Status = GoalSetStatus.Approved;
+
+    return Result.Success();
+  }
+
+  public Result Reject()
+  {
+    if (Status != GoalSetStatus.WaitingForApproval)
+    {
+      return Result.Error($"Cannot reject goal set. Current status is {Status?.Name ?? "None"}");
+    }
+
+    Status = GoalSetStatus.None;
+
+    return Result.Success();
+  }
 }

@@ -12,7 +12,7 @@ public class ListModel(IMediator mediator) : PageModelBase
   private const int PageSize = 10;
 
   public PagedResult<List<NotificationListItemDto>> NotificationsPagedResult { get; private set; } =
-    new(new PagedInfo(1, PageSize, 0, 0), new List<NotificationListItemDto>(0));
+    new(new PagedInfo(1, PageSize, 0, 0), []);
 
   public async Task OnGetAsync([FromQuery] int? page, CancellationToken cancellationToken = default)
   {

@@ -1,7 +1,6 @@
-﻿using GoalManager.Core.GoalManagement;
-using GoalManager.UseCases.GoalManagement.GetGoalSet;
+﻿using GoalManager.UseCases.GoalManagement.GetGoalSet;
+using GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
-using GoalManager.UseCases.GoalManagement.UpdateGoalSetStatusCommand;
 using GoalManager.Web.Common;
 
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +12,22 @@ namespace GoalManager.Web.Pages.GoalManagement;
 public class TeamGoalsModel(IMediator mediator) : PageModelBase
 {
   public int Year { get; private set; }
-  public GoalSet? GoalSet { get; private set; }
+  public GoalSetDto? GoalSet { get; private set; }
   public async Task<IActionResult> OnGetAsync(int teamId)
   {
-    AddResultMessages(await GetGoalSet(teamId));
+    var year = DateTime.Now.Year;
+    var user = HttpContext.GetUserContext();
+
+    Year = year;
+
+    var goalSetResult = await mediator.Send(new GetGoalSetQuery(teamId, year, user.Id)).ConfigureAwait(false);
+    if (goalSetResult.IsSuccess)
+    {
+      GoalSet = goalSetResult.Value;
+    }
+
+    AddResultMessages(goalSetResult);
+
     return Page();
   }
 
@@ -39,46 +50,12 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
     return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 
-
-
-  public async Task<IActionResult> OnPostLastUpdateOnProgressAsync(int teamId)
+  public async Task<IActionResult> OnPostSendToApprovalAsync(int teamId, int goalSetId)
   {
-    await GetGoalSet(teamId);
+    var result = await mediator.Send(new SendGoalSetToApprovalCommand(goalSetId)).ConfigureAwait(false);
 
-    if (GoalSet == null || GoalSet.Goals == null)
-      return RedirectToPage();
+    AddResultMessages(result);
 
-    List<int> errorGoalId = new List<int>();
-
-    var command = new UpdateGoalSetStatusCommand(
-    GoalSet.Id,
-    GoalSetStatus.WaitingForLastApproval);
-
-    var result = await mediator.Send(command);
-
-    if (errorGoalId.Count == 0)
-      SuccessMessages.Add("Goal set WaitingForLastApproval successfully");
-    else
-    {
-      ErrorMessages.Add($"Could not update the  goal set ID: {GoalSet.Id}");
-    }
-
-    return RedirectToPage();
-  }
-
-
-  private async Task<Result<GoalSet>> GetGoalSet(int teamId)
-  {
-    var year = DateTime.Now.Year;
-    var user = HttpContext.GetUserContext();
-
-    Year = year;
-    var goalSetResult = await mediator.Send(new GetGoalSetQuery(teamId, year, user.Id)).ConfigureAwait(false);
-    if (goalSetResult.IsSuccess)
-    {
-      GoalSet = goalSetResult.Value;
-    }
-
-    return goalSetResult;
+    return await OnGetAsync(teamId).ConfigureAwait(false);
   }
 }
