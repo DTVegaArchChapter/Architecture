@@ -24,6 +24,7 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
 
     return Page();
   }
+
   public async Task<IActionResult> OnPostApproveAsync(int goalSetId, int goalId)
   {
     var command = new UpdateGoalStatusCommand(

@@ -3,7 +3,7 @@ using GoalManager.Core.GoalManagement.Specifications;
 
 namespace GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
 
-internal sealed class SendGoalSetToApprovalHandler(IRepository<GoalSet> goalSetRepository) : ICommandHandler<SendGoalSetToApprovalCommand, Result>
+internal sealed class SendGoalSetToApprovalCommandHandler(IRepository<GoalSet> goalSetRepository) : ICommandHandler<SendGoalSetToApprovalCommand, Result>
 {
   public async Task<Result> Handle(SendGoalSetToApprovalCommand request, CancellationToken cancellationToken)
   {

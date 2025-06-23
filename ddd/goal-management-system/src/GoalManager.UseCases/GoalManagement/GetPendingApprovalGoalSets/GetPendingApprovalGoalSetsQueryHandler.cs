@@ -9,7 +9,7 @@ public sealed class GetPendingApprovalGoalSetsQueryHandler(IGoalManagementQueryS
 {
   public async Task<List<PendingApprovalGoalSetDto>> Handle(GetPendingApprovalGoalSetsQuery request, CancellationToken cancellationToken)
   {
-    var teamIds = await organisationQueryService.GetTeamIds(request.TeamLeaderUserId).ConfigureAwait(false);
+    var teamIds = await organisationQueryService.GetTeamLeaderTeamIds(request.TeamLeaderUserId).ConfigureAwait(false);
     var pendingGoals = await goalQueryService.GetPendingApprovalGoalSets(teamIds).ConfigureAwait(false);
     var teamNamesDict = await organisationQueryService.GetTeamNamesAsync(teamIds).ConfigureAwait(false);
     var userEmails = await identityQueryService.GetUserEmails(pendingGoals.Select(x => x.UserId).Distinct().ToList()).ConfigureAwait(false);

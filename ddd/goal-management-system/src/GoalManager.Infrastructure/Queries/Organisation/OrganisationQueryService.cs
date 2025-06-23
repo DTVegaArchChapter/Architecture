@@ -64,6 +64,14 @@ public sealed class OrganisationQueryService(AppDbContext dbContext) : IOrganisa
           .ToListAsync();
   }
 
+  public Task<List<int>> GetTeamLeaderTeamIds(int userId)
+  {
+    return dbContext.TeamMember.AsNoTracking()
+      .Where(tm => tm.UserId == userId && tm.MemberType == TeamMemberType.TeamLeader)
+      .Select(x => x.TeamId)
+      .ToListAsync();
+  }
+
   public async Task<Dictionary<int, string>> GetTeamNamesAsync(List<int> teamIds)
   {
     return await dbContext.Team.AsNoTracking()

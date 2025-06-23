@@ -14,6 +14,8 @@ public sealed class GoalSetDto
 
   public int UserId { get; set; }
 
+  public string? User { get; set; }
+
   public GoalSetStatus? Status { get; set; }
 
   public List<GoalDto> Goals

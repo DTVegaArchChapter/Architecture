@@ -21,4 +21,6 @@ public interface IOrganisationQueryService
   Task<List<int>> GetTeamLeaderUserIdsAsync(int teamId);
 
   Task<List<TeamLookupItemDto>> ListTeamLeaderTeams(int userId);
+
+  Task<List<int>> GetTeamLeaderTeamIds(int userId);
 }

@@ -1,5 +1,6 @@
-﻿using GoalManager.UseCases.GoalManagement.GetGoalSet;
-using GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
+﻿using GoalManager.UseCases.GoalManagement.ApproveGoalSet;
+using GoalManager.UseCases.GoalManagement.GetGoalSet;
+using GoalManager.UseCases.GoalManagement.RejectGoalSet;
 using GoalManager.Web.Common;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,9 @@ namespace GoalManager.Web.Pages.GoalManagement;
 public class ApproveTeamGoalsModel(IMediator mediator) : PageModelBase
 {
   public int Year { get; private set; }
+
   public GoalSetDto? GoalSet { get; private set; }
+
   public async Task<IActionResult> OnGetAsync(int teamId, int userId)
   {
     var year = DateTime.Now.Year;
@@ -29,9 +32,18 @@ public class ApproveTeamGoalsModel(IMediator mediator) : PageModelBase
     return Page();
   }
 
-  public async Task<IActionResult> OnPostSendToApprovalAsync(int teamId, int userId, int goalSetId)
+  public async Task<IActionResult> OnPostApproveAsync(int teamId, int userId, int goalSetId)
   {
-    var result = await mediator.Send(new SendGoalSetToApprovalCommand(goalSetId)).ConfigureAwait(false);
+    var result = await mediator.Send(new ApproveGoalSetCommand(goalSetId)).ConfigureAwait(false);
+
+    AddResultMessages(result);
+
+    return await OnGetAsync(teamId, userId).ConfigureAwait(false);
+  }
+
+  public async Task<IActionResult> OnPostRejectAsync(int teamId, int userId, int goalSetId)
+  {
+    var result = await mediator.Send(new RejectGoalSetCommand(goalSetId)).ConfigureAwait(false);
 
     AddResultMessages(result);
 

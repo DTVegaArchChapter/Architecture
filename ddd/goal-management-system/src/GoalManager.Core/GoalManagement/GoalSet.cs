@@ -124,4 +124,38 @@ public class GoalSet : EntityBase, IAggregateRoot
 
     return Result.Success();
   }
+
+  public Result Approve()
+  {
+    if (Status != GoalSetStatus.WaitingForApproval)
+    {
+      return Result.Error($"Cannot approve goal set. Current status is {Status?.Name ?? "New"}");
+    }
+
+    if (!_goals.All(x => x.GoalProgress != null && x.GoalProgress.Status == GoalProgressStatus.Approved))
+    {
+      return Result.Error("Cannot send goal set to approval if not all goals are approved");
+    }
+
+    if (_goals.Sum(x => x.Percentage) != 100)
+    {
+      return Result.Error("Cannot send goal set to approval if sum of all goal percentages is not 100%");
+    }
+
+    Status = GoalSetStatus.Approved;
+
+    return Result.Success();
+  }
+
+  public Result Reject()
+  {
+    if (Status != GoalSetStatus.WaitingForApproval)
+    {
+      return Result.Error($"Cannot reject goal set. Current status is {Status?.Name ?? "None"}");
+    }
+
+    Status = GoalSetStatus.None;
+
+    return Result.Success();
+  }
 }

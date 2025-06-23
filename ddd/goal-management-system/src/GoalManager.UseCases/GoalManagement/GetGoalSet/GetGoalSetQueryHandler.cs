@@ -1,5 +1,6 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Core.GoalManagement.Specifications;
+using GoalManager.UseCases.Identity;
 using GoalManager.UseCases.Organisation;
 
 namespace GoalManager.UseCases.GoalManagement.GetGoalSet;
@@ -7,6 +8,7 @@ namespace GoalManager.UseCases.GoalManagement.GetGoalSet;
 public sealed class GetGoalSetQueryHandler(
   IGoalManagementQueryService goalManagementQueryService, 
   IOrganisationQueryService organisationQueryService,
+  IIdentityQueryService identityQueryService,
   IRepository<GoalPeriod> goalPeriodRepository, 
   IRepository<GoalSet> goalSetRepository) : IQueryHandler<GetGoalSetQuery, Result<GoalSetDto>>
 {
@@ -33,6 +35,7 @@ public sealed class GetGoalSetQueryHandler(
     }
 
     goalSet.TeamName = await organisationQueryService.GetTeamNameAsync(goalSet.TeamId).ConfigureAwait(false);
+    goalSet.User = await identityQueryService.GetUserName(goalSet.UserId).ConfigureAwait(false);
 
     return goalSet;
   }
