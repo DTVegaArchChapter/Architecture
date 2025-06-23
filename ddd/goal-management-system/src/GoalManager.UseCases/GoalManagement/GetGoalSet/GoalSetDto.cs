@@ -10,6 +10,8 @@ public sealed class GoalSetDto
 
   public int TeamId { get; set; }
 
+  public string? TeamName { get; set; }
+
   public int UserId { get; set; }
 
   public GoalSetStatus? Status { get; set; }

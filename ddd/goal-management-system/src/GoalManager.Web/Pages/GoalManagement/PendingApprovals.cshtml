@@ -135,19 +135,12 @@
                             </td>
                             <td class="align-middle text-end">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <form asp-page-handler="Approve" method="post">
-                                        <input type="hidden" name="goalSetId" value="@goalSet.GoalSetId"/>
-                                        <button type="submit" class="btn btn-sm btn-outline-success">
-                                            <i class="fas fa-check"></i> Approve
-                                        </button>
-                                    </form>
-                                    <form asp-page-handler="Reject" method="post">
-                                        <input type="hidden" name="goalSetId" value="@goalSet.GoalSetId"/>
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Reject this goal set?')">
-                                            <i class="fas fa-times"></i> Reject
-                                        </button>
-                                    </form>
+                                    <a asp-page="ApproveTeamGoals" 
+                                       asp-route-teamId="@goalSet.TeamId"
+                                       asp-route-userId="@goalSet.UserId"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-check"></i> Approve / Reject
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -168,24 +161,27 @@
 	}
 }
 
-<style>
-	.text-truncate {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+@section Style
+{
+    <style>
+        .text-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
-	.table td, .table th {
-		vertical-align: middle;
-	}
+        .table td, .table th {
+            vertical-align: middle;
+        }
 
-	.progress {
-		min-width: 80px;
-		background-color: #e9ecef;
-	}
+        .progress {
+            min-width: 80px;
+            background-color: #e9ecef;
+        }
 
-	.badge {
-		padding: 0.35em 0.65em;
-		font-size: 0.875em;
-	}
-</style>
+        .badge {
+            padding: 0.35em 0.65em;
+            font-size: 0.875em;
+        }
+    </style>
+}

@@ -3,7 +3,7 @@
 @model GoalManager.Web.Pages.GoalManagement.TeamGoalsModel
 
 @{
-    ViewData["Title"] = $"{Model.Year} Goals";
+    ViewData["Title"] = $"{Model.GoalSet?.TeamName} {Model.Year} Goals";
 
     var isReadOnly = Model.GoalSet?.Status == GoalSetStatus.Approved || Model.GoalSet?.Status == GoalSetStatus.WaitingForApproval;
 }
@@ -11,7 +11,7 @@
 <div class="container py-4">
 	<div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex justify-content-between align-items-center">
-            <h1 class="h3 fw-light mb-1">@Model.Year Goals</h1>
+            <h1 class="h3 fw-light mb-1">@Model.GoalSet?.TeamName @Model.Year Goals</h1>
         </div>
 		@if (Model.GoalSet != null && !isReadOnly)
 		{

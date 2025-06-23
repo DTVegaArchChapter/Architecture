@@ -1,0 +1,163 @@
+﻿@page "{teamId:int}/{userId:int}"
+@using GoalManager.Core.GoalManagement
+@model GoalManager.Web.Pages.GoalManagement.TeamGoalsModel
+
+@{
+    ViewData["Title"] = $"{Model.GoalSet?.TeamName} {Model.Year} Goals";
+}
+
+<div class="container py-4">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 fw-light mb-1">@Model.GoalSet?.TeamName @Model.Year Goals</h1>
+        </div>
+		@if (Model.GoalSet?.Status == GoalSetStatus.Approved)
+        {
+            <div class="status-badge status-approved mt-2">
+                <i class="fas fa-check-circle"></i> Approved
+            </div>
+        }
+        else if (Model.GoalSet?.Status == GoalSetStatus.WaitingForApproval)
+        {
+            <div class="status-badge status-waiting mt-2">
+                <i class="fas fa-clock"></i> Waiting For Approval
+            </div>
+        }
+	</div>
+
+	<alert-messages error-messages="Model.ErrorMessages" success-messages="Model.SuccessMessages"></alert-messages>
+
+	@if (Model.GoalSet != null)
+	{
+        <div class="mb-4">
+            @foreach (var goal in Model.GoalSet.Goals)
+            {
+                var latestStatus = goal.Status;
+                var latestStatusText = latestStatus?.ToString() ?? "No Status";
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="text-decoration-none text-reset w-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-1 fw-normal">@goal.Title</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge @GetBadgeStyle(latestStatusText)">
+                                            @latestStatusText
+                                        </span>
+                                        <span class="badge bg-light text-dark">@goal.GoalType.Name</span>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-3">
+                                        <div class="text-muted small">Percentage</div>
+                                        <div>@goal.Percentage%</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-muted small">Value Type</div>
+                                        <div>@goal.GoalValue.GoalValueType.Name</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="text-muted small">Min</div>
+                                        <div>@goal.GoalValue.MinValue</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="text-muted small">Mid</div>
+                                        <div>@goal.GoalValue.MidValue</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="text-muted small">Max</div>
+                                        <div>@goal.GoalValue.MaxValue</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted">Current Progress</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    @goal.ActualValue
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label class="form-label small text-muted">Comment</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    @(string.IsNullOrWhiteSpace(goal.Comment) ? Html.Raw("&nbsp;") : goal.Comment)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+	}
+</div>
+
+@functions {
+    public static string GetBadgeStyle(string status)
+    {
+        return status switch
+            {
+                "WaitingForApproval" => "bg-warning text-dark",
+                "Approved" => "bg-success text-white",
+                "Rejected" => "bg-danger text-white",
+                _ => "bg-secondary text-white" // default case for unknown statuses
+            };
+    }
+}
+
+@section Style
+{
+    <style>
+		.card {
+		    border: 1px solid #e9ecef;
+		    border-radius: 0.5rem;
+		    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+		    transition: transform 0.2s ease-in-out;
+		}
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+		.card:hover {
+		    transform: translateY(-2px);
+		    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+		}
+
+		.card-body {
+		    padding: 1.5rem;
+		}
+
+		a[asp-page="UpdateGoal"] {
+		    position: relative;
+		    z-index: 1;
+		}
+
+        .status-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge i {
+            font-size: 1.1rem;
+        }
+
+        .status-approved {
+            background-color: #198754;
+            color: white;
+        }
+
+        .status-waiting {
+            background-color: #ffc107;
+            color: #212529;
+        }
+	</style>
+}

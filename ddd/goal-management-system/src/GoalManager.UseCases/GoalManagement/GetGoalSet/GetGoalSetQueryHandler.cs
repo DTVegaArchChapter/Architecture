@@ -1,9 +1,14 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Core.GoalManagement.Specifications;
+using GoalManager.UseCases.Organisation;
 
 namespace GoalManager.UseCases.GoalManagement.GetGoalSet;
 
-public sealed class GetGoalSetQueryHandler(IGoalManagementQueryService goalManagementQueryService, IRepository<GoalPeriod> goalPeriodRepository, IRepository<GoalSet> goalSetRepository) : IQueryHandler<GetGoalSetQuery, Result<GoalSetDto>>
+public sealed class GetGoalSetQueryHandler(
+  IGoalManagementQueryService goalManagementQueryService, 
+  IOrganisationQueryService organisationQueryService,
+  IRepository<GoalPeriod> goalPeriodRepository, 
+  IRepository<GoalSet> goalSetRepository) : IQueryHandler<GetGoalSetQuery, Result<GoalSetDto>>
 {
   public async Task<Result<GoalSetDto>> Handle(GetGoalSetQuery request, CancellationToken cancellationToken)
   {
@@ -26,6 +31,8 @@ public sealed class GetGoalSetQueryHandler(IGoalManagementQueryService goalManag
     {
       return Result.Error("Goal set not found");
     }
+
+    goalSet.TeamName = await organisationQueryService.GetTeamNameAsync(goalSet.TeamId).ConfigureAwait(false);
 
     return goalSet;
   }

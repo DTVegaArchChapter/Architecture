@@ -1,6 +1,4 @@
-﻿using GoalManager.Core.GoalManagement;
-
-namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
+﻿namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
 public record PendingApprovalGoalSetDto
 {
   public int TeamId { get; set; }
