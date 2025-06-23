@@ -8,56 +8,6 @@
     var isReadOnly = Model.GoalSet?.Status == GoalSetStatus.Approved || Model.GoalSet?.Status == GoalSetStatus.WaitingForApproval;
 }
 
-@section Style
-{
-	<style>
-		.card {
-		border: 1px solid #e9ecef;
-		border-radius: 0.5rem;
-		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-		transition: transform 0.2s ease-in-out;
-		}
-
-		.card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-		}
-
-		.card-body {
-		padding: 1.5rem;
-		}
-
-		a[asp-page="UpdateGoal"] {
-		position: relative;
-		z-index: 1;
-		}
-
-        .status-badge {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-            .status-badge i {
-                font-size: 1.1rem;
-            }
-
-        .status-approved {
-            background-color: #198754;
-            color: white;
-        }
-
-        .status-waiting {
-            background-color: #ffc107;
-            color: #212529;
-        }
-	</style>
-}
-
 <div class="container py-4">
 	<div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex justify-content-between align-items-center">
@@ -102,7 +52,7 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <h5 class="mb-1 fw-normal">@goal.Title</h5>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="badge @(GetBadgeStyle(latestStatusText))">
+                                            <span class="badge @GetBadgeStyle(latestStatusText)">
                                                 @latestStatusText
                                             </span>
                                             <span class="badge bg-light text-dark">@goal.GoalType.Name</span>
@@ -141,7 +91,7 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <h5 class="mb-1 fw-normal">@goal.Title</h5>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="badge @(GetBadgeStyle(latestStatusText))">
+                                            <span class="badge @GetBadgeStyle(latestStatusText)">
                                                 @latestStatusText
                                             </span>
                                             <span class="badge bg-light text-dark">@goal.GoalType.Name</span>
@@ -231,43 +181,79 @@
 	}
 </div>
 
-<script>
-	function updateSliderValue(slider) {
-		document.getElementById('sliderValue-' + slider.closest('.card').id).textContent = slider.value;
-	}
-	@functions {
-		string GetBadgeStyle(string status)
-		{
-			return status switch
-			{
-				"WaitingForApproval" => "bg-warning text-dark",
-				"Approved" => "bg-success text-white",
-				"Rejected" => "bg-danger text-white",
-				_ => "bg-secondary text-white" // Varsayılan durum
-			};
-		}
-	}
-</script>
+@functions {
+    public static string GetBadgeStyle(string status)
+    {
+        return status switch
+            {
+                "WaitingForApproval" => "bg-warning text-dark",
+                "Approved" => "bg-success text-white",
+                "Rejected" => "bg-danger text-white",
+                _ => "bg-secondary text-white" // default case for unknown statuses
+            };
+    }
+}
 
-<style>
-	.card {
-		border: 1px solid #e9ecef;
-		border-radius: 0.5rem;
-		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-		transition: transform 0.2s ease-in-out;
-	}
+@section Style
+{
+    <style>
+		.card {
+		    border: 1px solid #e9ecef;
+		    border-radius: 0.5rem;
+		    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+		    transition: transform 0.2s ease-in-out;
+		}
+
+        .card-body {
+            padding: 1.5rem;
+        }
 
 		.card:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+		    transform: translateY(-2px);
+		    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 		}
 
-	.card-body {
-		padding: 1.5rem;
-	}
+		.card-body {
+		    padding: 1.5rem;
+		}
 
-	a[asp-page="UpdateGoal"] {
-		position: relative;
-		z-index: 1;
-	}
-</style>
+		a[asp-page="UpdateGoal"] {
+		    position: relative;
+		    z-index: 1;
+		}
+
+        .status-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge i {
+            font-size: 1.1rem;
+        }
+
+        .status-approved {
+            background-color: #198754;
+            color: white;
+        }
+
+        .status-waiting {
+            background-color: #ffc107;
+            color: #212529;
+        }
+	</style>
+}
+
+@section Scripts
+{
+    <script>
+	    function updateSliderValue(slider) {
+		    document.getElementById('sliderValue-' + slider.closest('.card').id).textContent = slider.value;
+	    }
+    </script>
+}
+
