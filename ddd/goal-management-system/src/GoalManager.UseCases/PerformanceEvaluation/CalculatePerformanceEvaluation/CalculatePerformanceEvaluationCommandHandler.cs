@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core;
 using GoalManager.Core.GoalManagement;
 using GoalManager.Core.PerformanceEvaluation;
+using GoalManager.Core.PerformanceEvaluation.Specifications;
 using GoalManager.UseCases.GoalManagement;
 
 namespace GoalManager.UseCases.PerformanceEvaluation.CalculatePerformanceEvaluation;
@@ -41,6 +42,15 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
 
     foreach (var memberPerformanceData in data.TeamMembersPerformanceData)
     {
+      var goalSetId = memberPerformanceData.GoalSetId;
+      
+      var currentGoalSetEvaluation = await goalSetEvaluationRepository.SingleOrDefaultAsync(new GoalSetEvaluationWithGoalEvaluationsByGoalSetIdSpec(goalSetId)).ConfigureAwait(false);
+      if (currentGoalSetEvaluation != null)
+      {
+        teamGoalSetEvaluations.Add(currentGoalSetEvaluation);
+        continue;
+      }
+
       var goalEvaluations = new List<GoalEvaluation>(memberPerformanceData.Goals.Count);
 
       foreach (var goalPerformanceData in memberPerformanceData.Goals)

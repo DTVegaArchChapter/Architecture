@@ -33,6 +33,7 @@
                         <tr>
                             <th class="border-0">Team Member</th>
                             <th class="border-0">Goal Set Approval Status</th>
+                            <th class="border-0">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -41,6 +42,14 @@
                             <tr>
                                 <td class="align-middle"><span class="badge bg-light text-dark">@goalSet.User</span></td>
                                 <td class="align-middle"><small class="text-muted">@goalSet.Status?.Name</small></td>
+                                <td class="align-middle"><small class="text-muted">
+                                    @if (goalSet.GoalSetEvaluationId.HasValue)
+                                    {
+                                        <a asp-page="Detail" asp-route-id="@goalSet.GoalSetEvaluationId">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    }
+                                </small></td>
                             </tr>
                         }
                         </tbody>

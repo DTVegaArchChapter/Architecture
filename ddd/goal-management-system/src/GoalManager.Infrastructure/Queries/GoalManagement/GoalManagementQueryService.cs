@@ -99,7 +99,8 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
                   {
                      Status = goalSet.Status,
                      TeamId = goalSet.TeamId,
-                     UserId = goalSet.UserId
+                     UserId = goalSet.UserId,
+                     GoalSetId = goalSet.Id
                    }).ToListAsync();
   }
 
