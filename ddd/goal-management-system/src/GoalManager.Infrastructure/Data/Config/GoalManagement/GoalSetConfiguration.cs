@@ -22,6 +22,10 @@ internal sealed class GoalSetEvaluationConfiguration : IEntityTypeConfiguration<
       .HasForeignKey(g => g.GoalSetId)
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.HasOne(gs => gs.GoalPeriod)
+      .WithMany()
+      .HasForeignKey(g => g.PeriodId);
+
     builder.HasIndex(gs => new { gs.TeamId, gs.PeriodId, gs.UserId }).IsUnique();
   }
 }

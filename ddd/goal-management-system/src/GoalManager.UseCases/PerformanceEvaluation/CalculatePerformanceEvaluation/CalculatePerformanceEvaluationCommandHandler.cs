@@ -6,7 +6,9 @@ using GoalManager.UseCases.GoalManagement;
 
 namespace GoalManager.UseCases.PerformanceEvaluation.CalculatePerformanceEvaluation;
 
-public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagementQueryService goalManagementQueryService, IRepository<GoalSetEvaluation> goalSetEvaluationRepository)
+public sealed class CalculatePerformanceEvaluationCommandHandler(
+  IGoalManagementQueryService goalManagementQueryService, 
+  IRepository<GoalSetEvaluation> goalSetEvaluationRepository)
   : ICommandHandler<CalculatePerformanceEvaluationCommand, Result>
 {
   public async Task<Result> Handle(CalculatePerformanceEvaluationCommand request, CancellationToken cancellationToken)
@@ -25,7 +27,7 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
 
     CalculatePerformanceGrades(goalSetEvaluations);
 
-    await goalSetEvaluationRepository.AddRangeAsync(goalSetEvaluations, cancellationToken).ConfigureAwait(false);
+    await goalSetEvaluationRepository.AddRangeAsync(goalSetEvaluations.Where(x => x.Id == 0), cancellationToken).ConfigureAwait(false);
 
     return Result.SuccessWithMessage("Performance Evaluation calculation finished for the team.");
   }
@@ -78,7 +80,7 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(IGoalManagement
         goalEvaluations.Add(goalEvaluationResult.Value);
       }
 
-      var goalSetEvaluationResult = GoalSetEvaluation.Create(memberPerformanceData.GoalSetId, goalEvaluations);
+      var goalSetEvaluationResult = GoalSetEvaluation.Create(memberPerformanceData.GoalSetId, memberPerformanceData.Year, memberPerformanceData.UserId, memberPerformanceData.TeamId, goalEvaluations);
       if (!goalSetEvaluationResult.IsSuccess)
       {
         return goalSetEvaluationResult.ToResult();

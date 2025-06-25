@@ -2,7 +2,6 @@
 @model GoalManager.Web.Pages.GoalManagement.PendingGoalsModel
 @{
 	ViewData["Title"] = "Pending Approvals";
-	var groupedGoals = Model.PendingGoals.GroupBy(x => x.TeamName);
 }
 
 <div class="container py-4">

@@ -69,6 +69,8 @@ public sealed class GoalManagementQueryService(AppDbContext appDbContext) : IGoa
                                                      GoalSetId = goalSet.Id,
                                                      UserId = goalSet.UserId,
                                                      GoalSetStatus = goalSet.Status,
+                                                     Year = goalSet.GoalPeriod.Year,
+                                                     TeamId = goalSet.TeamId,
                                                      Goals = goalSet.Goals.Select(
                                                          x => new GoalPerformanceDataDto
                                                               {
