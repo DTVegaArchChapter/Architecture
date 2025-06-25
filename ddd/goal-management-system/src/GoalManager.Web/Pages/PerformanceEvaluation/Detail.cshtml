@@ -1,0 +1,269 @@
+﻿@page "{id:int}"
+@model GoalManager.Web.Pages.PerformanceEvaluation.DetailModel
+@{
+    ViewData["Title"] = "Performance Evaluation Report";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h3 fw-light mb-1">@Model.GoalSetEvaluation?.TeamName @Model.GoalSetEvaluation?.Year Performance Evaluation Report</h1>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="h3 fw-normal mb-3">Team Member: @Model.GoalSetEvaluation?.User</h2>
+        </div>
+        @if (Model.GoalSetEvaluation?.PerformanceGrade != null)
+        {
+            <div class="score-section">
+                <div class="performance-grade @GetGradeColorClass(Model.GoalSetEvaluation.PerformanceGrade)">
+                    @Model.GoalSetEvaluation.PerformanceGrade
+                </div>
+                <div class="performance-score">
+                    <span class="score-value">@Model.GoalSetEvaluation.PerformanceScore?.ToString("N1")</span>
+                    <span class="score-label">Score</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <alert-messages></alert-messages>
+
+    @if (Model.GoalSetEvaluation != null)
+    {
+        <div class="mb-4">
+            @foreach (var goalEvaluation in Model.GoalSetEvaluation.GoalEvaluations)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="text-decoration-none text-reset w-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-1 fw-normal">@goalEvaluation.GoalTitle</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge @GetPointBadgeStyle(goalEvaluation.Point)">
+                                            @(goalEvaluation.Point?.ToString("N1") ?? "Not Evaluated")
+                                        </span>
+                                        <span class="badge bg-light text-dark">@goalEvaluation.Percentage%</span>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-3">
+                                        <div class="text-muted small">Weight</div>
+                                        <div>@goalEvaluation.Percentage%</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-muted small">Value Range</div>
+                                        <div>@goalEvaluation.GoalValue.MinValue - @goalEvaluation.GoalValue.MaxValue</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="text-muted small">Min</div>
+                                        <div>@goalEvaluation.GoalValue.MinValue</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="text-muted small">Mid</div>
+                                        <div>@goalEvaluation.GoalValue.MidValue</div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="text-muted small">Max</div>
+                                        <div>@goalEvaluation.GoalValue.MaxValue</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-12">
+                                <label class="form-label small text-muted">Achieved Value</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="progress w-100" style="height: 10px;">
+                                        <div class="progress-bar @GetProgressBarStyle(goalEvaluation)"
+                                             role="progressbar"
+                                             style="width: @GetProgressPercentage(goalEvaluation)%"
+                                             aria-valuenow="@goalEvaluation.ActualValue"
+                                             aria-valuemin="@goalEvaluation.GoalValue.MinValue"
+                                             aria-valuemax="@goalEvaluation.GoalValue.MaxValue">
+                                        </div>
+                                    </div>
+                                    <span class="text-nowrap fw-medium" style="min-width: 40px;">
+                                        @goalEvaluation.ActualValue
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Performance Summary</h5>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="text-muted small">Total Score</label>
+                            <div class="h3">@Model.GoalSetEvaluation.PerformanceScore?.ToString("N1")</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="text-muted small">Performance Grade</label>
+                            <div class="h3">@Model.GoalSetEvaluation.PerformanceGrade</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No evaluation data found for this goal set.
+        </div>
+    }
+</div>
+
+@functions {
+    public static string GetPointBadgeStyle(double? points)
+    {
+        if (points == null) return "bg-secondary text-white";
+
+        return points switch
+        {
+            >= 90 => "bg-success text-white",
+            >= 75 => "bg-primary text-white",
+            >= 60 => "bg-warning text-dark",
+            _ => "bg-danger text-white"
+        };
+    }
+
+    public static string GetProgressBarStyle(GoalManager.UseCases.PerformanceEvaluation.GetPerformanceEvaluationReport.GoalEvaluationDto goalEvaluation)
+    {
+        var midValue = goalEvaluation.GoalValue.MidValue;
+        var actualValue = goalEvaluation.ActualValue;
+
+        if (actualValue >= goalEvaluation.GoalValue.MaxValue)
+            return "bg-success";
+        if (actualValue >= midValue)
+            return "bg-primary";
+        if (actualValue >= goalEvaluation.GoalValue.MinValue)
+            return "bg-warning";
+
+        return "bg-danger";
+    }
+
+    public static int GetProgressPercentage(GoalManager.UseCases.PerformanceEvaluation.GetPerformanceEvaluationReport.GoalEvaluationDto goalEvaluation)
+    {
+        var min = goalEvaluation.GoalValue.MinValue;
+        var max = goalEvaluation.GoalValue.MaxValue;
+        var actual = goalEvaluation.ActualValue;
+
+        // Handle edge cases
+        if (max == min) return 100;
+        if (actual <= min) return 0;
+        if (actual >= max) return 100;
+
+        // Calculate percentage within range
+        return (int)(((double)(actual - min) / (max - min)) * 100);
+    }
+
+    public static string GetGradeColorClass(string? grade)
+    {
+        return grade switch
+        {
+            "A" => "grade-a",
+            "B" => "grade-b",
+            "C" => "grade-c",
+            "D" => "grade-d",
+            "F" => "grade-f",
+            _ => "grade-default"
+        };
+    }
+}
+
+@section Style
+{
+    <style>
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        }
+
+        .score-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .performance-grade {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .grade-a {
+            background-color: #198754;
+        }
+
+        .grade-b {
+            background-color: #0d6efd;
+        }
+
+        .grade-c {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .grade-d {
+            background-color: #fd7e14;
+        }
+
+        .grade-f {
+            background-color: #dc3545;
+        }
+
+        .grade-default {
+            background-color: #6c757d;
+        }
+
+        .performance-score {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .score-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+    </style>
+}

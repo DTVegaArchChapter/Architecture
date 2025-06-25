@@ -21,9 +21,11 @@ public class GoalSet : EntityBase, IAggregateRoot
   public int PeriodId { get; private set; }
   public int TeamId { get; private set; }
 
-  public GoalSetStatus? Status { get; private set; } = null!;
+  public GoalSetStatus? Status { get; private set; }
 
   public IReadOnlyCollection<Goal> Goals => _goals.AsReadOnly();
+
+  public GoalPeriod GoalPeriod { get; private set; } = null!;
 
   public static Result<GoalSet> Create(int teamId, int periodId, int userId)
   {

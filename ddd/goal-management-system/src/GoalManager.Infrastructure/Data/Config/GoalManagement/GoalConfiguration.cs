@@ -46,8 +46,6 @@ internal sealed class GoalConfiguration : IEntityTypeConfiguration<Goal>
       .WithOne(x => x.CurrentGoal)
       .HasForeignKey<Goal>(x => x.ProgressId);
 
-  
-
     builder.HasIndex(g => g.Title);
   }
 }

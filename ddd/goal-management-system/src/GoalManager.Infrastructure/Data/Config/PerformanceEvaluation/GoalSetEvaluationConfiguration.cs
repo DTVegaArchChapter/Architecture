@@ -19,6 +19,6 @@ internal sealed class GoalSetEvaluationConfiguration : IEntityTypeConfiguration<
       .HasForeignKey(g => g.GoalSetEvaluationId)
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasIndex(gs => gs.GoalSetId);
+    builder.HasIndex(gs => gs.GoalSetId).IsUnique();
   }
 }

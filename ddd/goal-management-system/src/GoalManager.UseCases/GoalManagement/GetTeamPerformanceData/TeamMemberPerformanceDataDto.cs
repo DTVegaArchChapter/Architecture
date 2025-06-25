@@ -10,5 +10,9 @@ public sealed class TeamMemberPerformanceDataDto
 
   public GoalSetStatus? GoalSetStatus { get; set; }
 
+  public int Year { get; set; }
+
+  public int TeamId { get; set; }
+
   public IList<GoalPerformanceDataDto> Goals { get; set; } = [];
 }

@@ -1,6 +1,7 @@
 ﻿using GoalManager.Core.GoalManagement;
 using GoalManager.Core.Notification;
 using GoalManager.Core.Organisation;
+using GoalManager.Core.PerformanceEvaluation;
 
 using SmartEnum.EFCore;
 
@@ -9,8 +10,6 @@ namespace GoalManager.Infrastructure.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options,
   IDomainEventDispatcher? dispatcher) : DbContext(options)
 {
-  private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
-
   public DbSet<Organisation> Organisation => Set<Organisation>();
 
   public DbSet<Team> Team => Set<Team>();
@@ -23,9 +22,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public DbSet<Goal> Goal => Set<Goal>();
 
-  public DbSet<GoalProgress> GoalProgress => Set<GoalProgress>();
-
   public DbSet<GoalPeriod> GoalPeriod => Set<GoalPeriod>();
+
+  public DbSet<GoalSetEvaluation> GoalSetEvaluation => Set<GoalSetEvaluation>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -48,10 +47,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
     // ignore events if no dispatcher provided
-    if (_dispatcher == null) return result;
+    if (dispatcher == null) return result;
 
     // dispatch events only if save was successful
-    await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
+    await dispatcher.DispatchAndClearEvents(entitiesWithEvents);
 
     return result;
   }

@@ -6,6 +6,12 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
 
   public int GoalSetId { get; private set; }
 
+  public int Year { get; private set; }
+
+  public int UserId { get; private set; }
+
+  public int TeamId { get; private set; }
+
   public double? PerformanceScore { get; private set; }
 
   public string? PerformanceGrade { get; private set; }
@@ -16,16 +22,19 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
   private GoalSetEvaluation() { }
 #pragma warning restore CS8618
 
-  private GoalSetEvaluation(int goalSetId, IList<GoalEvaluation> goalEvaluations)
+  private GoalSetEvaluation(int goalSetId, int year, int userId, int teamId, IList<GoalEvaluation> goalEvaluations)
   {
     _goalEvaluations = goalEvaluations ?? throw new ArgumentNullException(nameof(goalEvaluations));
 
     GoalSetId = goalSetId;
+    Year = year;
+    UserId = userId;
+    TeamId = teamId;
   }
 
-  public static Result<GoalSetEvaluation> Create(int goalSetId, IList<GoalEvaluation> goalEvaluations)
+  public static Result<GoalSetEvaluation> Create(int goalSetId, int year, int userId, int teamId, IList<GoalEvaluation> goalEvaluations)
   {
-    return new GoalSetEvaluation(goalSetId, goalEvaluations);
+    return new GoalSetEvaluation(goalSetId, year, userId, teamId, goalEvaluations);
   }
 
   public Result SetPerformanceGrade(string grade)
