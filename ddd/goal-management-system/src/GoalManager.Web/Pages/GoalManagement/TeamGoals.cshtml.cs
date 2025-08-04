@@ -1,4 +1,5 @@
-﻿using GoalManager.UseCases.GoalManagement.GetGoalSet;
+﻿using GoalManager.UseCases.GoalManagement.CreateGoalSet;
+using GoalManager.UseCases.GoalManagement.GetGoalSet;
 using GoalManager.UseCases.GoalManagement.SendGoalSetToApproval;
 using GoalManager.UseCases.GoalManagement.UpdateGoalProgress;
 using GoalManager.Web.Common;
@@ -23,6 +24,12 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
     var goalSetResult = await mediator.Send(new GetGoalSetQuery(teamId, year, user.Id)).ConfigureAwait(false);
     if (goalSetResult.IsSuccess)
     {
+      if (goalSetResult.Value == null)
+      {
+        await mediator.Send(new CreateGoalSetCommand(teamId, year, user.Id));
+        goalSetResult = await mediator.Send(new GetGoalSetQuery(teamId, year, user.Id)).ConfigureAwait(false);
+      }
+
       GoalSet = goalSetResult.Value;
     }
 
