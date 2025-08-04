@@ -43,7 +43,7 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
-  public Result CalculatePerformancePoint()
+  public Result CalculatePerformanceScore()
   {
     foreach (var goal in _goalEvaluations)
     {

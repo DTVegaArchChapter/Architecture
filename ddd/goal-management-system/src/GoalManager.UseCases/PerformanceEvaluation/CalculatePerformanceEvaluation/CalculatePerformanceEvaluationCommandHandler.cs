@@ -22,7 +22,7 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(
     var goalSetEvaluations = teamGoalSetEvaluationsResult.Value;
     foreach (var teamGoalSetEvaluation in goalSetEvaluations)
     {
-      teamGoalSetEvaluation.CalculatePerformancePoint();
+      teamGoalSetEvaluation.CalculatePerformanceScore();
     }
 
     CalculatePerformanceGrades(goalSetEvaluations);
