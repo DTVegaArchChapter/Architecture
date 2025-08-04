@@ -6,11 +6,9 @@
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1 class="h3 fw-light mb-1">@Model.GoalSetEvaluation?.TeamName @Model.GoalSetEvaluation?.Year Performance Evaluation Report</h1>
-        </div>
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h3 fw-normal mb-3">Team Member: @Model.GoalSetEvaluation?.User</h2>
+        <div>
+            <h1 class="h3 fw-light mb-1">Team Member: @Model.GoalSetEvaluation?.User</h1>
+            <h2 class="h3 fw-light mb-1">@Model.GoalSetEvaluation?.TeamName @Model.GoalSetEvaluation?.Year Performance Evaluation Report</h2>
         </div>
         @if (Model.GoalSetEvaluation?.PerformanceGrade != null)
         {
