@@ -1,4 +1,6 @@
-﻿namespace GoalManager.Core.GoalManagement;
+﻿using GoalManager.Core.GoalManagement.Events;
+
+namespace GoalManager.Core.GoalManagement;
 
 public class GoalSet : EntityBase, IAggregateRoot
 {
@@ -29,7 +31,11 @@ public class GoalSet : EntityBase, IAggregateRoot
 
   public static Result<GoalSet> Create(int teamId, int periodId, int userId)
   {
-    return new GoalSet(teamId, periodId, userId);
+    var goalSet = new GoalSet(teamId, periodId, userId);
+
+    goalSet.RegisterDomainEvent(new GoalSetCreatedEvent(teamId, periodId, userId));
+
+    return goalSet;
   }
 
   public Result AddGoal(string title, GoalType goalType, GoalValue goalValue, int percentage)
@@ -58,6 +64,8 @@ public class GoalSet : EntityBase, IAggregateRoot
 
     _goals.Add(createGoalResult.Value);
 
+    RegisterDomainEvent(new GoalAddedEvent(Id, title));
+
     return Result.Success();
   }
 
@@ -81,12 +89,16 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Total percentage of goals cannot exceed 100. Current total percentage is {totalPercentage}");
     }
 
-    return goal.Update(title, goalType, goalValueResult.Value, percentage);
-  }
 
-  private int GetGoalsTotalPercentage()
-  {
-    return _goals.Sum(x => x.Percentage);
+    var result = goal.Update(title, goalType, goalValueResult.Value, percentage);
+    if (!result.IsSuccess)
+    {
+      return result;
+    }
+
+    RegisterDomainEvent(new GoalUpdatedEvent(Id, title, goalType, goalValueResult.Value, percentage));
+
+    return result;
   }
 
   public Result UpdateGoalProgress(int goalId, int actualValue, string? comment)
@@ -97,9 +109,18 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Goal not found for id: {goalId}");
     }
 
-    return goal.AddProgress(TeamId, UserId, actualValue, comment);
+    var result = goal.AddProgress(TeamId, UserId, actualValue, comment);
+    if (!result.IsSuccess)
+    {
+      return result;
+    }
+
+    RegisterDomainEvent(new GoalProgressUpdatedEvent(TeamId, goalId, goal.Title, UserId, actualValue));
+
+    return result;
   }
-  public Result UpdateGoalStatus(int goalId, GoalProgressStatus status, string? comment = null)
+
+  public Result ApproveGoalProgress(int goalId)
   {
     var goal = _goals.FirstOrDefault(g => g.Id == goalId);
     if (goal == null)
@@ -107,7 +128,32 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Goal not found for id: {goalId}");
     }
 
-    return goal.UpdateProgressStatus(status, comment);
+    var result = goal.UpdateProgressStatus(GoalProgressStatus.Approved);
+    if (!result.IsSuccess)
+    {
+      return result;
+    }
+
+    RegisterDomainEvent(new GoalProgressApprovedEvent(goalId));
+    return result;
+  }
+
+  public Result RejectGoalProgress(int goalId)
+  {
+    var goal = _goals.FirstOrDefault(g => g.Id == goalId);
+    if (goal == null)
+    {
+      return Result.Error($"Goal not found for id: {goalId}");
+    }
+
+    var result = goal.UpdateProgressStatus(GoalProgressStatus.Rejected);
+    if (!result.IsSuccess)
+    {
+      return result;
+    }
+
+    RegisterDomainEvent(new GoalProgressRejectedEvent(goalId));
+    return result;
   }
 
   public Result SendToApproval()
@@ -124,10 +170,12 @@ public class GoalSet : EntityBase, IAggregateRoot
 
     Status = GoalSetStatus.WaitingForApproval;
 
+    RegisterDomainEvent(new GoalSetSentToApprovalEvent(Id, TeamId, UserId));
+
     return Result.Success();
   }
 
-  public Result Approve()
+  public Result Approve(int userId)
   {
     if (Status != GoalSetStatus.WaitingForApproval)
     {
@@ -146,10 +194,12 @@ public class GoalSet : EntityBase, IAggregateRoot
 
     Status = GoalSetStatus.Approved;
 
+    RegisterDomainEvent(new GoalSetApprovedEvent(Id, TeamId, userId));
+
     return Result.Success();
   }
 
-  public Result Reject()
+  public Result Reject(int userId)
   {
     if (Status != GoalSetStatus.WaitingForApproval)
     {
@@ -158,6 +208,13 @@ public class GoalSet : EntityBase, IAggregateRoot
 
     Status = GoalSetStatus.None;
 
+    RegisterDomainEvent(new GoalSetRejectedEvent(Id, TeamId, userId));
+
     return Result.Success();
+  }
+
+  private int GetGoalsTotalPercentage()
+  {
+    return _goals.Sum(x => x.Percentage);
   }
 }

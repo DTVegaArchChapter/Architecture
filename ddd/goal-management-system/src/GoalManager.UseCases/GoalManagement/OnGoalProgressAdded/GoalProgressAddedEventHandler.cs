@@ -10,9 +10,9 @@ namespace GoalManager.UseCases.GoalManagement.OnGoalProgressAdded;
 internal sealed class GoalProgressAddedEventHandler(
   IOrganisationQueryService organisationQueryService,
   IIdentityQueryService identityQueryService,
-  IEmailSender emailSender) : INotificationHandler<GoalProgressAddedEvent>
+  IEmailSender emailSender) : INotificationHandler<GoalProgressUpdatedEvent>
 {
-  public async Task Handle(GoalProgressAddedEvent notification, CancellationToken cancellationToken)
+  public async Task Handle(GoalProgressUpdatedEvent notification, CancellationToken cancellationToken)
   {
     var teamLeaderUserIds = await organisationQueryService.GetTeamLeaderUserIdsAsync(notification.TeamId).ConfigureAwait(false);
     var teamLeaderEmails = await identityQueryService.GetUserEmails(teamLeaderUserIds).ConfigureAwait(false);
