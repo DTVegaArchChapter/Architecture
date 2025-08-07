@@ -1,4 +1,6 @@
-﻿namespace GoalManager.Core.PerformanceEvaluation;
+﻿using GoalManager.Core.PerformanceEvaluation.Events;
+
+namespace GoalManager.Core.PerformanceEvaluation;
 
 public class GoalSetEvaluation : EntityBase, IAggregateRoot
 {
@@ -34,7 +36,15 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
 
   public static Result<GoalSetEvaluation> Create(int goalSetId, int year, int userId, int teamId, IList<GoalEvaluation> goalEvaluations)
   {
-    return new GoalSetEvaluation(goalSetId, year, userId, teamId, goalEvaluations);
+    var goalSetEvaluation = new GoalSetEvaluation(goalSetId, year, userId, teamId, goalEvaluations);
+    var result = goalSetEvaluation.CalculatePerformanceScore();
+    if (!result.IsSuccess)
+    {
+      return result;
+    }
+
+    goalSetEvaluation.RegisterDomainEvent(new GoalSetEvaluationCreatedEvent(goalSetId, year, userId, teamId));
+    return goalSetEvaluation;
   }
 
   public Result SetPerformanceGrade(string grade)
@@ -43,7 +53,7 @@ public class GoalSetEvaluation : EntityBase, IAggregateRoot
     return Result.Success();
   }
 
-  public Result CalculatePerformanceScore()
+  private Result CalculatePerformanceScore()
   {
     foreach (var goal in _goalEvaluations)
     {

@@ -20,10 +20,6 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(
     }
 
     var goalSetEvaluations = teamGoalSetEvaluationsResult.Value;
-    foreach (var teamGoalSetEvaluation in goalSetEvaluations)
-    {
-      teamGoalSetEvaluation.CalculatePerformanceScore();
-    }
 
     CalculatePerformanceGrades(goalSetEvaluations);
 
@@ -98,9 +94,9 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(
     double avg = scores.Average();
     double stdDev = Math.Sqrt(scores.Sum(s => Math.Pow(s - avg, 2)) / scores.Count);
 
-    foreach (var goal in goalSets)
+    foreach (var goalSet in goalSets)
     {
-      var score = goal.PerformanceScore.GetValueOrDefault();
+      var score = goalSet.PerformanceScore.GetValueOrDefault();
       double z = (score - avg) / stdDev;
       string grade = z switch
       {
@@ -111,7 +107,7 @@ public sealed class CalculatePerformanceEvaluationCommandHandler(
         _ => "F"
       };
 
-      goal.SetPerformanceGrade(grade);
+      goalSet.SetPerformanceGrade(grade);
     }
   }
 }
