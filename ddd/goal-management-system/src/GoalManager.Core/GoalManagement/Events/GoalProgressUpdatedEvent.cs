@@ -1,7 +1,7 @@
 ﻿using GoalManager.Core.Interfaces;
 
 namespace GoalManager.Core.GoalManagement.Events;
-public sealed class GoalProgressAddedEvent(int teamId, int goalId, string goalName, int userId, int actualValue) : DomainEventBase, IHasNotificationText
+public sealed class GoalProgressUpdatedEvent(int teamId, int goalId, string goalName, int userId, int actualValue) : DomainEventBase, IHasNotificationText
 {
   public int TeamId { get; } = teamId;
 

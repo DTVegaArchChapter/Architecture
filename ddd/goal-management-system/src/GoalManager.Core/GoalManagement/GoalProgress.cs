@@ -38,4 +38,11 @@ public class GoalProgress : EntityBase
 
     return Result.Success();
   }
+
+  public Result UpdateStatus(GoalProgressStatus status)
+  {
+    Status = status;
+
+    return Result.Success();
+  }
 }

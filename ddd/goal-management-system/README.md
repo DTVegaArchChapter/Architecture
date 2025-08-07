@@ -71,10 +71,6 @@ Goal management uygulamasının ana hedeflerinden birini gerçekleştirmektedir.
 
 Performans değerlendirmesi Goal management uygulamasının hedeflerini doğrudan etkilemektedir ve burada yapılacak kapsamlı ve anlamı değerlendirmeler uygulamanın değerini arttırarak rekabet avantajı sağlamaktadır. Bu yüzden core sub-domain olarak değerlendirilmiştir.
 
-### Feedback
-
-Feedback, kullanıcı deneyimini arttırıp hedef ve performans yönetimini desteklemektedir. Ancak Goal Management uygulamasının ana odağı değildir. Bu nedenlerden dolayı supporting sub-domain olarak değerlendirilmiştir.
-
 ### Notification
 
 Goal Management uygulamasının, hatırlatıcılar ve güncelleme gibi bildirimleri gönderen parçasıdır. Goal Management sistemine özgü bir yapı değildir. Bir çok uygulamada yer alan ve yardımcı programlar ya da harici kütüphaneler ile işlevini gerçekleştirebilen bir yapı olduğu için generic sub-domain olarak değerlendirildi.
@@ -96,6 +92,47 @@ Organisation aggregate root için geçerli olan önemli iş kuralları aşağıd
 - Bir organisayonun altında en fazla 5 takım olabilir.
 - Bir takımda en fazla 10 takım üyesi olabilir.
 - Bir takımda en fazla 1 tane takım lideri olabilir.
+
+### Goal Management
+
+Goal Management bounded context'i içerisinde hedef dönemleri ve takım üyeleri hedeflerini yönetmemize yardımcı olacak `GoalPeriod` ve `GoalSet` aggregate root nesnelerini içermektedir. Class Diyagramı ve bounded context'in diğer elemanları aşağıda listelenmektedir.
+
+![Goal Management Class Diagram](./docs/goal-management-class-diagram.png)
+
+#### Aggregate Roots
+
+- **GoalSet:** Takım üyesi hedefleri ve hedeflerin yaşam döngüsünün yönetildiği aggregate root nesnesi.
+- **GoalPeriod:** Takım hedef dönemlerinin yönetildiği aggregate root nestnesi.
+
+#### Entities
+
+- **Goal:** GoalSet'e bağlı hedef bilgilerinin yönetildiği entity nesnesi.
+- **GoalProgress:** Hedeflerin ilerlemesinin ve ilerleme tarihçesinin yönetildiği entity nesnesi.
+
+#### Value Objects
+
+- **GoalValue:** Min, mid, max değerler ve hedef tipinin tutulduğu value object sınıfı.
+
+#### Domain Events
+
+- GoalAddedEvent
+- GoalPeriodCreatedEvent
+- GoalProgressApprovedEvent
+- GoalProgressRejectedEvent
+- GoalProgressUpdatedEvent
+- GoalSetApprovedEvent
+- GoalSetCreatedEvent
+- GoalSetRejectedEvent
+- GoalSetSentToApprovalEvent
+- GoalUpdatedEvent
+
+#### İş Kuralları ve Invariant'lar
+
+- Bir GoalSet altında en fazla 10 hedef olabilir
+- Hedeflerin toplam yüzdes 100% olmalıdır
+- Hedef değerleri girerken belirlenen min, mid, max birbiriyle tutarlı olmalı (min < mid < max)
+- Hedef ilerleme kaydı onay iş akışı
+- Statü bazlı iş akışı kontrolleri
 
 ## Kaynaklar
 

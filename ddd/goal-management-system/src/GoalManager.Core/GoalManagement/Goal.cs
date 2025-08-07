@@ -1,6 +1,4 @@
-﻿using GoalManager.Core.GoalManagement.Events;
-
-namespace GoalManager.Core.GoalManagement;
+﻿namespace GoalManager.Core.GoalManagement;
 
 public class Goal : EntityBase
 {
@@ -52,12 +50,10 @@ public class Goal : EntityBase
       return Result<Goal>.Error("Goal title is required");
     }
 
-    var goal = new Goal(goalSetId, title, goalType, goalValue, percentage);
-    goal.RegisterGoalCreatedEvent();
-    return goal;
+    return new Goal(goalSetId, title, goalType, goalValue, percentage);
   }
 
-  internal Result Update(string title, GoalType goalType, GoalValue goalValue, int percantage)
+  internal Result Update(string title, GoalType goalType, GoalValue goalValue, int percentage)
   {
     if (string.IsNullOrWhiteSpace(title))
     {
@@ -67,7 +63,7 @@ public class Goal : EntityBase
     Title = title;
     GoalType = goalType;
     GoalValue = goalValue;
-    Percentage = percantage;
+    Percentage = percentage;
 
     return Result.Success();
   }
@@ -99,37 +95,16 @@ public class Goal : EntityBase
         currentGoalProgress.Update(actualValue, comment, newStatus);
       }
 
-      RegisterDomainEvent(new GoalProgressAddedEvent(teamId, Id, Title, userId, actualValue));
-
       return Result.Success();
   }
 
-  private void RegisterGoalCreatedEvent()
+  public Result UpdateProgressStatus(GoalProgressStatus newStatus)
   {
-    RegisterDomainEvent(new GoalCreatedEvent(Title));
-  }
-
-  public Result UpdateProgressStatus(GoalProgressStatus newStatus, string? comment = null)
-  {
-    if (!_goalProgressHistory.Any())
+    if (GoalProgress == null)
+    {
       return Result.Error("No progress record found to update");
+    }
 
-    var latestProgress = _goalProgressHistory.OrderByDescending(p => p.Id).First();
-
-    var updatedProgress = GoalProgress.Create(
-        Id,
-        latestProgress.ActualValue,
-        comment ?? latestProgress.Comment,
-        newStatus);
-
-    if (!updatedProgress.IsSuccess)
-      return updatedProgress.ToResult();
-
-    // burada ilişki kopuyor anlamadım
-    _goalProgressHistory.Remove(latestProgress);
-    _goalProgressHistory.Add(updatedProgress.Value);
-    GoalProgress = updatedProgress.Value;
-
-    return Result.Success();
+    return GoalProgress.UpdateStatus(newStatus);
   }
 }

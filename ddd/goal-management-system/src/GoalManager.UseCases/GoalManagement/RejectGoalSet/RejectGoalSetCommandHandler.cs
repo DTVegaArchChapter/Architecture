@@ -14,7 +14,7 @@ internal sealed class RejectGoalSetCommandHandler(IRepository<GoalSet> goalSetRe
       return Result.Error($"GoalSet not found: {request.GoalSetId}");
     }
 
-    var result = goalSet.Reject();
+    var result = goalSet.Reject(request.UserId);
     if (!result.IsSuccess)
     {
       return result;

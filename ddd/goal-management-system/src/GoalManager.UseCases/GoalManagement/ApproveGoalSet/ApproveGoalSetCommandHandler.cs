@@ -14,7 +14,7 @@ internal sealed class ApproveGoalSetCommandHandler(IRepository<GoalSet> goalSetR
       return Result.Error($"GoalSet not found: {request.GoalSetId}");
     }
 
-    var result = goalSet.Approve();
+    var result = goalSet.Approve(request.UserId);
     if (!result.IsSuccess)
     {
       return result;

@@ -26,7 +26,13 @@ public class TeamGoalsModel(IMediator mediator) : PageModelBase
     {
       if (goalSetResult.Value == null)
       {
-        await mediator.Send(new CreateGoalSetCommand(teamId, year, user.Id));
+        var createGoalSetResult = await mediator.Send(new CreateGoalSetCommand(teamId, year, user.Id));
+        if (!createGoalSetResult.IsSuccess)
+        {
+          AddResultMessages(createGoalSetResult);
+          return Page();
+        }
+
         goalSetResult = await mediator.Send(new GetGoalSetQuery(teamId, year, user.Id)).ConfigureAwait(false);
       }
 

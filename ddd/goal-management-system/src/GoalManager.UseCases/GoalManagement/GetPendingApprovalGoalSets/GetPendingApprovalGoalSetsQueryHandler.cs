@@ -1,8 +1,7 @@
-﻿using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
-using GoalManager.UseCases.Identity;
+﻿using GoalManager.UseCases.Identity;
 using GoalManager.UseCases.Organisation;
 
-namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
+namespace GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
 
 public sealed class GetPendingApprovalGoalSetsQueryHandler(IGoalManagementQueryService goalQueryService, IOrganisationQueryService organisationQueryService, IIdentityQueryService identityQueryService)
     : IQueryHandler<GetPendingApprovalGoalSetsQuery, List<PendingApprovalGoalSetDto>>

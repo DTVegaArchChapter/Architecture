@@ -34,7 +34,8 @@ public class ApproveTeamGoalsModel(IMediator mediator) : PageModelBase
 
   public async Task<IActionResult> OnPostApproveAsync(int teamId, int userId, int goalSetId)
   {
-    var result = await mediator.Send(new ApproveGoalSetCommand(goalSetId)).ConfigureAwait(false);
+    var user = HttpContext.GetUserContext();
+    var result = await mediator.Send(new ApproveGoalSetCommand(goalSetId, user.Id)).ConfigureAwait(false);
 
     AddResultMessages(result);
 
@@ -43,7 +44,8 @@ public class ApproveTeamGoalsModel(IMediator mediator) : PageModelBase
 
   public async Task<IActionResult> OnPostRejectAsync(int teamId, int userId, int goalSetId)
   {
-    var result = await mediator.Send(new RejectGoalSetCommand(goalSetId)).ConfigureAwait(false);
+    var user = HttpContext.GetUserContext();
+    var result = await mediator.Send(new RejectGoalSetCommand(goalSetId, user.Id)).ConfigureAwait(false);
 
     AddResultMessages(result);
 

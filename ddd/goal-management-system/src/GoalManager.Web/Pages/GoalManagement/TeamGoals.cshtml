@@ -166,7 +166,7 @@
                 </div>
             }
         </div>
-        @if (!isReadOnly)
+        @if (!isReadOnly && Model.GoalSet is {Goals.Count: > 0})
         {
             <div class="d-flex justify-content-end mt-3">
                 <form asp-page-handler="SendToApproval" method="post">
@@ -251,8 +251,8 @@
 @section Scripts
 {
     <script>
-	    function updateSliderValue(slider) {
-		    document.getElementById('sliderValue-' + slider.closest('.card').id).textContent = slider.value;
+	    function updateSliderValue(slider, id) {
+		    document.getElementById('sliderValue-' + id).textContent = slider.value;
 	    }
     </script>
 }

@@ -1,7 +1,7 @@
-﻿using GoalManager.Core.GoalManagement;
+﻿using GoalManager.UseCases.GoalManagement.ApproveGoalProgress;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoals;
 using GoalManager.UseCases.GoalManagement.GetPendingApprovalGoalSets;
-using GoalManager.UseCases.GoalManagement.UpdateGoalStatus;
+using GoalManager.UseCases.GoalManagement.RejectGoalProgress;
 using GoalManager.Web.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,34 +27,36 @@ public class PendingGoalsModel(IMediator mediator) : PageModelBase
 
   public async Task<IActionResult> OnPostApproveAsync(int goalSetId, int goalId)
   {
-    var command = new UpdateGoalStatusCommand(
-        goalSetId,
-        goalId,
-        GoalProgressStatus.Approved);
+    var command = new ApproveGoalProgressCommand(goalSetId, goalId);
 
     var result = await mediator.Send(command);
 
     if (result.IsSuccess)
+    {
       SuccessMessages.Add("Goal approved successfully");
+    }
     else
+    {
       ErrorMessages.Add("Couldnt Update");
+    }
 
     return RedirectToPage();
   }
 
   public async Task<IActionResult> OnPostRejectAsync(int goalSetId, int goalId)
   {
-    var command = new UpdateGoalStatusCommand(
-        goalSetId,
-        goalId,
-        GoalProgressStatus.Rejected);
+    var command = new RejectGoalProgressCommand(goalSetId, goalId);
 
     var result = await mediator.Send(command);
 
     if (result.IsSuccess)
+    {
       SuccessMessages.Add("Goal rejected");
+    }
     else
+    {
       ErrorMessages.Add("Couldnt Update");
+    }
 
     return RedirectToPage();
   }

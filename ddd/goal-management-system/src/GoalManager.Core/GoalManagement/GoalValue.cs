@@ -28,4 +28,9 @@ public record GoalValue(int MinValue, int MidValue, int MaxValue, GoalValueType 
 
     return new GoalValue(minValue, midValue, maxValue, goalValueType);
   }
+
+  public override string ToString()
+  {
+    return $"Goal Value: Min-Mid-Max: {MinValue}-{MidValue}-{MaxValue}, GoalType: {GoalValueType}";
+  }
 }
