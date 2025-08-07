@@ -95,7 +95,7 @@ Organisation aggregate root için geçerli olan önemli iş kuralları aşağıd
 
 ### Goal Management
 
-Goal Management bounded context'i içerisinde hedef dönemleri ve takım üyeleri hedeflerini yönetmemize yardımcı olacak `GoalPeriod` ve `GoalSet` aggregate root nesnelerini içermektedir. Class Diyagramı ve bounded context'in diğer elemanları aşağıda listelenmektedir.
+Goal Management bounded context'i içerisinde hedef dönemleri ve takım üyeleri hedeflerini yönetmemize yardımcı olacak `GoalPeriod` ve `GoalSet` aggregate root nesnelerini içermektedir. Class Diyagramı ve bounded context'in elemanları aşağıda listelenmektedir.
 
 ![Goal Management Class Diagram](./docs/goal-management-class-diagram.png)
 
@@ -111,7 +111,7 @@ Goal Management bounded context'i içerisinde hedef dönemleri ve takım üyeler
 
 #### Value Objects
 
-- **GoalValue:** Min, mid, max değerler ve hedef tipinin tutulduğu value object sınıfı.
+- **GoalValue:** Hedefin min, mid, max değerler ve hedef tipinin tutulduğu value object sınıfı.
 
 #### Domain Events
 
@@ -133,6 +133,41 @@ Goal Management bounded context'i içerisinde hedef dönemleri ve takım üyeler
 - Hedef değerleri girerken belirlenen min, mid, max birbiriyle tutarlı olmalı (min < mid < max)
 - Hedef ilerleme kaydı onay iş akışı
 - Statü bazlı iş akışı kontrolleri
+
+### Performance Evaluation
+
+Performance Evaluation bounded context'i içerisinde takım üyelerinin dönem sonu performans raporlarının oluşturulup yönetildiği nesneleri içermektedir. Class Diyagramı ve bounded context'in elemanları aşağıda listelenmektedir.
+
+![Perfomance Evaluation Class Diagram](./docs/perfomance-evaluation-class-diagram.png)
+
+#### Aggregate Roots
+
+- **GoalSetEvaluation:** Takım üyesi performans raporunun yönetildiği aggregate root nesnesi.
+
+#### Entities
+
+- **GoalEvaluation:** Hedef bilgileri ve puanlarının tutulduğu entity nesnesi.
+
+#### Value Objects
+
+- **GoalValue:** Hedefin min, mid, max değerlerinin tutulduğu value object sınıfı.
+
+#### Domain Events
+
+- GoalSetEvaluationCreatedEvent
+
+#### Performans Hesaplama Algoritması
+
+goal_point:
+
+- < min: 0 points
+- = min: 60 points
+- \> min ve < mid: 60 to 80 points
+- = mid: 80 points
+- \> mid ve < max: 80 to 100 points
+- ≥ max: 100 points
+
+performance_score = Σ(goal_point × goal_percentage / 100)
 
 ## Kaynaklar
 
