@@ -255,82 +255,102 @@ Uygulamanın uçtan uca iş akışlarını (organizasyon tanımı, takım & üye
 
 ### 001 - Organizasyon Oluşturma
 Organizasyonun ilk tanımlandığı form. Zorunlu ve unique organizasyon adı validasyonu burada tetiklenir; Organizasyon aggregate root başlangıç durumu.
+
 ![001-create-organisation-screen](./docs/001-create-organisation-screen.png)
 
 ### 002 - Organizasyon Listesi
 Kullanıcının erişebildiği organizasyon kayıtlarını gösterir. Supporting sub-domain içindeki sorgu (query) tarafı örneği.
+
 ![002-list-organisations-screen](./docs/002-list-organisations-screen.png)
 
 ### 003 - Organizasyon Güncelleme
 Var olan organizasyon üzerinde isim değişikliği (unique constraint korunarak) ve hiyerarşiye etki eden alanların yönetimi.
+
 ![003-update-organisation-screen](./docs/003-update-organisation-screen.png)
 
 ### 004 - Takım Oluşturma
 Organizasyon altına yeni takım eklenir; bir organizasyon altında en fazla 5 takım iş kuralı kontrolü tetiklenir.
+
 ![004-create-team-screen](./docs/004-create-team-screen.png)
 
 ### 005 - Takım Listesi
 Seçilen organizasyon altındaki mevcut takımların listesi, Takım görünümü.
+
 ![005-list-teams-screen](./docs/005-list-teams-screen.png)
 
 ### 006 - Takım Güncelleme
 Takım adı uniqueness kuralı ve takım lideri atama/güncelleme işlemleri.
+
 ![006-update-team-screen](./docs/006-update-team-screen.png)
 
 ### 007 - Takım Üyesi Ekleme
 Takıma üye eklerken maksimum 10 üye ve en fazla 1 lider iş kuralları kontrol edilir.
+
 ![007-add-team-member-screen](./docs/007-add-team-member-screen.png)
 
 ### 008 - Takım Üyesi Listesi
 Takım üyesi izlenmesi; domain içinde aggregate sınırı dışına taşmadan okumalar.
+
 ![008-list-team-members-screen](./docs/008-list-team-members-screen.png)
 
 ### 009 - Kullanıcının Takımları ve Hedefleri
 Kullanıcının ait olduğu takımlar ve ilişkili hedef setlerine geçiş noktası. Hedef Yönetimi bounded context'ine giriş.
+
 ![009-list-user-teams-goals](./docs/009-list-user-teams-goals.png)
 
 ### 010 - Boş HedefSet Ekranı
 Dönem için henüz hedef tanımlanmamış durumda başlangıç görünümü; Hedef Kümesi yaşam döngüsü başlangıcı (Taslak durumu).
+
 ![010-user-empty-goalset-screen](./docs/010-user-empty-goalset-screen.png)
 
 ### 011 - Yeni Hedef Ekleme Formu
 Hedef entity oluşturma; yüzde (percentage) henüz toplamda 100 zorunluluğuna ulaşmamış olabilir, min/mid/max tutarlılık validasyonu.
+
 ![011-add-new-goal-screen](./docs/011-add-new-goal-screen.png)
 
 ### 012 - Kullanıcının Hedef Listesi
 Hedef Kümesi altındaki tüm hedefler; toplam yüzde 100 kuralının görsel geri bildirimi.
+
 ![012-list-user-goals](./docs/012-list-user-goals.png)
 
 ### 013 - Hedef İlerleme Durumunu Onaya Gönderme
 Hedef ilerleme durumu güncellemesi sonrası onay workflow tetikleme; HedefProgressUpdatedEvent ve ardından onaya gönderim isteği.
+
 ![013-send-goal-progress-to-approval-screen](./docs/013-send-goal-progress-to-approval-screen.png)
 
 ### 014 - Bekleyen Hedef İlerleme Durumu Onayları
 Takım lideri için pending durumundaki ilerleme kayıtları; statü bazlı filtreleme.
+
 ![014-list-pending-goal-progress-approval-screen](./docs/014-list-pending-goal-progress-approval-screen.png)
 
 ### 015a - Hedef Kümesi Onay Bekliyor
 Kullanıcının göndermiş olduğu Hedef Kümesi için waiting/under review durumu; HedefSetSentToApprovalEvent tetiklenmiş.
+
 ![015-goal-set-waiting-for-approval-screen](./docs/015-goal-set-waiting-for-approval-screen.png)
 
 ### 015b - Onaylanacak Hedef Kümesi Listesi
 Yönetici/takım lideri için pending Hedef Kümesi koleksiyonu; iş akışında toplu inceleme girişi.
+
 ![015-list-goal-sets-for-approval-screen](./docs/015-list-goal-sets-for-approval-screen.png)
 
 ### 016 - Hedef Kümesi Onay / Red İşlemi
 HedefSetApprovedEvent veya HedefSetRejectedEvent üretir; statü geçiş kontrolleri uygulanır.
+
 ![016-approve-reject-goalset-screen](./docs/016-approve-reject-goalset-screen.png)
 
 ### 017 - Performans Değerlendirme Hesaplama Başlatma
 HedefSetEvaluation aggregate oluşturulur; her hedef için hedef puanı hesaplamaya hazırlık.
+
 ![017-calculate-performance-evaluation-screen](./docs/017-calculate-performance-evaluation-screen.png)
 
 ### 018 - Performans Değerlendirme Hesaplama Tamamlandı
 Hedef bazlı puanların hesaplanması ve aggregate içi tutarlılık (toplam yüzdelerin etkisi) doğrulandı.
+
 ![018-calculate-performance-evaluation-finished-screen](./docs/018-calculate-performance-evaluation-finished-screen.png)
 
 ### 019 - Performans Raporu
 Hesaplanmış performance_score ve hedef bazlı katkıların şeffaf gösterimi; formül (Σ(goal_point × goal_percentage/100)) açıklanır.
+
 ![019-performance-evaluation-report-screen](./docs/019-performance-evaluation-report-screen.png)
 
 ## Kaynaklar
