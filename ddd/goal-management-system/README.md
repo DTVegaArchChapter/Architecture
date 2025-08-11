@@ -35,6 +35,7 @@ Bu proje aşağıdaki teknolojileri kullanmaktadır:
 - **MediatR**: CQRS ve mediator pattern implementasyonu.
 - **FluentValidation**: Veri doğrulama.
 - **xUnit**: Birim testleri için test framework'ü.
+- **Mail Server**: E-posta gönderimi için kullanılan sunucu.
 
 ## Projenin Çalıştırılması
 
@@ -56,14 +57,14 @@ Projeyi çalıştırmak için aşağıdaki adımları izleyin:
      ```bash
      docker-compose up --build
      ```
-   - Uygulama varsayılan olarak `http://localhost:5000` adresinde çalışacaktır.
+   - Uygulama varsayılan olarak `http://localhost:8080` adresinde çalışacaktır.
 
 4. **Manuel Çalıştırma**:
    - Veritabanını başlatın (örneğin, Docker ile SQL Server çalıştırabilirsiniz):
      ```bash
      docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Your_password123' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
      ```
-   - `GoalManager.sln` dosyasını Visual Studio veya VS Code ile açın.
+   - `GoalManager.sln` dosyasını Visual Studio ile açın.
    - `GoalManager.Web` projesini başlatın.
 
 5. **Testlerin Çalıştırılması**:
@@ -72,8 +73,12 @@ Projeyi çalıştırmak için aşağıdaki adımları izleyin:
      dotnet test
      ```
 
-6. **API Dokümantasyonu**:
-   - Swagger arayüzü varsayılan olarak `http://localhost:5000/swagger` adresinde mevcuttur.
+6. **Mail Server'ın Çalıştırılması**:
+   - Mail server için Docker Compose kullanarak aşağıdaki komutla başlatabilirsiniz:
+     ```bash
+     docker-compose up mailserver
+     ```
+   - Mail server varsayılan olarak `http://localhost:37409` adresinde çalışacaktır.
 
 Bu adımları takip ederek projeyi çalıştırabilir ve geliştirme ortamında test edebilirsiniz.
 
