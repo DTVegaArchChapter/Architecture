@@ -4,8 +4,8 @@ Domain driven design kullanarak oluşturulmuş olan *Goal Management System* imp
 
 ## İçindekiler
 
-- [Kullanılan Teknolojiler](#kullanilan-teknolojiler)
-- [Projenin Çalıştırılması](#projenin-calistirilmasi)
+- [Kullanılan Teknolojiler](#kullanılan-teknolojiler)
+- [Projenin Çalıştırılması](#projenin-çalışırılması)
 - [Proje Mimarisi](#proje-mimarisi)
 - [Eventstorming Diagram](#eventstorming-diagram)
 - [Strategic Design](#strategic-design)
