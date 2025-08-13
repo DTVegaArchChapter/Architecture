@@ -2,6 +2,18 @@
 
 Todo Microservice projesi web uygulaması üzerinden task *ekleme*, *silme*, *listeleme*, *filtreleme* ve *arama* yapabildiğimiz *mikroservis mimarisi* ile geliştirilmiş bir örnek uygulamadır.
 
+## İçindekiler
+
+- [Projeyi Çalıştırma](#projeyi-çalıştırma)
+- [Erişim Noktaları (Varsayılan Portlar)](#erişim-noktaları-varsayılan-portlar)
+- [Konfigürasyon / Ortam Değişkenleri](#konfigürasyon--ortam-değişkenleri)
+- [Kullanılan Teknolojiler](#kullanılan-teknolojiler)
+- [Ekran Görüntüsü (Todo Web App)](#ekran-görüntüsü-todo-web-app)
+- [Mimari](#mimari)
+- [Event Akışı (Örnek Senaryo)](#event-akışı-örnek-senaryo)
+  - [Diyagram (Mermaid)](#diyagram-mermaid)
+- [Gelecek Geliştirme Fikirleri](#gelecek-geliştirme-fikirleri)
+
 ## Projeyi Çalıştırma
 
 Gereksinimler:
