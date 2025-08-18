@@ -27,5 +27,10 @@ internal sealed class GoalSetEvaluationConfiguration : IEntityTypeConfiguration<
       .HasForeignKey(g => g.PeriodId);
 
     builder.HasIndex(gs => new { gs.TeamId, gs.PeriodId, gs.UserId }).IsUnique();
+
+    // Configure optimistic concurrency token
+    builder.Property(gs => gs.RowVersion)
+      .IsRowVersion()
+      .ValueGeneratedOnAddOrUpdate();
   }
 }

@@ -3,6 +3,7 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="MediatR" />
+    <PackageReference Include="Polly" />
   </ItemGroup>
 
   <ItemGroup>
