@@ -13,6 +13,11 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Core.Organisat
       .HasConversion(x => x.Value, x => new OrganisationName(x))
       .IsRequired();
 
+    // Configure optimistic concurrency token for Organisation
+    builder.Property(p => p.RowVersion)
+      .IsRowVersion()
+      .ValueGeneratedOnAddOrUpdate();
+
     builder
       .HasMany(c => c.Teams)
       .WithOne(p => p.Organisation)

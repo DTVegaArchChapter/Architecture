@@ -29,6 +29,9 @@ public class GoalSet : EntityBase, IAggregateRoot
 
   public GoalPeriod GoalPeriod { get; private set; } = null!;
 
+  // Optimistic concurrency token
+  public byte[] RowVersion { get; private set; } = [];
+
   public static Result<GoalSet> Create(int teamId, int periodId, int userId)
   {
     var goalSet = new GoalSet(teamId, periodId, userId);
@@ -42,7 +45,7 @@ public class GoalSet : EntityBase, IAggregateRoot
   {
     if (Status == GoalSetStatus.WaitingForApproval || Status == GoalSetStatus.Approved)
     {
-      return Result.Error($"Cannot add goals to goal set. Because goal set status is {Status.Name}");
+      return Result.Error($"Cannot add goals to goal set. Because goal set status is {GetStatusName()}");
     }
 
     if (Goals.Count >= MaxGoalCount)
@@ -77,6 +80,11 @@ public class GoalSet : EntityBase, IAggregateRoot
       return Result.Error($"Goal not found for id: {goalId}");
     }
 
+    if (Status == GoalSetStatus.WaitingForApproval || Status == GoalSetStatus.Approved)
+    {
+      return Result.Error($"Cannot update goal. Because goal set status is {GetStatusName()}");
+    }
+
     var goalValueResult = GoalValue.Create(goal.GoalValue.MinValue, goal.GoalValue.MidValue, goal.GoalValue.MaxValue, goalValueType);
     if (!goalValueResult.IsSuccess)
     {
@@ -88,7 +96,6 @@ public class GoalSet : EntityBase, IAggregateRoot
     {
       return Result.Error($"Total percentage of goals cannot exceed 100. Current total percentage is {totalPercentage}");
     }
-
 
     var result = goal.Update(title, goalType, goalValueResult.Value, percentage);
     if (!result.IsSuccess)
@@ -107,6 +114,11 @@ public class GoalSet : EntityBase, IAggregateRoot
     if (goal == null)
     {
       return Result.Error($"Goal not found for id: {goalId}");
+    }
+
+    if (!IsOpenForGoalChanges())
+    {
+      return Result.Error($"Goal set is not open for goal changes. Because goal set status is {GetStatusName()}");
     }
 
     var result = goal.AddProgress(TeamId, UserId, actualValue, comment);
@@ -179,7 +191,7 @@ public class GoalSet : EntityBase, IAggregateRoot
   {
     if (Status != GoalSetStatus.WaitingForApproval)
     {
-      return Result.Error($"Cannot approve goal set. Current status is {Status?.Name ?? "New"}");
+      return Result.Error($"Cannot approve goal set. Current status is {GetStatusName()}");
     }
 
     if (!_goals.All(x => x.GoalProgress != null && x.GoalProgress.Status == GoalProgressStatus.Approved))
@@ -211,6 +223,16 @@ public class GoalSet : EntityBase, IAggregateRoot
     RegisterDomainEvent(new GoalSetRejectedEvent(Id, TeamId, userId));
 
     return Result.Success();
+  }
+
+  public bool IsOpenForGoalChanges()
+  {
+    return Status is null || Status == GoalSetStatus.None;
+  }
+
+  public string GetStatusName()
+  {
+    return Status?.Name ?? "New";
   }
 
   private int GetGoalsTotalPercentage()

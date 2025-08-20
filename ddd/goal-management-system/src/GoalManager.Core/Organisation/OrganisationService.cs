@@ -1,4 +1,7 @@
-﻿using GoalManager.Core.Organisation.Specifications;
+﻿using GoalManager.Core.Exceptions;
+using GoalManager.Core.Organisation.Specifications;
+using Polly;
+using Polly.Retry;
 
 namespace GoalManager.Core.Organisation;
 
@@ -23,6 +26,17 @@ public interface IOrganisationService
 
 public sealed class OrganisationService(IRepository<Organisation> repository) : IOrganisationService
 {
+  private static readonly ResiliencePipeline RetryPipeline = new ResiliencePipelineBuilder()
+    .AddRetry(new RetryStrategyOptions
+    {
+      ShouldHandle = new PredicateBuilder().Handle<ConcurrencyException>(),
+      MaxRetryAttempts = 3,
+      Delay = TimeSpan.FromMilliseconds(50),
+      BackoffType = DelayBackoffType.Exponential,
+      UseJitter = true
+    })
+    .Build();
+
   public async Task<Result<int>> CreateOrganisation(string name, CancellationToken cancellationToken = default)
   {
     var organisationNameResult = OrganisationName.Create(name);
@@ -97,27 +111,39 @@ public sealed class OrganisationService(IRepository<Organisation> repository) : 
 
   public async Task<Result> AddNewTeam(int organisationId, string teamName, CancellationToken cancellationToken = default)
   {
-    var organisation = await GetOrganisation(organisationId, cancellationToken).ConfigureAwait(false);
-    if (organisation == null)
-    {
-      return Result.Error("Organisation is not found");
-    }
-
+    // Validate value object once; independent from aggregate state
     var teamNameResult = TeamName.Create(teamName);
     if (!teamNameResult.IsSuccess)
     {
       return teamNameResult.ToResult();
     }
-    
-    var teamResult = organisation.AddTeam(teamNameResult.Value);
-    if (!teamResult.IsSuccess)
+
+    try
     {
-      return teamResult;
+      return await RetryPipeline.ExecuteAsync(async token =>
+      {
+        var organisation = await GetOrganisation(organisationId, token).ConfigureAwait(false);
+        if (organisation == null)
+        {
+          return Result.Error("Organisation is not found");
+        }
+
+        var teamResult = organisation.AddTeam(teamNameResult.Value);
+        if (!teamResult.IsSuccess)
+        {
+          // Business rule failure; do not retry
+          return teamResult;
+        }
+
+        await repository.UpdateAsync(organisation, token).ConfigureAwait(false);
+
+        return Result.SuccessWithMessage("Team is created");
+      }, cancellationToken).ConfigureAwait(false);
     }
-
-    await repository.UpdateAsync(organisation, cancellationToken).ConfigureAwait(false);
-
-    return Result.SuccessWithMessage("Team is created");
+    catch (ConcurrencyException)
+    {
+      return Result.Error("Another user modified this organisation at the same time. Your change could not be applied automatically. Please try again.");
+    }
   }
 
   public async Task<Result> UpdateTeam(int organisationId, int teamId, string teamName, CancellationToken cancellationToken = default)
