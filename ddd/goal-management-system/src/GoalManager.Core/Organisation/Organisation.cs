@@ -22,6 +22,9 @@ public class Organisation : EntityBase, IAggregateRoot
 
   public IReadOnlyCollection<Team> Teams => _teams.AsReadOnly();
 
+  // Optimistic concurrency token for Organisation aggregate
+  public byte[] RowVersion { get; private set; } = [];
+
   internal static Result<Organisation> Create(OrganisationName organisationName)
   {
     var organisation = new Organisation(organisationName, new List<Team>());
