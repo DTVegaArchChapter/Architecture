@@ -359,6 +359,11 @@ Hesaplanmış performance_score ve hedef bazlı katkıların şeffaf gösterimi;
 - Implementing Domain-Driven Design (Vaughn Vernon)
 - Learning Domain-Driven Design: Aligning Software Architecture and Business Strategy (Vlad Khononov)
 
+### İlgili Makalelerimiz
+
+- [Domain-Driven Design (DDD) - Kısa Bir Giriş ve Goal Management Örnek Uygulaması](https://dtvegaarchchapter.github.io/mimari/ddd/2025/08/19/ddd-nedir-goal-management-ornek-uygulama.html)
+- [DDD Aggregate ve EF Core Concurrency (Optimistic Locking) Yönetimi](https://dtvegaarchchapter.github.io/mimari/ddd/2025/09/12/ddd-aggregate-ef-core-concurrency-yonetimi.html)
+
 ### Örnek Projeler
 
 - <https://github.com/dotnet-architecture/eShopOnWeb>
