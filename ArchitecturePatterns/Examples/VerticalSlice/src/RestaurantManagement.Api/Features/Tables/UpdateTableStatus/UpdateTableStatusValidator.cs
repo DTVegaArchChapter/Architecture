@@ -2,7 +2,7 @@ namespace RestaurantManagement.Api.Features.Tables.UpdateTableStatus;
 
 using FluentValidation;
 
-public class UpdateTableStatusValidator : AbstractValidator<UpdateTableStatusCommand>
+public sealed class UpdateTableStatusValidator : AbstractValidator<UpdateTableStatusCommand>
 {
     public UpdateTableStatusValidator()
     {

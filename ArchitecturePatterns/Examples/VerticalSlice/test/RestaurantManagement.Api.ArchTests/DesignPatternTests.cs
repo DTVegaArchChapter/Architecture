@@ -4,6 +4,8 @@ using NetArchTest.Rules;
 using NUnit.Framework;
 using System.Reflection;
 
+using FluentValidation;
+
 using Mediator;
 
 [TestFixture]
@@ -60,6 +62,23 @@ public class DesignPatternTests
 
         Assert.That(result.IsSuccessful,
             $"All command and queries should be sealed classes. " +
+            $"Violations: {string.Join(", ", result.FailingTypeNames ?? [])}");
+    }
+
+    [Test]
+    public void Validators_ShouldBeSealed()
+    {
+        var result = Types.InAssembly(Assembly.Load(RestaurantApiAssembly))
+            .That()
+            .Inherit(typeof(AbstractValidator<>))
+            .And()
+            .ResideInNamespace(FeaturesNamespace)
+            .Should()
+            .BeSealed()
+            .GetResult();
+
+        Assert.That(result.IsSuccessful,
+            $"All validators should be sealed classes. " +
             $"Violations: {string.Join(", ", result.FailingTypeNames ?? [])}");
     }
 

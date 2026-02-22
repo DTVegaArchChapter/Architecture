@@ -2,7 +2,7 @@ namespace RestaurantManagement.Api.Features.Orders.UpdateOrderStatus;
 
 using FluentValidation;
 
-public class UpdateOrderStatusValidator : AbstractValidator<UpdateOrderStatusCommand>
+public sealed class UpdateOrderStatusValidator : AbstractValidator<UpdateOrderStatusCommand>
 {
     public UpdateOrderStatusValidator()
     {

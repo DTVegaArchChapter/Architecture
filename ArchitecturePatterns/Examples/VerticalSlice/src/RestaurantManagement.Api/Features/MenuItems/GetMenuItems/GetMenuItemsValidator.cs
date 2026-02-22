@@ -2,7 +2,7 @@ namespace RestaurantManagement.Api.Features.MenuItems.GetMenuItems;
 
 using FluentValidation;
 
-public class GetMenuItemsValidator : AbstractValidator<GetMenuItemsQuery>
+public sealed class GetMenuItemsValidator : AbstractValidator<GetMenuItemsQuery>
 {
     public GetMenuItemsValidator()
     {

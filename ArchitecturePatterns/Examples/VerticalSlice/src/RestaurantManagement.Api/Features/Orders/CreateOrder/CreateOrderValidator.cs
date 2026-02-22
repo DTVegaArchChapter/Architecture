@@ -2,7 +2,7 @@ namespace RestaurantManagement.Api.Features.Orders.CreateOrder;
 
 using FluentValidation;
 
-public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
+public sealed class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
 {
     public CreateOrderValidator()
     {
